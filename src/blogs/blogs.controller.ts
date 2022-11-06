@@ -8,12 +8,14 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { BlogsService } from './blogs.service';
 
 @Controller('blogs')
 export class BlogsController {
+  constructor(protected blogsService: BlogsService) {}
   @Get()
   getBlogs(@Query('term') term: string) {
-    return;
+    return this.blogsService;
   }
   @Get(':id')
   getBlog(@Param('id') blogId: string) {
@@ -28,11 +30,14 @@ export class BlogsController {
     return;
   }
   @Put()
-  updateBlogs() {
+  updateBlogs(
+    @Param('id') blogId: string,
+    @Body() model: CreateBlogInputModelType,
+  ) {
     return;
   }
   @Delete()
-  deleteBlogs() {
+  deleteBlogs(@Param('id') blogId: string) {
     return;
   }
 }
