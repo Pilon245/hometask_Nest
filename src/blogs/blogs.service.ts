@@ -1,7 +1,7 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
 import {
-  BlogInputModelType,
+  BlogOutputModelType,
   CreateBlogInputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
@@ -16,7 +16,7 @@ export class BlogsService {
     return this.blogsRepository.findBlogById(blogId);
   }
   createBlogs(inputModel: CreateBlogInputModelType) {
-    const newBlog: BlogInputModelType = {
+    const newBlog: BlogOutputModelType = {
       id: String(+new Date()),
       name: inputModel.name,
       youtubeUrl: inputModel.youtubeUrl,
@@ -34,5 +34,8 @@ export class BlogsService {
   }
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);
+  }
+  deleteAllBlogs() {
+    return this.blogsRepository.deleteAllBlogs();
   }
 }
