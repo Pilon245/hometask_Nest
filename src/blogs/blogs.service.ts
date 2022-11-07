@@ -1,10 +1,38 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
+import {
+  BlogInputModelType,
+  CreateBlogInputModelType,
+  UpdateBlogInputModelType,
+} from './blogs.controller';
 
 @Injectable()
 export class BlogsService {
   constructor(protected blogsRepository: BlogsRepository) {}
-  findBlogs(term: string) {
-    return this.blogsRepository.findBlogs(term);
+  findBlogs() {
+    return this.blogsRepository.findBlogs();
+  }
+  findBlogById(blogId: string) {
+    return this.blogsRepository.findBlogById(blogId);
+  }
+  createBlogs(inputModel: CreateBlogInputModelType) {
+    const newBlog: BlogInputModelType = {
+      id: String(+new Date()),
+      name: inputModel.name,
+      youtubeUrl: inputModel.youtubeUrl,
+      createdAt: new Date().toISOString(),
+    };
+    return this.blogsRepository.createBlogs(newBlog);
+  }
+  updateBlogs(id: string, model: CreateBlogInputModelType) {
+    const updateBlog: UpdateBlogInputModelType = {
+      id: id,
+      name: model.name,
+      youtubeUrl: model.youtubeUrl,
+    };
+    return this.blogsRepository.updateBlogs(updateBlog);
+  }
+  deleteBlogs(id: string) {
+    return this.blogsRepository.deleteBlogs(id);
   }
 }

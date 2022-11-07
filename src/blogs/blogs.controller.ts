@@ -14,35 +14,58 @@ import { BlogsService } from './blogs.service';
 export class BlogsController {
   constructor(protected blogsService: BlogsService) {}
   @Get()
-  getBlogs(@Query('term') term: string) {
-    return this.blogsService;
+  getBlogs(
+    @Query()
+    query: // 'searchNameTerm',
+    // 'pageNumber',
+    // 'pageSize',
+    // 'sortBy',
+    // 'sortDirection',
+    {
+      searchNameTerm: string;
+      pageNumber: number;
+      pageSize: number;
+      sortBy: string;
+      sortDirection: string;
+    },
+  ) {
+    return this.blogsService.findBlogs();
   }
   @Get(':id')
   getBlog(@Param('id') blogId: string) {
-    return;
+    return this.blogsService.findBlogById(blogId);
   }
-  // @Get(':id')
-  // getBlog(@Param('id) blogId) {
-  //   return;
-  // }
   @Post()
   createBlogs(@Body() inputModel: CreateBlogInputModelType) {
-    return;
+    return this.blogsService.createBlogs(inputModel);
   }
-  @Put()
+  @Put(':id')
   updateBlogs(
     @Param('id') blogId: string,
     @Body() model: CreateBlogInputModelType,
   ) {
-    return;
+    return this.blogsService.updateBlogs(blogId, model);
   }
-  @Delete()
+  @Delete(':id')
   deleteBlogs(@Param('id') blogId: string) {
-    return;
+    return this.blogsService.deleteBlogs(blogId);
   }
 }
 
 export type CreateBlogInputModelType = {
   name: string;
   youtubeUrl: string;
+};
+
+export type BlogInputModelType = {
+  id: string;
+  name: string;
+  youtubeUrl: string;
+  createdAt: string;
+};
+
+export type UpdateBlogInputModelType = {
+  id: string;
+  name?: string;
+  youtubeUrl?: string;
 };
