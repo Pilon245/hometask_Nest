@@ -2,7 +2,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from './posts.entity';
 import { Injectable } from '@nestjs/common';
-import { getPagesCounts, getSkipNumber } from '../helper/helper.function';
+import {
+  getPagesCounts,
+  getSkipNumber,
+  outputModel,
+} from '../helper/helper.function';
 import { FindBlogsPayload } from '../blogs/blogs.query.repository';
 
 @Injectable()
@@ -53,10 +57,7 @@ export class PostsQueryRepository {
     const totalCount = await this.postModel.countDocuments();
 
     return {
-      pagesCount: getPagesCounts(totalCount, pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: totalCount,
+      ...outputModel(totalCount, pageSize, pageNumber),
       items: posts.map((p) => ({
         id: p.id,
         title: p.title,
@@ -91,10 +92,7 @@ export class PostsQueryRepository {
     const totalCount = await this.postModel.countDocuments();
 
     return {
-      pagesCount: getPagesCounts(totalCount, pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: totalCount,
+      ...outputModel(totalCount, pageSize, pageNumber),
       items: posts.map((p) => ({
         id: p.id,
         title: p.title,

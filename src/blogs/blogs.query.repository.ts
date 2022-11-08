@@ -3,7 +3,11 @@ import { Blog, BlogDocument } from './blog.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { SortDirection } from './blogs.controller';
-import { getPagesCounts, getSkipNumber } from '../helper/helper.function';
+import {
+  getPagesCounts,
+  getSkipNumber,
+  outputModel,
+} from '../helper/helper.function';
 import { filter } from 'rxjs';
 
 export type FindBlogsPayload = {
@@ -37,10 +41,7 @@ export class BlogsQueryRepository {
     const totalCount = await this.blogModel.countDocuments(filter);
 
     return {
-      pagesCount: getPagesCounts(totalCount, pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: totalCount,
+      ...outputModel(totalCount, pageSize, pageNumber),
       items: blogs.map((b) => ({
         id: b.id,
         name: b.name,

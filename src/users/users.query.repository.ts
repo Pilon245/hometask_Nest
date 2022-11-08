@@ -3,7 +3,11 @@ import { User, UserDocument } from './users.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { SortDirection } from '../blogs/blogs.controller';
-import { getPagesCounts, getSkipNumber } from '../helper/helper.function';
+import {
+  getPagesCounts,
+  getSkipNumber,
+  outputModel,
+} from '../helper/helper.function';
 
 export type FindUsersPayload = {
   pageSize: number;
@@ -55,10 +59,7 @@ export class UsersQueryRepository {
     const totalCount = await this.userModel.countDocuments(filter);
 
     return {
-      pagesCount: getPagesCounts(totalCount, pageSize),
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: totalCount,
+      ...outputModel(totalCount, pageSize, pageNumber),
       items: users.map((u) => ({
         id: u.id,
         login: u.login,

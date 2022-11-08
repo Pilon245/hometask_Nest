@@ -5,3 +5,12 @@ export const getSkipNumber = (pageNumber: number, pageSize: number) => {
 export const getPagesCounts = (totalCount: number, pageSize: number) => {
   return Math.ceil(totalCount / pageSize);
 };
+
+export const outputModel = (totalCount, pageSize, pageNumber) => {
+  return {
+    pagesCount: getPagesCounts(totalCount, pageSize),
+    page: pageNumber,
+    pageSize: pageSize,
+    totalCount: totalCount,
+  };
+};
