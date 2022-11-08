@@ -1,12 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { UsersQueryRepository } from './users.query.repository';
 
 @Controller('users')
 export class UsersController {
-  constructor(protected usersService: UsersService) {}
+  constructor(
+    protected usersService: UsersService,
+    protected usersQueryRepository: UsersQueryRepository,
+  ) {}
   @Get()
   getUsers() {
-    return this.usersService.findUsers();
+    return this.usersQueryRepository.findUsers();
   }
   @Post()
   createUsers(@Body() inputModel: CreateUserInputModelType) {

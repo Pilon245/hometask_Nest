@@ -8,42 +8,40 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { PostsService } from '../posts/posts.service';
 import { CreatePostInputModelType } from '../posts/posts.controller';
+import { Response } from 'express';
+import { QueryDto } from '../helper/query';
+import { BlogsQueryRepository } from './blogs.query.repository';
+import { PostsQueryRepository } from '../posts/posts.query.repository';
 
+//todo сделатьб иморт всех модулей
 @Controller('blogs')
 export class BlogsController {
   constructor(
     protected blogsService: BlogsService,
     protected postsService: PostsService,
+    protected postsQueryRepository: PostsQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get()
-  getBlogs(
-    @Query()
-    query: // 'searchNameTerm',
-    // 'pageNumber',
-    // 'pageSize',
-    // 'sortBy',
-    // 'sortDirection',
-    {
-      searchNameTerm: string;
-      pageNumber: number;
-      pageSize: number;
-      sortBy: string;
-      sortDirection: string;
-    },
-  ) {
-    return this.blogsService.findBlogs();
+  getBlogs(@Query() query: QueryDto) {
+    return this.blogsQueryRepository.findBlogs({ query });
   }
   @Get(':id')
-  getBlog(@Param('id') blogId: string) {
-    return this.blogsService.findBlogById(blogId);
+  getBlog(@Param('id') blogId: string, @Res() res: Response) {
+    const result = this.blogsQueryRepository.findBlogById(blogId);
+    if (!result) return res.sendStatus(404);
+    return;
   }
   @Get(':blogId/posts')
-  getPostsOnBlogId(@Param('blogId') blogId: string) {
-    return this.postsService.findPostByBlogId(blogId);
+  getPostsOnBlogId(@Param('blogId') blogId: string, @Res() res: Response) {
+    const result = this.postsQueryRepository.findPostByBlogId(blogId);
+    if (!result) return res.sendStatus(404);
+    return result;
   }
   @Post()
   createBlogs(@Body() inputModel: CreateBlogInputModelType) {
@@ -53,6 +51,7 @@ export class BlogsController {
   CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
     @Body() inputModel: CreatePostInputModelType,
+    @Res() res: Response,
   ) {
     const newPost: CreatePostInputModelType = {
       title: inputModel.title,
@@ -60,7 +59,9 @@ export class BlogsController {
       content: inputModel.content,
       blogId: blogId,
     };
-    return this.postsService.createPosts(newPost);
+    const result = this.postsService.createPosts(newPost);
+    if (!result) return res.sendStatus(404);
+    return result;
   }
 
   @Put(':id')
@@ -68,15 +69,18 @@ export class BlogsController {
   updateBlogs(
     @Param('id') blogId: string,
     @Body() model: CreateBlogInputModelType,
+    @Res() res: Response,
   ) {
-    return this.blogsService.updateBlogs(blogId, model);
+    const result = this.blogsService.updateBlogs(blogId, model);
+    if (!result) return res.sendStatus(404);
+    return result;
   }
   @Delete(':id')
   @HttpCode(204)
-  deleteBlogs(@Param('id') blogId: string) {
+  deleteBlogs(@Param('id') blogId: string, @Res() res: Response) {
     const result = this.blogsService.deleteBlogs(blogId);
+    if (!result) return res.sendStatus(404);
     return result;
-    // if(!result)  return @HttpCode(404)
   }
 }
 

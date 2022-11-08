@@ -5,29 +5,17 @@ import {
   UpdatePostInputModelType,
 } from './posts.controller';
 import { PostsRepository } from './posts.repository';
-import { BlogsRepository } from '../blogs/blogs.repository';
-import { BlogOutputModelType } from '../blogs/blogs.controller';
+import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 
 @Injectable()
 export class PostsService {
   constructor(
     protected postsRepository: PostsRepository,
-    protected blogRepostirory: BlogsRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
-  findPosts() {
-    return this.postsRepository.findPosts();
-  }
-  findPostById(id: string) {
-    return this.postsRepository.findPostById(id);
-  }
-  findPostByBlogId(blogId: string) {
-    return this.postsRepository.findPostByBlogId(blogId);
-  }
   createPosts(inputModel: CreatePostInputModelType) {
-    // const blog: BlogOutputModelType = this.blogRepostirory.findBlogById(
-    //   inputModel.blogId,
-    // );
-    // if (!blog) return false;
+    const blog = this.blogsQueryRepository.findBlogById(inputModel.blogId);
+    if (!blog) return false;
     const newPost: PostOutputModelType = {
       id: String(+new Date()),
       title: inputModel.title,
@@ -57,8 +45,5 @@ export class PostsService {
   }
   deletePosts(id: string) {
     return this.postsRepository.deletePosts(id);
-  }
-  deleteAllPosts() {
-    return this.postsRepository.deleteAllPosts();
   }
 }

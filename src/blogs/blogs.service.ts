@@ -9,12 +9,6 @@ import {
 @Injectable()
 export class BlogsService {
   constructor(protected blogsRepository: BlogsRepository) {}
-  findBlogs() {
-    return this.blogsRepository.findBlogs();
-  }
-  findBlogById(blogId: string) {
-    return this.blogsRepository.findBlogById(blogId);
-  }
   createBlogs(inputModel: CreateBlogInputModelType) {
     const newBlog: BlogOutputModelType = {
       id: String(+new Date()),
@@ -34,8 +28,5 @@ export class BlogsService {
   }
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);
-  }
-  deleteAllBlogs() {
-    return this.blogsRepository.deleteAllBlogs();
   }
 }

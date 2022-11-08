@@ -13,10 +13,6 @@ import {
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
 
-  findUsers() {
-    return this.userRepository.findUsers();
-  }
-
   createUsers(inputModel: CreateUserInputModelType) {
     const newUser = {
       id: String(+new Date()),
@@ -29,8 +25,5 @@ export class UsersService {
   }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
-  }
-  deleteAllUsers() {
-    return this.userRepository.deleteAllUsers();
   }
 }

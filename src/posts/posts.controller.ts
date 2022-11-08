@@ -11,20 +11,22 @@ import {
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
+import { PostsQueryRepository } from './posts.query.repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     protected postsService: PostsService,
     protected commentsService: CommentsService,
+    protected postsQueryRepository: PostsQueryRepository,
   ) {}
   @Get()
   getPosts() {
-    return this.postsService.findPosts();
+    return this.postsQueryRepository.findPosts();
   }
   @Get(':id')
   getPost(@Param('id') id: string) {
-    return this.postsService.findPostById(id);
+    return this.postsQueryRepository.findPostById(id);
   }
   @Get(':postId/comments')
   getCommentOnPostId(@Param('postId') postId: string) {
@@ -87,8 +89,5 @@ export type UpdatePostInputModelType = {
   content: string;
   blogId: string;
 };
-//todo  как сделать дот енв переменную
-//todo  как сделать друго нттп код  при фалсе
-//todo  как вывести с базы данных в нужном формате
-//todo как принимать квери
-//todo
+//todo  как принимать квери
+//todo async await в контроллерах нестджс
