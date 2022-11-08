@@ -49,8 +49,15 @@ export class BlogsController {
     return;
   }
   @Get(':blogId/posts')
-  getPostsOnBlogId(@Param('blogId') blogId: string, @Res() res: Response) {
-    const result = this.postsQueryRepository.findPostByBlogId(blogId);
+  getPostsOnBlogId(
+    @Param('blogId') blogId: string,
+    @Query() query,
+    @Res() res: Response,
+  ) {
+    const result = this.postsQueryRepository.findPostByBlogId(
+      blogId,
+      pagination(query),
+    );
     if (!result) return res.sendStatus(404);
     return result;
   }

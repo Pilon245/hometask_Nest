@@ -1,6 +1,15 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
+import { pagination } from '../blogs/blogs.controller';
 
 @Controller('users')
 export class UsersController {
@@ -9,8 +18,8 @@ export class UsersController {
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
   @Get()
-  getUsers() {
-    return this.usersQueryRepository.findUsers();
+  getUsers(@Query() query) {
+    return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
   createUsers(@Body() inputModel: CreateUserInputModelType) {

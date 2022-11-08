@@ -13,6 +13,7 @@ import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostsQueryRepository } from './posts.query.repository';
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
+import { pagination } from '../blogs/blogs.controller';
 
 @Controller('posts')
 export class PostsController {
@@ -23,8 +24,8 @@ export class PostsController {
     protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Get()
-  getPosts() {
-    return this.postsQueryRepository.findPosts();
+  getPosts(@Query() query) {
+    return this.postsQueryRepository.findPosts(pagination(query));
   }
   @Get(':id')
   getPost(@Param('id') id: string) {
