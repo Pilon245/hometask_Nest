@@ -15,7 +15,8 @@ export class BlogsRepository {
 
   async createBlogs(blog: BlogOutputModelType) {
     const blogs = await new this.blogModel(blog);
-    return blogs.save();
+    blogs.save();
+    return blog;
   }
   async updateBlogs(blog: UpdateBlogInputModelType) {
     const result = await this.blogModel.updateOne(

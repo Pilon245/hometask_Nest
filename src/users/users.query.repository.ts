@@ -11,7 +11,7 @@ export class UsersQueryRepository {
   async findUsers(): Promise<User[]> {
     // TODO: запомнить этот нюанс
     // const port = this.cfgSer.get('PORT');
-    return await this.userModel.find().exec();
+    return await this.userModel.find({}, { _id: false, __v: 0 }).exec();
   }
   async deleteAllUsers() {
     return await this.userModel.deleteMany();

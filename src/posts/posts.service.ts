@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreatePostInputModelType,
-  PostOutputModelType,
   UpdatePostInputModelType,
 } from './posts.controller';
 import { PostsRepository } from './posts.repository';
@@ -16,21 +15,21 @@ export class PostsService {
   createPosts(inputModel: CreatePostInputModelType) {
     const blog = this.blogsQueryRepository.findBlogById(inputModel.blogId);
     if (!blog) return false;
-    const newPost: PostOutputModelType = {
-      id: String(+new Date()),
-      title: inputModel.title,
-      shortDescription: inputModel.shortDescription,
-      content: inputModel.content,
-      blogId: inputModel.blogId,
-      blogName: 'blog.name',
-      createdAt: new Date().toISOString(),
-      extendedLikesInfo: {
+    const newPost = new CreatePostsDto(
+      String(+new Date()),
+      inputModel.title,
+      inputModel.shortDescription,
+      inputModel.content,
+      inputModel.blogId,
+      'blog.name',
+      new Date().toISOString(),
+      {
         likesCount: 0,
         dislikesCount: 0,
         myStatus: 'None',
         newestLikes: [],
       },
-    };
+    );
     return this.postsRepository.createPosts(newPost);
   }
   updatePosts(id: string, model: CreatePostInputModelType) {
@@ -47,3 +46,30 @@ export class PostsService {
     return this.postsRepository.deletePosts(id);
   }
 }
+
+export class CreatePostsDto {
+  constructor(
+    public id: string,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public blogName: string,
+    public createdAt: string,
+    public extendedLikesInfo?: extendedLikesInfoType,
+  ) {}
+}
+
+export type extendedLikesInfoType = {
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: string;
+  newestLikes: Array<any>;
+  // newestLikes: [
+  //   {
+  //     addedAt: "2022-11-07T11:31:23.905Z",
+  //     userId: "string",
+  //     login: "string"
+  //   }
+  // ]
+};

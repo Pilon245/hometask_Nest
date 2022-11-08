@@ -13,7 +13,8 @@ export class PostsRepository {
 
   async createPosts(post: PostOutputModelType) {
     const posts = await new this.postModel(post);
-    return posts.save();
+    posts.save();
+    return post;
   }
   async updatePosts(post: UpdatePostInputModelType) {
     const result = await this.postModel.updateOne(

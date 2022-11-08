@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Blog } from '../blogs/blog.entity';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel, Prop } from '@nestjs/mongoose';
 import { Post, PostDocument } from '../posts/posts.entity';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './users.entity';
@@ -14,10 +14,21 @@ export class UsersRepository {
 
   async createUsers(user: any) {
     const users = await new this.userModel(user);
-    return users.save();
+    users.save();
+    return user;
   }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
+}
+
+export class CreateUsersDto {
+  id: string;
+
+  login: string;
+
+  email: string;
+
+  createdAt: string;
 }

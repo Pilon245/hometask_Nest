@@ -7,13 +7,13 @@ import { Injectable } from '@nestjs/common';
 export class PostsQueryRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
   async findPosts(): Promise<Post[]> {
-    return await this.postModel.find().exec();
+    return await this.postModel.find({}, { _id: false, __v: 0 }).exec();
   }
   async findPostById(id: string): Promise<Post> {
-    return await this.postModel.findOne({ id }).exec();
+    return await this.postModel.findOne({ id }, { _id: false, __v: 0 }).exec();
   }
   async findPostByBlogId(blogId: string): Promise<Post[] | null> {
-    return await this.postModel.find({ blogId }).exec();
+    return await this.postModel.find({ blogId }, { _id: false, __v: 0 }).exec();
   }
   async deleteAllPosts() {
     return await this.postModel.deleteMany();

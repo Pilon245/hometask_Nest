@@ -12,6 +12,7 @@ import {
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostsQueryRepository } from './posts.query.repository';
+import { CommentsQueryRepository } from '../comments/comments.query.repository';
 
 @Controller('posts')
 export class PostsController {
@@ -19,6 +20,7 @@ export class PostsController {
     protected postsService: PostsService,
     protected commentsService: CommentsService,
     protected postsQueryRepository: PostsQueryRepository,
+    protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Get()
   getPosts() {
@@ -30,7 +32,7 @@ export class PostsController {
   }
   @Get(':postId/comments')
   getCommentOnPostId(@Param('postId') postId: string) {
-    return this.commentsService.findCommentByPostId(postId);
+    return this.commentsQueryRepository.findCommentByPostId(postId);
   }
   @Post()
   createPosts(@Body() inputModel: CreatePostInputModelType) {
