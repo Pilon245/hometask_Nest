@@ -18,6 +18,8 @@ import { Response } from 'express';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
 
+//todo versel  deploy
+
 //todo сделатьб иморт всех модулей
 @Controller('blogs')
 export class BlogsController {
@@ -43,7 +45,7 @@ export class BlogsController {
   @Get(':id')
   getBlog(@Param('id') blogId: string) {
     const result = this.blogsQueryRepository.findBlogById(blogId);
-    if (!result) throw new HttpException('invalid blog', 404);
+    if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
     return;
   }
   @Get(':blogId/posts')

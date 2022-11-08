@@ -24,8 +24,12 @@ export class BlogsQueryRepository {
     pageSize,
     pageNumber,
   }: FindBlogsPayload) {
+    const filter = {} as any;
+    if (searchNameTerm) {
+      filter.name = { $regex: searchNameTerm };
+    } //todo тут лучше сделать через $exp?
     const blogs = await this.blogModel
-      .find({}, { _id: false, __v: 0 }, {})
+      .find(filter, { _id: false, __v: 0 }, {})
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -44,6 +48,8 @@ export class BlogsQueryRepository {
         createdAt: b.createdAt,
       })),
     };
+
+    //todo pagesize куда вынести
   }
   async findBlogById(id: string): Promise<Blog> {
     return await this.blogModel.findOne({ id }).exec();
