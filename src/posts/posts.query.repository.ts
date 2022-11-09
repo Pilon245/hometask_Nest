@@ -66,12 +66,12 @@ export class PostsQueryRepository {
         blogId: p.blogId,
         blogName: p.blogName,
         createdAt: p.createdAt,
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: 'None',
-          newestLikes: [],
-        },
+        // extendedLikesInfo: {
+        //   likesCount: 0,
+        //   dislikesCount: 0,
+        //   myStatus: 'None',
+        //   newestLikes: [],
+        // },
       })),
     };
   }
@@ -101,12 +101,12 @@ export class PostsQueryRepository {
         blogId: p.blogId,
         blogName: p.blogName,
         createdAt: p.createdAt,
-        extendedLikesInfo: {
-          likesCount: 0,
-          dislikesCount: 0,
-          myStatus: 'None',
-          newestLikes: [],
-        },
+        // extendedLikesInfo: {
+        //   likesCount: 0,
+        //   dislikesCount: 0,
+        //   myStatus: 'None',
+        //   newestLikes: [],
+        // },
       })),
     };
   }

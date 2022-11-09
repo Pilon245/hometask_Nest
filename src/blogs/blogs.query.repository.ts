@@ -30,7 +30,7 @@ export class BlogsQueryRepository {
   }: FindBlogsPayload) {
     const filter = {} as any;
     if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm };
+      filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
     } //todo тут лучше сделать через $exp?
     const blogs = await this.blogModel
       .find(filter, { _id: false, __v: 0 }, {})
