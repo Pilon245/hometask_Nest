@@ -12,8 +12,10 @@ export class PostsService {
     protected postsRepository: PostsRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
-  createPosts(inputModel: CreatePostInputModelType) {
-    const blog = this.blogsQueryRepository.findBlogById(inputModel.blogId);
+  async createPosts(inputModel: CreatePostInputModelType) {
+    const blog = await this.blogsQueryRepository.findBlogById(
+      inputModel.blogId,
+    );
     if (!blog) return false;
     const newPost = new CreatePostsDto(
       String(+new Date()),
@@ -21,7 +23,7 @@ export class PostsService {
       inputModel.shortDescription,
       inputModel.content,
       inputModel.blogId,
-      'blog.name',
+      blog.name,
       new Date().toISOString(),
       // {
       //   likesCount: 0,
