@@ -14,8 +14,7 @@ export class UsersRepository {
 
   async createUsers(user: any) {
     const users = await new this.userModel(user);
-    users.save();
-    return user;
+    return users.save();
   }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
