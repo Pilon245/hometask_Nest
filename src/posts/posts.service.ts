@@ -23,12 +23,12 @@ export class PostsService {
       inputModel.blogId,
       'blog.name',
       new Date().toISOString(),
-      {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: 'None',
-        newestLikes: [],
-      },
+      // {
+      //   likesCount: 0,
+      //   dislikesCount: 0,
+      //   myStatus: 'None',
+      //   newestLikes: [],
+      // },
     );
     return this.postsRepository.createPosts(newPost);
   }
