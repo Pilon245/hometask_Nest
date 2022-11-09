@@ -92,5 +92,8 @@ export type UpdatePostInputModelType = {
   content: string;
   blogId: string;
 };
+//todo  при удаление блога , все посты не должны удалятся?
+//todo .gitignore .env
+// todo exec асинк, для чего?
 //todo  как принимать квери
 //todo async await в контроллерах нестджс

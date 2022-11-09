@@ -49,11 +49,9 @@ export class BlogsQueryRepository {
         createdAt: b.createdAt,
       })),
     };
-
-    //todo pagesize куда вынести
   }
   async findBlogById(id: string): Promise<Blog> {
-    return await this.blogModel.findOne({ id }).exec();
+    return await this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
   async deleteAllBlogs() {
     return await this.blogModel.deleteMany();

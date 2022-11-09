@@ -45,20 +45,20 @@ export class BlogsController {
   @Get(':id')
   getBlog(@Param('id') blogId: string) {
     const result = this.blogsQueryRepository.findBlogById(blogId);
-    if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
-    return;
+    // if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
+    return result;
   }
   @Get(':blogId/posts')
   getPostsOnBlogId(
     @Param('blogId') blogId: string,
     @Query() query,
-    @Res() res: Response,
+    // @Res() res: Response,
   ) {
     const result = this.postsQueryRepository.findPostByBlogId(
       blogId,
       pagination(query),
     );
-    if (!result) return res.sendStatus(404);
+    // if (!result) return res.sendStatus(404);
     return result;
   }
   @Post()
@@ -69,7 +69,7 @@ export class BlogsController {
   CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
     @Body() inputModel: CreatePostInputModelType,
-    @Res() res: Response,
+    // @Res() res: Response,
   ) {
     const newPost: CreatePostInputModelType = {
       title: inputModel.title,
@@ -78,7 +78,7 @@ export class BlogsController {
       blogId: blogId,
     };
     const result = this.postsService.createPosts(newPost);
-    if (!result) return res.sendStatus(404);
+    // if (!result) return res.sendStatus(404);
     return result;
   }
 
@@ -87,17 +87,20 @@ export class BlogsController {
   updateBlogs(
     @Param('id') blogId: string,
     @Body() model: CreateBlogInputModelType,
-    @Res() res: Response,
+    // @Res() res: Response,
   ) {
     const result = this.blogsService.updateBlogs(blogId, model);
-    if (!result) return res.sendStatus(404);
+    // if (!result) return res.sendStatus(404);
     return result;
   }
   @Delete(':id')
   @HttpCode(204)
-  deleteBlogs(@Param('id') blogId: string, @Res() res: Response) {
+  deleteBlogs(
+    @Param('id') blogId: string,
+    // @Res() res: Response
+  ) {
     const result = this.blogsService.deleteBlogs(blogId);
-    if (!result) return res.sendStatus(404);
+    // if (!result) return res.sendStatus(404);
     return result;
   }
 }

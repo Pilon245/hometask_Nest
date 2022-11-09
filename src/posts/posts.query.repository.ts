@@ -89,7 +89,7 @@ export class PostsQueryRepository {
       .limit(pageSize)
       .lean();
 
-    const totalCount = await this.postModel.countDocuments();
+    const totalCount = await this.postModel.countDocuments({ blogId });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
