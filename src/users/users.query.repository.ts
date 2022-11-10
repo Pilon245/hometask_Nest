@@ -69,6 +69,7 @@ export class UsersQueryRepository {
     };
   }
   async deleteAllUsers() {
-    return await this.userModel.deleteMany();
+    const result = await this.userModel.deleteMany();
+    return result;
   }
 }

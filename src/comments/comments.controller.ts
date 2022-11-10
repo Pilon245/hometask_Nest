@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, Param } from '@nestjs/common';
 import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
@@ -11,7 +11,11 @@ export class CommentsController {
   ) {}
 
   @Get(':id')
-  getComment(@Param('id') id: string) {
+  async getComment(@Param('id') id: string) {
+    const resultFound = await this.commentsQueryRepository.findCommentById(id);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return this.commentsQueryRepository.findCommentById(id);
   }
 }

@@ -50,7 +50,7 @@ export class BlogsQueryRepository {
       })),
     };
   }
-  async findBlogById(id: string): Promise<Blog> {
+  async findBlogById(id: string): Promise<Blog | null> {
     return await this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
   async deleteAllBlogs() {

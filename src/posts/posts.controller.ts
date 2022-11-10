@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   Param,
   Post,
   Put,
@@ -28,11 +29,21 @@ export class PostsController {
     return this.postsQueryRepository.findPosts(pagination(query));
   }
   @Get(':id')
-  getPost(@Param('id') id: string) {
+  async getPost(@Param('id') id: string) {
+    const resultFound = await this.postsQueryRepository.findPostById(id);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return this.postsQueryRepository.findPostById(id);
   }
   @Get(':postId/comments')
-  getCommentOnPostId(@Param('postId') postId: string) {
+  async getCommentOnPostId(@Param('postId') postId: string) {
+    const resultFound = await this.commentsQueryRepository.findCommentByPostId(
+      postId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return this.commentsQueryRepository.findCommentByPostId(postId);
   }
   @Post()
@@ -41,15 +52,23 @@ export class PostsController {
   }
   @Put(':id')
   @HttpCode(204)
-  updatePosts(
+  async updatePosts(
     @Param('id') postId: string,
     @Body() model: UpdatePostInputModelType,
   ) {
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return this.postsService.updatePosts(postId, model);
   }
   @Delete(':id')
   @HttpCode(204)
-  deletePosts(@Param('id') postId: string) {
+  async deletePosts(@Param('id') postId: string) {
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     const result = this.postsService.deletePosts(postId);
     return result;
   }

@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
   Param,
   Post,
   Query,
@@ -26,8 +27,17 @@ export class UsersController {
     return this.usersService.createUsers(inputModel);
   }
   @Delete(':id')
-  deleteUsers(@Param('id') id: string) {
-    return this.usersService.deleteUsers(id);
+  async deleteUsers(@Param('id') id: string) {
+    // const resultFound = await this.postsQueryRepository.findPostById(postId);
+    // if (!resultFound) {
+    //   throw new HttpException('invalid blog', 404);
+    // }
+    const result = await this.usersService.deleteUsers(id);
+    console.log('result', result);
+    if (!result) {
+      throw new HttpException('invalid blog', 404);
+    }
+    return result;
   }
 }
 

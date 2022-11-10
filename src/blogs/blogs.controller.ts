@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -51,22 +52,31 @@ export class BlogsController {
     return this.blogsQueryRepository.findBlogs(pagination(query));
   }
   @Get(':id')
-  getBlog(@Param('id') blogId: string) {
-    const result = this.blogsQueryRepository.findBlogById(blogId);
+  async getBlog(@Param('id') blogId: string) {
+    const result = await this.blogsQueryRepository.findBlogById(blogId); //todo async /await как убрать
+    // if (!result)
+    //   throw new BadRequestException(
+    //     [{ message: 'blogId Not Found', filed: 'blogId' }],
+    //     '404',
+    //   );
     if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
     return result;
   }
   @Get(':blogId/posts')
-  getPostsOnBlogId(
+  async getPostsOnBlogId(
     @Param('blogId') blogId: string,
     @Query() query,
     // @Res() res: Response,
   ) {
-    const result = this.postsQueryRepository.findPostByBlogId(
+    const result = await this.postsQueryRepository.findPostByBlogId(
       blogId,
       pagination(query),
     );
-    // if (!result) return res.sendStatus(404);
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    console.log('result', resultFound);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return result;
   }
   @Post()
@@ -74,7 +84,7 @@ export class BlogsController {
     return this.blogsService.createBlogs(inputModel);
   }
   @Post(':blogId/posts')
-  CreatePostsOnBlogId(
+  async CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
     @Body() inputModel: CreatePostInputModelType,
     // @Res() res: Response,
@@ -86,29 +96,38 @@ export class BlogsController {
       blogId: blogId,
     };
     const result = this.postsService.createPosts(newPost);
-    // if (!result) return res.sendStatus(404);
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return result;
   }
 
   @Put(':id')
   @HttpCode(204)
-  updateBlogs(
+  async updateBlogs(
     @Param('id') blogId: string,
     @Body() model: CreateBlogInputModelType,
     // @Res() res: Response,
   ) {
     const result = this.blogsService.updateBlogs(blogId, model);
-    // if (!result) return res.sendStatus(404);
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return result;
   }
   @Delete(':id')
   @HttpCode(204)
-  deleteBlogs(
+  async deleteBlogs(
     @Param('id') blogId: string,
     // @Res() res: Response
   ) {
     const result = this.blogsService.deleteBlogs(blogId);
-    // if (!result) return res.sendStatus(404);
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return result;
   }
 }
