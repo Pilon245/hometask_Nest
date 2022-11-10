@@ -1,14 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import {
-  CreatePostInputModelType,
-  PostOutputModelType,
-} from '../posts/posts.controller';
-import {
-  CreateUserInputModelType,
-  UserOutputModelType,
-} from './users.controller';
-import { extendedLikesInfoType } from '../posts/posts.service';
+import { CreateUserInputModelType } from './users.controller';
 
 @Injectable()
 export class UsersService {

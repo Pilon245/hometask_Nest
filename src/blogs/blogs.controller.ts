@@ -17,8 +17,16 @@ import { CreatePostInputModelType } from '../posts/posts.controller';
 import { Response } from 'express';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
+import { isEmpty, isString, Length } from 'class-validator';
 
 //todo versel  deploy
+
+class CreateBlogInputModel {
+  @Length(0, 100, { message: 'incorrect name' })
+  name: string;
+  @Length(0, 100)
+  youtubeUrl: string;
+}
 
 //todo сделатьб иморт всех модулей
 @Controller('blogs')
@@ -45,7 +53,7 @@ export class BlogsController {
   @Get(':id')
   getBlog(@Param('id') blogId: string) {
     const result = this.blogsQueryRepository.findBlogById(blogId);
-    // if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
+    if (!result) throw new HttpException('invalid blog', 404); //todo почему тут не работает
     return result;
   }
   @Get(':blogId/posts')
@@ -62,7 +70,7 @@ export class BlogsController {
     return result;
   }
   @Post()
-  createBlogs(@Body() inputModel: CreateBlogInputModelType) {
+  createBlogs(@Body() inputModel: CreateBlogInputModel) {
     return this.blogsService.createBlogs(inputModel);
   }
   @Post(':blogId/posts')
