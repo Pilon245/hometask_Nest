@@ -35,15 +35,15 @@ export class UsersQueryRepository {
     // const port = this.cfgSer.get('PORT');
     // return await this.userModel.find({}, { _id: false, __v: 0 }).exec();
     const filter = {
-      $and: [
+      $or: [
         {
-          'accountData.login': {
+          login: {
             $regex: searchLoginTerm,
             $options: '(?i)a(?-i)cme',
           },
         },
         {
-          'accountData.email': {
+          email: {
             $regex: searchEmailTerm,
             $options: '(?i)a(?-i)cme',
           },
