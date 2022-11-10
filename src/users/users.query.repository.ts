@@ -51,7 +51,25 @@ export class UsersQueryRepository {
       ],
     };
     const users = await this.userModel
-      .find({ filter }, { _id: false, __v: 0 })
+      .find(
+        {
+          $or: [
+            {
+              login: {
+                $regex: searchLoginTerm,
+                $options: '(?i)a(?-i)cme',
+              },
+            },
+            {
+              email: {
+                $regex: searchEmailTerm,
+                $options: '(?i)a(?-i)cme',
+              },
+            },
+          ],
+        },
+        { _id: false, __v: 0 },
+      )
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
