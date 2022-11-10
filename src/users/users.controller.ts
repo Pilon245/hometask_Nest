@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpException,
   Param,
   Post,
@@ -27,6 +28,7 @@ export class UsersController {
     return this.usersService.createUsers(inputModel);
   }
   @Delete(':id')
+  @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
     // const resultFound = await this.postsQueryRepository.findPostById(postId);
     // if (!resultFound) {
