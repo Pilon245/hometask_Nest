@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema, Types } from 'mongoose';
 import {
   BlogOutputModelType,
-  CreateBlogInputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
 // import ObjectId = module

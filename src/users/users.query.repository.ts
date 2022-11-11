@@ -2,12 +2,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { SortDirection } from '../blogs/blogs.controller';
-import {
-  getPagesCounts,
-  getSkipNumber,
-  outputModel,
-} from '../helper/helper.function';
+import { getSkipNumber, outputModel } from '../helper/helper.function';
+import { SortDirection } from '../middlewares/query.validation';
 
 export type FindUsersPayload = {
   pageSize: number;

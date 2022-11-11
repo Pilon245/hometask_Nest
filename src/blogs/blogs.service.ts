@@ -1,11 +1,10 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
 import {
-  BlogOutputModelType,
   CreateBlogInputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
-import { Prop } from '@nestjs/mongoose';
+import { CreateBlogsDto } from './dto/create.blogs.dto';
 
 @Injectable()
 export class BlogsService {
@@ -31,13 +30,4 @@ export class BlogsService {
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);
   }
-}
-
-export class CreateBlogsDto {
-  constructor(
-    public id: string,
-    public name: string,
-    public youtubeUrl: string, // todo  почему не светится ютуб
-    public createdAt: string,
-  ) {}
 }

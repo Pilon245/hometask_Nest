@@ -18,14 +18,11 @@ import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/comments.repository';
 import { CommentsController } from './comments/comments.controller';
 import { UsersController } from './users/users.controller';
-// import { VideosResolver } from './videos/videos.resolver';
-import { VideosModule } from './videos/videos.module';
-import { VideosTestModule } from './videos-test/videos-test.module';
-import { VidModule } from './vid/vid.module';
 import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
+import { VidModule } from './vid/vid.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -45,8 +42,6 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
-    VideosModule,
-    VideosTestModule,
     VidModule,
   ],
   controllers: [
@@ -69,7 +64,6 @@ const schemas = [
     PostsQueryRepository,
     UsersQueryRepository,
     CommentsQueryRepository,
-    // VideosResolver,
   ],
 })
 export class AppModule {}

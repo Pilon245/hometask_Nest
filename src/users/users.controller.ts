@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
-import { pagination } from '../blogs/blogs.controller';
+import { pagination } from '../middlewares/query.validation';
 
 @Controller('users')
 export class UsersController {

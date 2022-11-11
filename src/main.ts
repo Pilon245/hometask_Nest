@@ -20,8 +20,6 @@ async function bootstrap() {
               field: e.property,
             });
           });
-          // errorsForResponce.push({ field: e.constraints[zeroKey] });
-          // errorsForResponce.push({ field: e.property });
         });
         throw new BadRequestException(
           errors.map((e) => {

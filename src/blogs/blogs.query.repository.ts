@@ -2,13 +2,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument } from './blog.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { SortDirection } from './blogs.controller';
 import {
   getPagesCounts,
   getSkipNumber,
   outputModel,
 } from '../helper/helper.function';
 import { filter } from 'rxjs';
+import { SortDirection } from '../middlewares/query.validation';
 
 export type FindBlogsPayload = {
   pageSize: number;
@@ -31,7 +31,7 @@ export class BlogsQueryRepository {
     const filter = {} as any;
     if (searchNameTerm) {
       filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
-    } //todo тут лучше сделать через $exp?
+    }
     const blogs = await this.blogModel
       .find(filter, { _id: false, __v: 0 }, {})
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
@@ -50,7 +50,7 @@ export class BlogsQueryRepository {
       })),
     };
   }
-  async findBlogById(id: string): Promise<Blog | null> {
+  async findBlogById(id: string): Promise<Blog> {
     return await this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
   async deleteAllBlogs() {

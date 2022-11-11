@@ -14,7 +14,7 @@ import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostsQueryRepository } from './posts.query.repository';
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
-import { pagination } from '../blogs/blogs.controller';
+import { pagination } from '../middlewares/query.validation';
 
 @Controller('posts')
 export class PostsController {
