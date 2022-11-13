@@ -9,9 +9,10 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { CreateUsersDto, UsersService } from './users.service';
+import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
 import { pagination } from '../middlewares/query.validation';
+import { CreateUserInputModel, CreateUsersDto } from './dto/create.users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +25,7 @@ export class UsersController {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
-  createUsers(@Body() inputModel: CreateUsersDto) {
+  createUsers(@Body() inputModel: CreateUserInputModel) {
     //todo тут можно использовать эту DTO?
     return this.usersService.createUsers(inputModel);
   }

@@ -1,38 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { CreateUserInputModelType } from './users.controller';
+import { CreateUserInputModel, CreateUsersDto } from './dto/create.users.dto';
+import { randomUUID } from 'crypto';
+import { add } from 'date-fns';
 
 @Injectable()
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
 
-  createUsers(inputModel: CreateUsersDto) {
+  createUsers(inputModel: CreateUserInputModel) {
     const newUser = new CreateUsersDto(
       String(+new Date()),
-      inputModel.login,
-      inputModel.password,
-      inputModel.email,
-      new Date().toISOString(),
+      {
+        login: inputModel.login,
+        email: inputModel.email,
+        passwordHash: 'sdasdsada',
+        createdAt: new Date().toISOString(),
+      },
+      {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
+        isConfirmed: false,
+      },
+      {
+        confirmationCode: randomUUID(),
+        expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
+        isConfirmed: false,
+      },
     );
     this.userRepository.createUsers(newUser);
     return {
       id: newUser.id,
-      login: newUser.login,
-      email: newUser.email,
-      createdAt: newUser.createdAt,
+      login: newUser.accountData.login,
+      email: newUser.accountData.email,
+      createdAt: newUser.accountData.createdAt,
     };
   }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
   }
-}
-
-export class CreateUsersDto {
-  constructor(
-    public id: string,
-    public login: string,
-    public password: string,
-    public email: string,
-    public createdAt: string,
-  ) {}
 }

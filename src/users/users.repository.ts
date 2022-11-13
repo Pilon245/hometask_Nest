@@ -21,13 +21,3 @@ export class UsersRepository {
     return result.deletedCount === 1;
   }
 }
-
-export class CreateUsersDto {
-  id: string;
-
-  login: string;
-
-  email: string;
-
-  createdAt: string;
-}

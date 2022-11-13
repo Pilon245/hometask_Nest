@@ -58,9 +58,9 @@ export class UsersQueryRepository {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: users.map((u) => ({
         id: u.id,
-        login: u.login,
-        email: u.email,
-        createdAt: u.createdAt,
+        login: u.accountData.login,
+        email: u.accountData.email,
+        createdAt: u.accountData.createdAt,
       })),
     };
   }
