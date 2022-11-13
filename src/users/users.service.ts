@@ -6,7 +6,7 @@ import { CreateUserInputModelType } from './users.controller';
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
 
-  createUsers(inputModel: CreateUserInputModelType) {
+  createUsers(inputModel: CreateUsersDto) {
     const newUser = new CreateUsersDto(
       String(+new Date()),
       inputModel.login,

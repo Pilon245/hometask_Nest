@@ -22,7 +22,6 @@ import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
-import { VidModule } from './vid/vid.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -42,7 +41,6 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
-    VidModule,
   ],
   controllers: [
     BlogsController,

@@ -1,7 +1,4 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { PostsService } from './posts/posts.service';
-import { BlogsService } from './blogs/blogs.service';
-import { UsersService } from './users/users.service';
 import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';

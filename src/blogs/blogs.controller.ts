@@ -21,12 +21,17 @@ import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
 import { isEmpty, isString, Length } from 'class-validator';
 import { pagination } from '../middlewares/query.validation';
+import { CreateBlogsDto } from './dto/create.blogs.dto';
 
-class CreateBlogInputModel {
+export class CreateBlogInputModel {
   @Length(0, 100, { message: 'incorrect name' })
   name: string;
   @Length(0, 100)
   youtubeUrl: string;
+}
+
+export class CreateBlogInputModelType {
+  constructor(public name: string, public youtubeUrl: string) {}
 }
 
 //todo сделатьб иморт всех модулей
@@ -111,11 +116,6 @@ export class BlogsController {
     }
     return result;
   }
-}
-
-export class CreateBlogInputModelType {
-  name: string;
-  youtubeUrl: string;
 }
 
 export type BlogOutputModelType = {

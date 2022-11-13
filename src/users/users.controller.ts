@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { CreateUsersDto, UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
 import { pagination } from '../middlewares/query.validation';
 
@@ -24,18 +24,14 @@ export class UsersController {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
-  createUsers(@Body() inputModel: CreateUserInputModelType) {
+  createUsers(@Body() inputModel: CreateUsersDto) {
+    //todo тут можно использовать эту DTO?
     return this.usersService.createUsers(inputModel);
   }
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
-    // const resultFound = await this.postsQueryRepository.findPostById(postId);
-    // if (!resultFound) {
-    //   throw new HttpException('invalid blog', 404);
-    // }
     const result = await this.usersService.deleteUsers(id);
-    console.log('result', result);
     if (!result) {
       throw new HttpException('invalid blog', 404);
     }
