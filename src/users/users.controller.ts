@@ -22,7 +22,7 @@ export class UsersController {
   ) {}
   @Get()
   getUsers(@Query() query) {
-    return this.usersQueryRepository.findUsers(pagination(query));
+de    return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
   createUsers(@Body() inputModel: CreateUserInputModel) {

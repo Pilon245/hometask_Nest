@@ -3,6 +3,7 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  HttpCode,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -33,9 +34,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (status === 404) {
     }
-    if (status === 500 && process.env.envorinment === 'production') {
-      response.status(500).send({});
-    }
+    // if (status === 500 && process.env.envorinment === 'production') {
+    //   response.status(500).send({});
+    // }
     if (status === 400) {
       const errorsResponse = {
         errorsMessages: [],

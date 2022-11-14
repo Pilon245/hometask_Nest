@@ -6,13 +6,14 @@ import {
   BlogOutputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
+import { CreateBlogInputDTO } from './dto/blogsFactory';
 // import ObjectId = module
 
 @Injectable()
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
 
-  async createBlogs(blog: BlogOutputModelType) {
+  async createBlogs(blog: CreateBlogInputDTO) {
     const blogs = await new this.blogModel(blog);
     blogs.save();
     return blog;

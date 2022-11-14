@@ -11,7 +11,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,
-      transform: true,
+      transform: true, //"10" = 10
       exceptionFactory: (errors) => {
         const errorsForResponce = [];
 
@@ -39,3 +39,5 @@ async function bootstrap() {
   await app.listen(4000);
 }
 bootstrap();
+
+//todo переделать 429 ошибку и  авторизацию

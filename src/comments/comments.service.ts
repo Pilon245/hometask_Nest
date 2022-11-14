@@ -1,44 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
-
+import { CommentsQueryRepository } from './comments.query.repository';
+import { CreateCommentsDto, LikeValue } from './dto/create.comments.dto';
+//todo сылки на гит как удалить
 @Injectable()
 export class CommentsService {
-  constructor(protected commentsRepository: CommentsRepository) {}
-  async findCommentById(id: string) {
-    const comment = await commentsRepository.findCommentById(id);
-    if (comment) {
-      const outComment = {
-        id: comment.id,
-        content: comment.content,
-        userId: comment.userId,
-        userLogin: comment.userLogin,
-        createdAt: comment.createdAt,
-      };
-      return outComment;
-    }
-    return comment;
-  }
+  constructor(
+    protected commentsRepository: CommentsRepository,
+    protected commentsQueryRepository: CommentsQueryRepository,
+  ) {}
   async createComment(
     postId: string,
     content: string,
     userId: string,
     userLogin: string,
   ) {
-    // const newComment: CommentsDbType = {
-    //     id: String(+new Date()),
-    //     content: content,
-    //     userId: userId,
-    //     postId: postId,
-    //     userLogin: userLogin,
-    //     createdAt: new Date().toISOString(),
-    //     likesInfo: {
-    //         likesCount: 0,
-    //         dislikesCount: 0,
-    //         myStatus:  "None",
-    //     }
-    //
-    // }
-    const newComment = new CommentsDbType(
+    const newComment = new CreateCommentsDto(
       String(+new Date()),
       content,
       userId,
@@ -51,26 +28,28 @@ export class CommentsService {
         myStatus: LikeValue.none,
       },
     );
-    const createdComment = await commentsRepository.createComment(newComment);
-    const outCreateComment = {
-      id: createdComment.id,
-      content: createdComment.content,
-      userId: createdComment.userId,
-      userLogin: createdComment.userLogin,
-      createdAt: createdComment.createdAt,
-      likesInfo: {
-        dislikesCount: 0,
-        likesCount: 0,
-        myStatus: LikeValue.none,
-      },
-    };
-    return outCreateComment;
+    const createdComment = await this.commentsRepository.createComments(
+      newComment,
+    );
+    // const outCreateComment = {
+    //   id: createdComment.id,
+    //   content: createdComment.content,
+    //   userId: createdComment.userId,
+    //   userLogin: createdComment.userLogin,
+    //   createdAt: createdComment.createdAt,
+    //   likesInfo: {
+    //     dislikesCount: 0,
+    //     likesCount: 0,
+    //     myStatus: LikeValue.none,
+    //   },
+    // };
+    return createdComment;
   }
   async updateComment(id: string, content: string) {
-    return await commentsRepository.updateComment(id, content);
+    return await this.commentsRepository.updateComment(id, content);
   }
   async updateLike(userId: string, commentId: string, value: LikeValue) {
-    const user = await commentsRepository.findLikeByIdAndCommentId(
+    const user = await this.commentsRepository.findLikeByIdAndCommentId(
       userId,
       commentId,
     );
@@ -83,7 +62,7 @@ export class CommentsService {
           authUserId: userId,
           commentId: commentId,
         };
-        return await commentsRepository.createLike(newLike);
+        return await this.commentsRepository.createLike(newLike);
       }
       if (value === LikeValue.dislike) {
         const newLike: LikeCommentStatusDBType = {

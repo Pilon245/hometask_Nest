@@ -19,20 +19,30 @@ import { CreatePostInputModelType } from '../posts/posts.controller';
 import { Response } from 'express';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
-import { isEmpty, isString, Length } from 'class-validator';
+import { isEmpty, isString, IsUrl, Length } from 'class-validator';
 import { pagination } from '../middlewares/query.validation';
-import { CreateBlogsDto } from './dto/create.blogs.dto';
+import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
 
-export class CreateBlogInputModel {
-  @Length(0, 100, { message: 'incorrect name' })
-  name: string;
-  @Length(0, 100)
-  youtubeUrl: string;
-}
+// export class CreateBlogInputDTO {
+//   @Length(0, 100, { message: 'incorrect name' })
+//   name: string;
+//   @Length(0, 100)
+//   @IsUrl()
+//   youtubeUrl: string;
+// }
 
 export class CreateBlogInputModelType {
   constructor(public name: string, public youtubeUrl: string) {}
 }
+export class CreateBlogInputModelType2 {
+  public name: string;
+  public youtubeUrl: string;
+  constructor(name: string, youtubeUrl: string) {
+    this.name = name;
+    this.youtubeUrl = youtubeUrl;
+  }
+}
+const someBlog = new CreateBlogInputModelType2('Vasya', 'url');
 
 //todo сделатьб иморт всех модулей
 @Controller('blogs')
@@ -71,7 +81,7 @@ export class BlogsController {
     return result;
   }
   @Post()
-  createBlogs(@Body() inputModel: CreateBlogInputModel) {
+  createBlogs(@Body() inputModel: CreateBlogInputDTO) {
     return this.blogsService.createBlogs(inputModel);
   }
   @Post(':blogId/posts')

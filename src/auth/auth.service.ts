@@ -1,26 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UsersRepository } from '../users/users.repository';
+import { randomUUID } from 'crypto';
+import { _generatePasswordForDb } from '../helper/auth.function';
+import { User } from '../users/users.entity';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(protected usersRepository: UsersRepository) {}
 
-  findAll() {
-    return `This action returns all auth`;
+  async validateUser(LoginOrEmail: string, password: string): Promise<any> {
+    const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
+    console.log(
+      '_generatePasswordForDb(password)',
+      _generatePasswordForDb(password),
+    );
+    const passwordHash = await _generatePasswordForDb(password);
+    if (user && user.accountData.passwordHash === passwordHash) {
+      // const { passwordHash, ...result } = user;
+      // return result;
+      return user;
+    }
+    return null;
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async confirmationEmail(code: string) {
+    const user = await this.usersRepository.findUserByConfirmationEmailCode(
+      code,
+    );
+    const result = await this.usersRepository.updateEmailConfirmation(user!.id);
+    return result;
   }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async confirmationPassword(code: string) {
+    const user = await this.usersRepository.findUserByConfirmationEmailCode(
+      code,
+    );
+    const result = await this.usersRepository.updateEmailConfirmation(user!.id);
+    return result;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async updateEmailCode(email: string) {
+    const user = await this.usersRepository.findLoginOrEmail(email);
+    const newCode = randomUUID();
+    const result = await this.usersRepository.updateEmailCode(
+      user!.id,
+      newCode,
+    );
+    return result;
+  }
+  async updatePasswordCode(email: string) {
+    const user = await this.usersRepository.findLoginOrEmail(email);
+    const newCode = randomUUID();
+    console.log('newCode', newCode);
+    if (user) {
+      const result = await this.usersRepository.updatePasswordCode(
+        user!.id,
+        newCode,
+      );
+      return result;
+    }
+    return true;
+  }
+  async updatePasswordUsers(code: string, password: string) {
+    const user = await this.usersRepository.findUserByConfirmationPasswordCode(
+      code,
+    );
+    const passwordHash = await _generatePasswordForDb(password);
+    await this.usersRepository.updatePasswordConfirmation(user!.id);
+    const update = await this.usersRepository.updatePasswordUsers(
+      user!.id,
+      passwordHash,
+    );
+    return update;
   }
 }

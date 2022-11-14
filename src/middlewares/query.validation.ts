@@ -1,4 +1,4 @@
-type QueryValidationResult = {
+class QueryValidationResult {
   pageNumber: number;
   pageSize: number;
   sortBy: string;
@@ -6,7 +6,7 @@ type QueryValidationResult = {
   searchNameTerm: string;
   searchLoginTerm: string;
   searchEmailTerm: string;
-};
+}
 
 const defaultPageSize = 10;
 const defaultPageNumber = 1;

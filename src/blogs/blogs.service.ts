@@ -1,20 +1,20 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
 import {
-  CreateBlogInputModel,
+  CreateBlogInputDTO,
   CreateBlogInputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
-import { CreateBlogsDto } from './dto/create.blogs.dto';
+import { BlogsFactory } from './dto/blogsFactory';
 import { validate, validateOrReject } from 'class-validator';
 import { validateOrRejectModel } from '../helper/helper.function';
 
 @Injectable()
 export class BlogsService {
   constructor(protected blogsRepository: BlogsRepository) {}
-  async createBlogs(inputModel: CreateBlogInputModel) {
+  async createBlogs(inputModel: CreateBlogInputDTO) {
     // await validateOrRejectModel(inputModel, CreateBlogInputModel); // Валидиация на принятые данные
-    const newBlog = new CreateBlogsDto(
+    const newBlog = new BlogsFactory(
       String(+new Date()),
       inputModel.name,
       inputModel.youtubeUrl,
