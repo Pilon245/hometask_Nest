@@ -8,3 +8,4 @@ export class AuthFunction {
   //   return hash;
   // }
 }
+//todo как лучше делажить и как дебажить через debbug
