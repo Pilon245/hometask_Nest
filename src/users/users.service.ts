@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { APP_GUARD } from '@nestjs/core';
 // import { _generatePasswordForDb } from '../helper/auth.function';
-
+//todo 429 ошибку делать по другому на несте
 @Injectable()
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
