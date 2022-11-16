@@ -11,7 +11,6 @@ export class CreateCommentsDto {
 }
 
 export class LikeInfoType {
-  //todo тут класс так можно писать? без конструктора
   likesCount: number;
   dislikesCount: number;
   myStatus: LikeValue;

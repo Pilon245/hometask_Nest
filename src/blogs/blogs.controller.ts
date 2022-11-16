@@ -44,7 +44,6 @@ export class CreateBlogInputModelType2 {
 }
 const someBlog = new CreateBlogInputModelType2('Vasya', 'url');
 
-//todo сделатьб иморт всех модулей
 @Controller('blogs')
 export class BlogsController {
   constructor(

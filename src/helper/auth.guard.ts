@@ -1,5 +1,4 @@
 // export const checkCredentials = async (
-//   // todo  тут как функцию или как класс делать
 //   loginOrEmail: string,
 //   password: string,
 // ) => {

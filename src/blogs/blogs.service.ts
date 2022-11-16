@@ -1,11 +1,10 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
 import {
-  CreateBlogInputDTO,
   CreateBlogInputModelType,
   UpdateBlogInputModelType,
 } from './blogs.controller';
-import { BlogsFactory } from './dto/blogsFactory';
+import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
 import { validate, validateOrReject } from 'class-validator';
 import { validateOrRejectModel } from '../helper/helper.function';
 

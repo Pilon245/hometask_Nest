@@ -22,11 +22,10 @@ export class UsersController {
   ) {}
   @Get()
   getUsers(@Query() query) {
-de    return this.usersQueryRepository.findUsers(pagination(query));
+    return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
   createUsers(@Body() inputModel: CreateUserInputModel) {
-    //todo тут можно использовать эту DTO?
     return this.usersService.createUsers(inputModel);
   }
   @Delete(':id')

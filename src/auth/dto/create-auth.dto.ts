@@ -1,1 +1,3 @@
-export class CreateAuthDto {}
+export class LoginInputModel {
+  constructor(public login: string, public password: string) {}
+}

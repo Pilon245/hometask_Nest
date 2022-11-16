@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { UsersRepository } from '../users/users.repository';
 import { randomUUID } from 'crypto';
 import { _generatePasswordForDb } from '../helper/auth.function';
-import { User } from '../users/users.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(protected usersRepository: UsersRepository) {}
+  constructor(
+    protected usersRepository: UsersRepository,
+    private jwtService: JwtService,
+  ) {}
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
     const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
@@ -23,6 +24,12 @@ export class AuthService {
       return user;
     }
     return null;
+  }
+  async login(user: any) {
+    const payload = { id: user.id /*, deviceId: deviceId*/ };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
   async confirmationEmail(code: string) {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(

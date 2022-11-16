@@ -22,6 +22,11 @@ import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
+import { LikesModule } from './likes/likes.module';
+import { JwtService } from './service/jwt.service';
+import { SessionModule } from './session/session.module';
+import { jwtConstants } from './auth/constants';
+import { JwtModule } from '@nestjs/jwt';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -41,6 +46,12 @@ const schemas = [
       inject: [ConfigService],
     }),
     MongooseModule.forFeature(schemas),
+    LikesModule,
+    SessionModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
+    }),
   ],
   controllers: [
     BlogsController,
@@ -62,6 +73,7 @@ const schemas = [
     PostsQueryRepository,
     UsersQueryRepository,
     CommentsQueryRepository,
+    JwtService,
   ],
 })
 export class AppModule {}

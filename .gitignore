@@ -1,7 +1,8 @@
 # compiled output
 /dist
 /node_modules
-
+/src/auth/constants.ts
+/src/service/setting.ts
 .env
 .test
 

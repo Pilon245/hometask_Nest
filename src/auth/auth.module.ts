@@ -9,14 +9,14 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 
 @Module({
-  imports: [
-    UsersController,
+  imports: [PassportModule],
+  controllers: [AuthController, UsersController],
+  providers: [
+    AuthService,
+    LocalStrategy,
     UsersService,
     UsersQueryRepository,
     UsersRepository,
-    PassportModule,
-  ], //todo тут это как работает
-  controllers: [AuthController],
-  providers: [AuthService, LocalStrategy],
+  ],
 })
 export class AuthModule {}
