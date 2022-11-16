@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+# тут правильный путь?
 /src/auth/constants.ts
 /src/service/setting.ts
 .env

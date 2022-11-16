@@ -13,13 +13,14 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { JwtService } from '../service/jwt.service';
 import { LoginInputModel } from './dto/create-auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { randomUUID } from 'crypto';
 import { SessionService } from '../session/session.service';
 import { response } from 'express';
 import { LocalAuthGuard } from './local-auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -68,7 +69,7 @@ export class AuthController {
       return res.sendStatus(401);
     }
   }
-  //
+  // @UseGuards(JwtAuthGuard)
   // @Get(':id')
   // async updateResfreshToken(req: Request, res: Response) {
   //   const user = await usersService.checkRefreshToken(

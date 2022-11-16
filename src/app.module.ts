@@ -48,10 +48,6 @@ const schemas = [
     MongooseModule.forFeature(schemas),
     LikesModule,
     SessionModule,
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    }),
   ],
   controllers: [
     BlogsController,

@@ -7,9 +7,17 @@ import { UsersService } from '../users/users.service';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
 
 @Module({
-  imports: [PassportModule],
+  imports: [
+    PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '7m' },
+    }),
+  ],
   controllers: [AuthController, UsersController],
   providers: [
     AuthService,
