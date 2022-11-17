@@ -21,6 +21,7 @@ import { response } from 'express';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -31,9 +32,11 @@ export class AuthController {
     protected sessionService: SessionService,
   ) {}
   @UseGuards(AuthGuard('local'))
+  @UseGuards(JwtAuthGuard)
   @Post()
   async login(@Request() req) {
-    return req.user;
+    console.log('user', req.user);
+    return req.user.deviceId;
   }
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -58,7 +61,7 @@ export class AuthController {
       //   deviceId,
       // );
       // const result = { accessToken: accessToken };
-      return response
+      return res
         .cookie('refreshToken', 'refreshToken', {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,

@@ -12,6 +12,7 @@ import {
   Put,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { PostsService } from '../posts/posts.service';
@@ -25,6 +26,7 @@ import {
   CreatePostByBlogIdInputDTO,
   CreatePostInputDTO,
 } from '../posts/dto/postsFactory';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -81,6 +83,7 @@ export class BlogsController {
     }
     return result;
   }
+  @UseGuards(LocalAuthGuard)
   @Post()
   createBlogs(@Body() inputModel: CreateBlogInputDTO) {
     return this.blogsService.createBlogs(inputModel);
@@ -95,13 +98,10 @@ export class BlogsController {
       throw new HttpException('invalid blog', 404);
     }
     const newPost: CreatePostByBlogIdInputDTO = {
-      id: 'dsf',
       title: inputModel.title,
       shortDescription: inputModel.shortDescription,
       content: inputModel.content,
       blogId: blogId,
-      blogName: 'sdda',
-      createdAt: 'asdasd',
     };
     const result = this.postsService.createPosts(newPost);
     return result;

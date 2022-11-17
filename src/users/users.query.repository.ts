@@ -33,13 +33,13 @@ export class UsersQueryRepository {
     const filter = {
       $or: [
         {
-          login: {
+          'accountData.login': {
             $regex: searchLoginTerm,
             $options: '(?i)a(?-i)cme',
           },
         },
         {
-          email: {
+          'accountData.email': {
             $regex: searchEmailTerm,
             $options: '(?i)a(?-i)cme',
           },

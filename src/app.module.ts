@@ -30,6 +30,7 @@ import {
   LikeComment,
   LikeCommentSchema,
 } from './comments/entities/likes.comments.entity';
+import { UsersModule } from './users/users.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -53,11 +54,12 @@ const schemas = [
     MongooseModule.forFeature(schemas),
     LikesModule,
     SessionModule,
+    UsersModule,
   ],
   controllers: [
     BlogsController,
     PostsController,
-    UsersController,
+    // UsersController,
     CommentsController,
     RemoveController,
   ],
@@ -66,13 +68,13 @@ const schemas = [
     BlogsRepository,
     PostsService,
     PostsRepository,
-    UsersService,
-    UsersRepository,
+    // UsersService,
+    // UsersRepository,
     CommentsService,
     CommentsRepository,
     BlogsQueryRepository,
     PostsQueryRepository,
-    UsersQueryRepository,
+    // UsersQueryRepository,
     CommentsQueryRepository,
     JwtService,
   ],

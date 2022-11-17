@@ -24,6 +24,7 @@ export class BlogsService {
   }
   updateBlogs(id: string, model: CreateBlogInputModelType) {
     const updateBlog: UpdateBlogInputModelType = {
+      // перенсти на фактори
       id: id,
       name: model.name,
       youtubeUrl: model.youtubeUrl,

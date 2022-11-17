@@ -13,16 +13,16 @@ export class BlogsFactory {
 export class CreateBlogInputDTO {
   // для валидации
 
-  @IsOptional()
-  id: string;
-
   @Length(0, 15, { message: 'incorrect name' })
   name: string;
 
   @Length(0, 100)
   @IsUrl()
   youtubeUrl: string;
-
-  @IsOptional()
+}
+export class CreateBlogDTO {
+  id: string;
+  name: string;
+  youtubeUrl: string;
   createdAt: string;
 }

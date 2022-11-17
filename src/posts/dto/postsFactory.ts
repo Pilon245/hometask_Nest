@@ -15,8 +15,6 @@ export class PostsFactory {
   ) {}
 }
 export class CreatePostInputDTO {
-  @IsOptional()
-  id: string;
   @Length(0, 30)
   title: string;
   @Length(0, 100)
@@ -25,29 +23,14 @@ export class CreatePostInputDTO {
   content: string;
   @Length(0)
   blogId: string;
-  @IsOptional()
-  blogName: string;
-  @IsOptional()
-  createdAt: string;
-  @IsOptional()
-  extendedLikesInfo?: extendedLikesInfoType;
 }
 export class CreatePostByBlogIdInputDTO {
-  @IsOptional()
-  id: string;
   @Length(0, 30)
   title: string;
   @Length(0, 100)
   shortDescription: string;
   @Length(0, 1000)
   content: string;
-  @IsOptional()
   @Length(0)
   blogId: string;
-  @IsOptional()
-  blogName: string;
-  @IsOptional()
-  createdAt: string;
-  @IsOptional()
-  extendedLikesInfo?: extendedLikesInfoType;
 }
