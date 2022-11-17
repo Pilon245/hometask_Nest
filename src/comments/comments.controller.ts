@@ -11,12 +11,13 @@ export class CommentsController {
   ) {}
 
   @Get(':id')
-  async getComment(@Param('id') id: string, @Query() query) {
-    const resultFound = await this.commentsQueryRepository.findCommentById(id);
+  async getCommentById(@Param('id') id: string, @Query() query) {
+    const resultFound =
+      await this.commentsQueryRepository.findCommentByIdNoAuth(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.commentsQueryRepository.findCommentById(id);
+    return this.commentsQueryRepository.findCommentByIdNoAuth(id);
   }
   // async getComment(req: Request, res: Response) {
   //   const { pageNumber, pageSize, sortBy, sortDirection } = queryValidation(

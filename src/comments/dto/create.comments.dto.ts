@@ -11,9 +11,15 @@ export class CreateCommentsDto {
     public likesInfo: LikeInfoType,
   ) {}
 }
-
 export class LikeInfoType {
   likesCount: number;
   dislikesCount: number;
   myStatus: LikeValueComment;
+}
+export class CreateLikeInputDTO {
+  likesStatus: number;
+  dislikesStatus: number;
+  myStatus: LikeValueComment;
+  authUserId: string;
+  commentId: string;
 }

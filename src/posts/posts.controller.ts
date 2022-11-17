@@ -41,14 +41,18 @@ export class PostsController {
     return this.postsQueryRepository.findPostByIdNoAuth(id);
   }
   @Get(':postId/comments')
-  async getCommentOnPostId(@Param('postId') postId: string) {
-    const resultFound = await this.commentsQueryRepository.findCommentByPostId(
+  async getCommentOnPostId(@Param('postId') postId: string, @Query() query) {
+    console.log('blogId', postId);
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.commentsQueryRepository.findCommentByPostId(postId);
+    return this.commentsQueryRepository.findCommentByPostIdNoAuth(
+      postId,
+      pagination(query),
+    );
   }
   @Post()
   async createPosts(@Body() inputModel: CreatePostInputDTO) {
@@ -59,6 +63,25 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     return this.postsService.createPosts(inputModel);
+  }
+  @Post(':postId/comments')
+  async createCommentOnPostId(
+    @Param('postId') postId: string,
+    @Query() query,
+    @Body() inputmodel,
+  ) {
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+      postId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    return this.commentsService.createComment(
+      postId,
+      inputmodel.content,
+      inputmodel.userId,
+      inputmodel.userLogin,
+    );
   }
   @Put(':id')
   @HttpCode(204)

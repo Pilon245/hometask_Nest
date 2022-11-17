@@ -14,11 +14,7 @@ export class LikeComment {
   @Prop()
   userId: string;
   @Prop()
-  postId: string;
-  @Prop()
-  login: string;
-  @Prop()
-  addedAt: string;
+  commentId: string;
 }
 
 export const LikeCommentSchema = SchemaFactory.createForClass(LikeComment);

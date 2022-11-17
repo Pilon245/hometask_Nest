@@ -16,12 +16,9 @@ export class PostsQueryRepository {
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(LikePost.name) private likePostModel: Model<LikePostDocument>,
   ) {}
-  async findPostsNoAuth({
-    sortDirection,
-    sortBy,
-    pageSize,
-    pageNumber,
-  }: FindBlogsPayload) {
+  async findPostsNoAuth(
+    { sortDirection, sortBy, pageSize, pageNumber }: FindBlogsPayload, //todo тут исправить тип
+  ) {
     const posts = await this.postModel
       .find({}, { _id: false, __v: 0 })
       .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
