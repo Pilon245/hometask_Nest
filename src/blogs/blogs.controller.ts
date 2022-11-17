@@ -15,13 +15,16 @@ import {
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { PostsService } from '../posts/posts.service';
-import { CreatePostInputModelType } from '../posts/posts.controller';
 import { Response } from 'express';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
 import { isEmpty, isString, IsUrl, Length } from 'class-validator';
 import { pagination } from '../middlewares/query.validation';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
+import {
+  CreatePostByBlogIdInputDTO,
+  CreatePostInputDTO,
+} from '../posts/dto/postsFactory';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -86,13 +89,16 @@ export class BlogsController {
   @Post(':blogId/posts')
   async CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
-    @Body() inputModel: CreatePostInputModelType,
+    @Body() inputModel: CreatePostByBlogIdInputDTO,
   ) {
-    const newPost: CreatePostInputModelType = {
+    const newPost: CreatePostByBlogIdInputDTO = {
+      id: 'dsf',
       title: inputModel.title,
       shortDescription: inputModel.shortDescription,
       content: inputModel.content,
       blogId: blogId,
+      blogName: 'sdda',
+      createdAt: 'asdasd',
     };
     const result = this.postsService.createPosts(newPost);
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
@@ -106,7 +112,7 @@ export class BlogsController {
   @HttpCode(204)
   async updateBlogs(
     @Param('id') blogId: string,
-    @Body() model: CreateBlogInputModelType,
+    @Body() model: CreateBlogInputDTO,
   ) {
     const result = this.blogsService.updateBlogs(blogId, model);
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);

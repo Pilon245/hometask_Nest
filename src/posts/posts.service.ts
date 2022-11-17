@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreatePostInputModelType,
-  UpdatePostInputModelType,
-} from './posts.controller';
+import { UpdatePostInputModelType } from './posts.controller';
 import { PostsRepository } from './posts.repository';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
+import { LikeValuePost } from './entities/likes.posts.entity';
+import { newestLikesType } from './entities/posts.entity';
+import { CreatePostInputDTO, PostsFactory } from './dto/postsFactory';
 
 @Injectable()
 export class PostsService {
@@ -12,12 +12,12 @@ export class PostsService {
     protected postsRepository: PostsRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
-  async createPosts(inputModel: CreatePostInputModelType) {
+  async createPosts(inputModel: CreatePostInputDTO) {
     const blog = await this.blogsQueryRepository.findBlogById(
       inputModel.blogId,
     );
     if (!blog) return false;
-    const newPost = new CreatePostsDto(
+    const newPost = new PostsFactory(
       String(+new Date()),
       inputModel.title,
       inputModel.shortDescription,
@@ -25,16 +25,26 @@ export class PostsService {
       inputModel.blogId,
       blog.name,
       new Date().toISOString(),
-      // {
-      //   likesCount: 0,
-      //   dislikesCount: 0,
-      //   myStatus: 'None',
-      //   newestLikes: [],
-      // },
+      {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeValuePost.none,
+        newestLikes: [],
+      },
     );
     return this.postsRepository.createPosts(newPost);
+    // const found = await this.postsRepository.createPosts(newPost);
+    // return {
+    //   ...found,
+    //   extendedLikesInfo: {
+    //     likesCount: 0,
+    //     dislikesCount: 0,
+    //     myStatus: LikeValuePost.none,
+    //     newestLikes: [],
+    //   },
+    // };
   }
-  updatePosts(id: string, model: CreatePostInputModelType) {
+  updatePosts(id: string, model: CreatePostInputDTO) {
     const updatePost: UpdatePostInputModelType = {
       id: id,
       title: model.title,
@@ -49,24 +59,11 @@ export class PostsService {
   }
 }
 
-export class CreatePostsDto {
-  constructor(
-    public id: string,
-    public title: string,
-    public shortDescription: string,
-    public content: string,
-    public blogId: string,
-    public blogName: string,
-    public createdAt: string,
-    public extendedLikesInfo?: extendedLikesInfoType,
-  ) {}
-}
-
-export type extendedLikesInfoType = {
+export class extendedLikesInfoType {
   likesCount: number;
   dislikesCount: number;
-  myStatus: string;
-  newestLikes: Array<any>;
+  myStatus: LikeValuePost;
+  newestLikes: Array<newestLikesType>;
   // newestLikes: [
   //   {
   //     addedAt: "2022-11-07T11:31:23.905Z",
@@ -74,4 +71,4 @@ export type extendedLikesInfoType = {
   //     login: "string"
   //   }
   // ]
-};
+}

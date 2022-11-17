@@ -26,7 +26,7 @@ export class AuthService {
     return null;
   }
   async login(user: any) {
-    const deviceId = '';
+    const deviceId = String(randomUUID());
     const payload = { id: user.id, deviceId: deviceId };
     return {
       access_token: this.jwtService.sign(payload),

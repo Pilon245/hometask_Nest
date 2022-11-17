@@ -10,11 +10,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
+import { extendedLikesInfoType, PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostsQueryRepository } from './posts.query.repository';
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
 import { pagination } from '../middlewares/query.validation';
+import { LikeValuePost } from './entities/likes.posts.entity';
+import { CreatePostInputDTO } from './dto/postsFactory';
 
 @Controller('posts')
 export class PostsController {
@@ -47,14 +49,14 @@ export class PostsController {
     return this.commentsQueryRepository.findCommentByPostId(postId);
   }
   @Post()
-  createPosts(@Body() inputModel: CreatePostInputModelType) {
+  createPosts(@Body() inputModel: CreatePostInputDTO) {
     return this.postsService.createPosts(inputModel);
   }
   @Put(':id')
   @HttpCode(204)
   async updatePosts(
     @Param('id') postId: string,
-    @Body() model: UpdatePostInputModelType,
+    @Body() model: CreatePostInputDTO,
   ) {
     const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
@@ -74,13 +76,6 @@ export class PostsController {
   }
 }
 
-export type CreatePostInputModelType = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-};
-
 export type PostOutputModelType = {
   id: string;
   title: string;
@@ -89,19 +84,7 @@ export type PostOutputModelType = {
   blogId: string;
   blogName: string;
   createdAt: string;
-  extendedLikesInfo?: {
-    likesCount: number;
-    dislikesCount: number;
-    myStatus: string;
-    newestLikes: Array<any>;
-  };
-  // newestLikes: [
-  //   {
-  //     addedAt: "2022-11-07T11:31:23.905Z",
-  //     userId: "string",
-  //     login: "string"
-  //   }
-  // ]
+  extendedLikesInfo?: extendedLikesInfoType;
 };
 
 export type UpdatePostInputModelType = {

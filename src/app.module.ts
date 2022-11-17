@@ -8,7 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
 import { PostsRepository } from './posts/posts.repository';
-import { Post, PostSchema } from './posts/posts.entity';
+import { Post, PostSchema } from './posts/entities/posts.entity';
 import { RemoveController } from './remove.controller';
 import { UsersService } from './users/users.service';
 import { UsersRepository } from './users/users.repository';
@@ -25,14 +25,14 @@ import { CommentsQueryRepository } from './comments/comments.query.repository';
 import { LikesModule } from './likes/likes.module';
 import { JwtService } from './service/jwt.service';
 import { SessionModule } from './session/session.module';
-import { jwtConstants } from './auth/constants';
-import { JwtModule } from '@nestjs/jwt';
+import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
   { name: Post.name, schema: PostSchema },
   { name: User.name, schema: UserSchema },
   { name: Comment.name, schema: CommentSchema },
+  { name: LikePost.name, schema: LikePostSchema },
 ];
 
 @Module({

@@ -45,11 +45,11 @@ export class AuthController {
     const user = req.user;
     if (user) {
       const deviceId = String(randomUUID());
-      const accessToken = await this.jwtService.createdJWT(user);
-      const refreshToken = await this.jwtService.createdRefreshJWT(
-        user,
-        deviceId,
-      );
+      // const accessToken = await this.jwtService.createdJWT(user);
+      // const refreshToken = await this.jwtService.createdRefreshJWT(
+      //   user,
+      //   deviceId,
+      // );
       // await this.sessionService.createSession(
       //   user,
       //   req.ip,
@@ -57,16 +57,16 @@ export class AuthController {
       //   refreshToken,
       //   deviceId,
       // );
-      const result = { accessToken: accessToken };
+      // const result = { accessToken: accessToken };
       return response
-        .cookie('refreshToken', refreshToken, {
+        .cookie('refreshToken', 'refreshToken', {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
           secure: true,
         })
-        .send(result);
+        .send('result');
     } else {
-      return res.sendStatus(401);
+      return response.sendStatus(401);
     }
   }
   // @UseGuards(JwtAuthGuard)

@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post, PostDocument } from './posts.entity';
+import { Post, PostDocument } from './entities/posts.entity';
 import { Injectable } from '@nestjs/common';
 import {
   getPagesCounts,
@@ -8,10 +8,18 @@ import {
   outputModel,
 } from '../helper/helper.function';
 import { FindBlogsPayload } from '../blogs/blogs.query.repository';
+import {
+  LikePost,
+  LikePostDocument,
+  LikeValuePost,
+} from './entities/likes.posts.entity';
 
 @Injectable()
 export class PostsQueryRepository {
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    @InjectModel(LikePost.name) private LikePostModel: Model<LikePostDocument>,
+  ) {}
   async findPosts({
     sortDirection,
     sortBy,
@@ -25,40 +33,19 @@ export class PostsQueryRepository {
       .limit(pageSize)
       .lean();
 
-    // const Promises = posts.map(async (p) => {
-    //   const totalLike = await LikePostModelClass.countDocuments(
-    //     {$and: [{postId: p.id}, {likesStatus: 1}]})
-    //   const totalDislike = await LikePostModelClass.countDocuments(
-    //     {$and: [{postId: p.id}, {dislikesStatus: 1}]})
-    //   const lastLikes = await LikePostModelClass.find({$and: [{postId: p.id}, {likesStatus: 1}]})
-    //     .sort({"addedAt": "desc"})
-    //     .lean()
-    //   return {
-    //     id: p.id,
-    //     title: p.title,
-    //     shortDescription: p.shortDescription,
-    //     content: p.content,
-    //     blogId: p.blogId,
-    //     blogName: p.blogName,
-    //     createdAt: p.createdAt,
-    //     extendedLikesInfo: {
-    //       likesCount: totalLike,
-    //       dislikesCount: totalDislike,
-    //       myStatus: "None",
-    //       newestLikes: lastLikes.slice(0, 3).map(l => ({
-    //         addedAt: l.addedAt,
-    //         userId: l.userId,
-    //         login: l.login
-    //       }))
-    //     }
-    //   }
-    // })
-
-    const totalCount = await this.postModel.countDocuments();
-
-    return {
-      ...outputModel(totalCount, pageSize, pageNumber),
-      items: posts.map((p) => ({
+    const Promises = posts.map(async (p) => {
+      const totalLike = await this.LikePostModel.countDocuments({
+        $and: [{ postId: p.id }, { likesStatus: 1 }],
+      });
+      const totalDislike = await this.LikePostModel.countDocuments({
+        $and: [{ postId: p.id }, { dislikesStatus: 1 }],
+      });
+      const lastLikes = await this.LikePostModel.find({
+        $and: [{ postId: p.id }, { likesStatus: 1 }],
+      })
+        .sort({ addedAt: 'desc' })
+        .lean();
+      return {
         id: p.id,
         title: p.title,
         shortDescription: p.shortDescription,
@@ -66,13 +53,25 @@ export class PostsQueryRepository {
         blogId: p.blogId,
         blogName: p.blogName,
         createdAt: p.createdAt,
-        // extendedLikesInfo: {
-        //   likesCount: 0,
-        //   dislikesCount: 0,
-        //   myStatus: 'None',
-        //   newestLikes: [],
-        // },
-      })),
+        extendedLikesInfo: {
+          likesCount: totalLike,
+          dislikesCount: totalDislike,
+          myStatus: LikeValuePost.none,
+          newestLikes: lastLikes.slice(0, 3).map((l) => ({
+            addedAt: l.addedAt,
+            userId: l.userId,
+            login: l.login,
+          })),
+        },
+      };
+    });
+    const items = await Promise.all(Promises);
+
+    const totalCount = await this.postModel.countDocuments();
+
+    return {
+      ...outputModel(totalCount, pageSize, pageNumber),
+      items: items,
     };
   }
   async findPostById(id: string): Promise<Post> {

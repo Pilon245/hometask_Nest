@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Blog } from '../blogs/blog.entity';
 import { InjectModel, Prop } from '@nestjs/mongoose';
-import { Post, PostDocument } from '../posts/posts.entity';
+import { Post, PostDocument } from '../posts/entities/posts.entity';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './users.entity';
 import { ConfigService } from '@nestjs/config';
