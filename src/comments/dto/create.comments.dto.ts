@@ -1,3 +1,5 @@
+import { LikeValueComment } from '../entities/likes.comments.entity';
+
 export class CreateCommentsDto {
   constructor(
     public id: string,
@@ -13,11 +15,5 @@ export class CreateCommentsDto {
 export class LikeInfoType {
   likesCount: number;
   dislikesCount: number;
-  myStatus: LikeValue;
-}
-
-export enum LikeValue {
-  none = 'None',
-  like = 'Like',
-  dislike = 'Dislike',
+  myStatus: LikeValueComment;
 }

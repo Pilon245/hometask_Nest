@@ -17,6 +17,7 @@ import { CommentsQueryRepository } from '../comments/comments.query.repository';
 import { pagination } from '../middlewares/query.validation';
 import { LikeValuePost } from './entities/likes.posts.entity';
 import { CreatePostInputDTO } from './dto/postsFactory';
+import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 
 @Controller('posts')
 export class PostsController {
@@ -24,19 +25,20 @@ export class PostsController {
     protected postsService: PostsService,
     protected commentsService: CommentsService,
     protected postsQueryRepository: PostsQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
   @Get()
   getPosts(@Query() query) {
-    return this.postsQueryRepository.findPosts(pagination(query));
+    return this.postsQueryRepository.findPostsNoAuth(pagination(query));
   }
   @Get(':id')
   async getPost(@Param('id') id: string) {
-    const resultFound = await this.postsQueryRepository.findPostById(id);
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.postsQueryRepository.findPostById(id);
+    return this.postsQueryRepository.findPostByIdNoAuth(id);
   }
   @Get(':postId/comments')
   async getCommentOnPostId(@Param('postId') postId: string) {
@@ -49,7 +51,13 @@ export class PostsController {
     return this.commentsQueryRepository.findCommentByPostId(postId);
   }
   @Post()
-  createPosts(@Body() inputModel: CreatePostInputDTO) {
+  async createPosts(@Body() inputModel: CreatePostInputDTO) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(
+      inputModel.blogId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     return this.postsService.createPosts(inputModel);
   }
   @Put(':id')
@@ -58,7 +66,9 @@ export class PostsController {
     @Param('id') postId: string,
     @Body() model: CreatePostInputDTO,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostById(postId);
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+      postId,
+    );
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -67,7 +77,9 @@ export class PostsController {
   @Delete(':id')
   @HttpCode(204)
   async deletePosts(@Param('id') postId: string) {
-    const resultFound = await this.postsQueryRepository.findPostById(postId);
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+      postId,
+    );
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }

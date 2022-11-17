@@ -13,7 +13,7 @@ import { RemoveController } from './remove.controller';
 import { UsersService } from './users/users.service';
 import { UsersRepository } from './users/users.repository';
 import { User, UserSchema } from './users/users.entity';
-import { Comment, CommentSchema } from './comments/comments.entity';
+import { Comment, CommentSchema } from './comments/entities/comments.entity';
 import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/comments.repository';
 import { CommentsController } from './comments/comments.controller';
@@ -26,6 +26,10 @@ import { LikesModule } from './likes/likes.module';
 import { JwtService } from './service/jwt.service';
 import { SessionModule } from './session/session.module';
 import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
+import {
+  LikeComment,
+  LikeCommentSchema,
+} from './comments/entities/likes.comments.entity';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -33,6 +37,7 @@ const schemas = [
   { name: User.name, schema: UserSchema },
   { name: Comment.name, schema: CommentSchema },
   { name: LikePost.name, schema: LikePostSchema },
+  { name: LikeComment.name, schema: LikeCommentSchema },
 ];
 
 @Module({

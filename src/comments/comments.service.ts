@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { CommentsQueryRepository } from './comments.query.repository';
-import { CreateCommentsDto, LikeValue } from './dto/create.comments.dto';
+import { CreateCommentsDto } from './dto/create.comments.dto';
+import { LikeValueComment } from './entities/likes.comments.entity';
 @Injectable()
 export class CommentsService {
   constructor(
@@ -24,7 +25,7 @@ export class CommentsService {
       {
         likesCount: 0,
         dislikesCount: 0,
-        myStatus: LikeValue.none,
+        myStatus: LikeValueComment.none,
       },
     );
     const createdComment = await this.commentsRepository.createComments(

@@ -71,12 +71,11 @@ export class BlogsController {
   }
   @Get(':blogId/posts')
   async getPostsOnBlogId(@Param('blogId') blogId: string, @Query() query) {
-    const result = await this.postsQueryRepository.findPostByBlogId(
+    const result = await this.postsQueryRepository.findPostByBlogIdNoAuth(
       blogId,
       pagination(query),
     );
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    console.log('result', result);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -91,6 +90,10 @@ export class BlogsController {
     @Param('blogId') blogId: string,
     @Body() inputModel: CreatePostByBlogIdInputDTO,
   ) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     const newPost: CreatePostByBlogIdInputDTO = {
       id: 'dsf',
       title: inputModel.title,
@@ -101,10 +104,6 @@ export class BlogsController {
       createdAt: 'asdasd',
     };
     const result = this.postsService.createPosts(newPost);
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
     return result;
   }
 
@@ -132,13 +131,6 @@ export class BlogsController {
     return result;
   }
 }
-
-export type BlogOutputModelType = {
-  id: string;
-  name: string;
-  youtubeUrl: string;
-  createdAt: string;
-};
 
 export type UpdateBlogInputModelType = {
   id: string;
