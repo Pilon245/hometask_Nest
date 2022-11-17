@@ -23,7 +23,6 @@ import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
 import { LikesModule } from './likes/likes.module';
-import { JwtService } from './service/jwt.service';
 import { SessionModule } from './session/session.module';
 import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
 import {
@@ -76,7 +75,6 @@ const schemas = [
     PostsQueryRepository,
     // UsersQueryRepository,
     CommentsQueryRepository,
-    JwtService,
   ],
 })
 export class AppModule {}
