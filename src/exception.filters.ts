@@ -33,6 +33,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     if (status === 404) {
+      response.sendStatus(404);
     }
     // if (status === 500 && process.env.envorinment === 'production') {
     //   response.status(500).send({});
