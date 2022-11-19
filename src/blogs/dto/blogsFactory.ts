@@ -1,5 +1,4 @@
-import { IsOptional, IsUrl, Length } from 'class-validator';
-import { Prop } from '@nestjs/mongoose';
+import { IsUrl, Length } from 'class-validator';
 
 export class BlogsFactory {
   // для созадния обЪекта
