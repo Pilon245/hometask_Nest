@@ -28,11 +28,10 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     protected usersService: UsersService,
-    protected jwtService: JwtService,
-    protected sessionService: SessionService,
+    protected jwtService: JwtService, // protected sessionService: SessionService,
   ) {}
   @UseGuards(AuthGuard('local'))
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post()
   async login(@Request() req) {
     console.log('user', req.user);
@@ -46,6 +45,7 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = req.user;
+    console.log('user', req.user);
     if (user) {
       const deviceId = String(randomUUID());
       // const accessToken = await this.jwtService.createdJWT(user);

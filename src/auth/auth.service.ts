@@ -13,6 +13,7 @@ export class AuthService {
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
     const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
+    console.log('user', user);
     const passwordHash = await _generatePasswordForDb(password);
     if (user && user.accountData.passwordHash === passwordHash) {
       // const { passwordHash, ...result } = user;

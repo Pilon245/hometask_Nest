@@ -30,6 +30,7 @@ import {
   LikeCommentSchema,
 } from './comments/entities/likes.comments.entity';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -54,6 +55,7 @@ const schemas = [
     LikesModule,
     SessionModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [
     BlogsController,
