@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { extendedLikesInfoType, PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -18,6 +19,7 @@ import { pagination } from '../middlewares/query.validation';
 import { LikeValuePost } from './entities/likes.posts.entity';
 import { CreatePostInputDTO } from './dto/postsFactory';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
+import { BasicAuthGuard } from '../guards/basic-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -54,6 +56,7 @@ export class PostsController {
       pagination(query),
     );
   }
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createPosts(@Body() inputModel: CreatePostInputDTO) {
     const resultFound = await this.blogsQueryRepository.findBlogById(
@@ -83,6 +86,7 @@ export class PostsController {
       inputmodel.userLogin,
     );
   }
+  @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(204)
   async updatePosts(
@@ -97,6 +101,7 @@ export class PostsController {
     }
     return this.postsService.updatePosts(postId, model);
   }
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deletePosts(@Param('id') postId: string) {

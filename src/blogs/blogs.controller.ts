@@ -96,6 +96,7 @@ export class BlogsController {
   createBlogs(@Body() inputModel: CreateBlogInputDTO) {
     return this.blogsService.createBlogs(inputModel);
   }
+  @UseGuards(BasicAuthGuard)
   @Post(':blogId/posts')
   async CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
@@ -114,7 +115,7 @@ export class BlogsController {
     const result = this.postsService.createPosts(newPost);
     return result;
   }
-
+  @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(204)
   async updateBlogs(
@@ -128,6 +129,7 @@ export class BlogsController {
     }
     return result;
   }
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteBlogs(@Param('id') blogId: string) {
