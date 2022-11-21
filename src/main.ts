@@ -4,6 +4,7 @@ import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import {
   /*ErrorExceptionFilter,*/ HttpExceptionFilter,
 } from './exception.filters';
+// import cookieParser from 'cookie-parser';
 // import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {

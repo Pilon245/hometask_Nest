@@ -31,6 +31,9 @@ import {
 } from './comments/entities/likes.comments.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './auth/strategy/local.strategy';
+import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -44,6 +47,7 @@ const schemas = [
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    PassportModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -77,6 +81,8 @@ const schemas = [
     PostsQueryRepository,
     // UsersQueryRepository,
     CommentsQueryRepository,
+    LocalStrategy,
+    BasicStrategy,
   ],
 })
 export class AppModule {}

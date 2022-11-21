@@ -26,7 +26,11 @@ import {
   CreatePostByBlogIdInputDTO,
   CreatePostInputDTO,
 } from '../posts/dto/postsFactory';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { LocalAuthGuard } from '../auth/strategy/local-auth.guard';
+import { BasicAuthGuard } from '../guards/basic-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
+import { LocalStrategy } from '../auth/strategy/local.strategy';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -83,7 +87,10 @@ export class BlogsController {
     }
     return result;
   }
-  @UseGuards(LocalAuthGuard)
+
+  @UseGuards(BasicAuthGuard)
+  // @UseGuards(AuthGuard('basic'), AuthGuard('local'))
+  // @UseGuards(AuthGuard('local'))
   @Post()
   createBlogs(@Body() inputModel: CreateBlogInputDTO) {
     return this.blogsService.createBlogs(inputModel);

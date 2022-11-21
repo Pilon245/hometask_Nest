@@ -18,10 +18,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { randomUUID } from 'crypto';
 import { SessionService } from '../session/session.service';
 import { response } from 'express';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './strategy/local-auth.guard';
 import { JwtService } from '@nestjs/jwt';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { Response } from 'express';
+import { LocalStrategy } from './strategy/local.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -32,12 +33,12 @@ export class AuthController {
   ) {}
   @UseGuards(AuthGuard('local'))
   // @UseGuards(JwtAuthGuard)
-  @Post()
-  async login(@Request() req) {
-    console.log('user', req.user);
-    return req.user.deviceId;
-  }
-  @UseGuards(LocalAuthGuard)
+  // @Post()
+  // async login(@Request() req) {
+  //   console.log('user', req.user);
+  //   return req.user;
+  // }
+  @UseGuards(LocalStrategy)
   @Post('login')
   async singInAccount(
     @Req() req,

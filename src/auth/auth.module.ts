@@ -6,7 +6,7 @@ import { UsersRepository } from '../users/users.repository';
 import { UsersService } from '../users/users.service';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { UsersModule } from '../users/users.module';
@@ -25,6 +25,7 @@ import { User, UserSchema } from '../users/users.entity';
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, UsersQueryRepository],
+  exports: [AuthService],
 })
 export class AuthModule {}
 
