@@ -6,12 +6,12 @@ import {
   CreateCommentsDto,
   CreateLikeInputDTO,
 } from './dto/create.comments.dto';
-import { UpdateBlogInputModelType } from '../blogs/blogs.controller';
 import {
   LikeComment,
   LikeCommentDocument,
   LikeValueComment,
 } from './entities/likes.comments.entity';
+import { UpdateBlogInputModelType } from '../blogs/dto/update.blogs.dto';
 
 @Injectable()
 export class CommentsRepository {
@@ -30,7 +30,8 @@ export class CommentsRepository {
       { id: blog.id },
       {
         name: blog.name,
-        youtubeUrl: blog.youtubeUrl,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
       },
     );
     return;

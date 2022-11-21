@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Blog, BlogDocument } from './blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateBlogInputModelType } from './blogs.controller';
-import { CreateBlogDTO, CreateBlogInputDTO } from './dto/blogsFactory';
+import { CreateBlogDTO } from './dto/blogsFactory';
+import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 
 @Injectable()
 export class BlogsRepository {
@@ -11,6 +11,7 @@ export class BlogsRepository {
 
   async createBlogs(blog: CreateBlogDTO) {
     const blogs = await new this.blogModel(blog);
+    console.log(blog);
     blogs.save();
     return blog;
   }
@@ -19,7 +20,8 @@ export class BlogsRepository {
       { id: blog.id },
       {
         name: blog.name,
-        youtubeUrl: blog.youtubeUrl,
+        description: blog.description,
+        websiteUrl: blog.websiteUrl,
       },
     );
     return;

@@ -45,7 +45,8 @@ export class BlogsQueryRepository {
       items: blogs.map((b) => ({
         id: b.id,
         name: b.name,
-        youtubeUrl: b.youtubeUrl,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
       })),
     };

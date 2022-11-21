@@ -12,7 +12,10 @@ export class Blog {
   name: string;
 
   @Prop({ require: true })
-  youtubeUrl: string;
+  description: string;
+
+  @Prop({ require: true })
+  websiteUrl: string;
 
   @Prop({ require: true })
   createdAt: string;

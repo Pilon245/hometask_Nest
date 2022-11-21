@@ -5,7 +5,8 @@ export class BlogsFactory {
   constructor(
     public id: string,
     public name: string,
-    public youtubeUrl: string,
+    public description: string,
+    public websiteUrl: string,
     public createdAt: string,
   ) {}
 }
@@ -15,13 +16,17 @@ export class CreateBlogInputDTO {
   @Length(0, 15, { message: 'incorrect name' })
   name: string;
 
+  @Length(0, 500)
+  description: string;
+
   @Length(0, 100)
   @IsUrl()
-  youtubeUrl: string;
+  websiteUrl: string;
 }
 export class CreateBlogDTO {
   id: string;
   name: string;
-  youtubeUrl: string;
+  description: string;
+  websiteUrl: string;
   createdAt: string;
 }

@@ -31,6 +31,7 @@ import { BasicAuthGuard } from '../guards/basic-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
 import { LocalStrategy } from '../auth/strategy/local.strategy';
+import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -118,7 +119,7 @@ export class BlogsController {
   @HttpCode(204)
   async updateBlogs(
     @Param('id') blogId: string,
-    @Body() model: CreateBlogInputDTO,
+    @Body() model: UpdateBlogInputModelType,
   ) {
     const result = this.blogsService.updateBlogs(blogId, model);
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
@@ -138,9 +139,3 @@ export class BlogsController {
     return result;
   }
 }
-
-export type UpdateBlogInputModelType = {
-  id: string;
-  name: string;
-  youtubeUrl: string;
-};

@@ -1,12 +1,7 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable } from '@nestjs/common';
-import {
-  CreateBlogInputModelType,
-  UpdateBlogInputModelType,
-} from './blogs.controller';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
-import { validate, validateOrReject } from 'class-validator';
-import { validateOrRejectModel } from '../helper/helper.function';
+import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 
 @Injectable()
 export class BlogsService {
@@ -16,18 +11,20 @@ export class BlogsService {
     const newBlog = new BlogsFactory(
       String(+new Date()),
       inputModel.name,
-      inputModel.youtubeUrl,
+      inputModel.description,
+      inputModel.websiteUrl,
       new Date().toISOString(),
     );
 
     return this.blogsRepository.createBlogs(newBlog);
   }
-  updateBlogs(id: string, model: CreateBlogInputModelType) {
+  updateBlogs(id: string, model: UpdateBlogInputModelType) {
     const updateBlog: UpdateBlogInputModelType = {
       // перенсти на фактори
       id: id,
       name: model.name,
-      youtubeUrl: model.youtubeUrl,
+      description: model.description,
+      websiteUrl: model.websiteUrl,
     };
     return this.blogsRepository.updateBlogs(updateBlog);
   }
