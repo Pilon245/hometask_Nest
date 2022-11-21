@@ -132,6 +132,7 @@ export class AuthController {
   //   );
   //   return res.sendStatus(204);
   // }
+
   // async recoveryPassword(req: Request, res: Response) {
   //   const updateCode = await authService.updatePasswordCode(req.body.email);
   //   const user = await usersRepository.findLoginOrEmail(req.body.email);

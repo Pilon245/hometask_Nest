@@ -1,3 +1,7 @@
+// export class LoginInputModel {
+//   constructor(public login: string, public password: string) {}
+// }
 export class LoginInputModel {
-  constructor(public login: string, public password: string) {}
+  login: string;
+  password: string;
 }
