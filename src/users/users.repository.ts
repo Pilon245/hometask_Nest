@@ -24,6 +24,12 @@ export class UsersRepository {
     });
     return user;
   }
+  async findLoginAndEmail(Login: string, Email: string): Promise<User> {
+    const user = await this.userModel.findOne({
+      $or: [{ 'accountData.login': Login }, { 'accountData.email': Email }],
+    });
+    return user;
+  }
   // async findTokenByUserIdAndDeviceId(userId: string, deviceId: string) {
   //   const result = await TokenModelClass.findOne({
   //     $and: [{ userId: userId }, { deviceId: deviceId }],

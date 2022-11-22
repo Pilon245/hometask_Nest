@@ -4,16 +4,18 @@ import {
   PasswordConfirmationType,
   UsersAccountDataType,
 } from './entity.dto';
+import { Length } from 'class-validator';
 
 export class CreateUserInputModel {
-  constructor(
-    public login: string,
-    public password: string,
-    public email: string,
-  ) {}
+  @Length(0)
+  login: string;
+  @Length(0)
+  password: string;
+  @Length(0)
+  email: string;
 }
 
-export class CreateUsersDto {
+export class CreateFactory {
   constructor(
     public id: string,
     public accountData: UsersAccountDataType,

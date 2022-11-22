@@ -13,7 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
 import { pagination } from '../middlewares/query.validation';
-import { CreateUserInputModel, CreateUsersDto } from './dto/create.users.dto';
+import { CreateUserInputModel, CreateFactory } from './dto/createFactory';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
 
 @Controller('users')
@@ -29,8 +29,12 @@ export class UsersController {
   }
   @UseGuards(BasicAuthGuard)
   @Post()
-  createUsers(@Body() inputModel: CreateUserInputModel) {
-    return this.usersService.createUsers(inputModel);
+  async createUsers(@Body() inputModel: CreateUserInputModel) {
+    const result = await this.usersService.createUsers(inputModel);
+    if (!result) {
+      throw new HttpException('invalid blog', 404);
+    }
+    return result;
   }
   @UseGuards(BasicAuthGuard)
   @Delete(':id')

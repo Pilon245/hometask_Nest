@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { CreateUserInputModel, CreateUsersDto } from './dto/create.users.dto';
+import { CreateUserInputModel, CreateFactory } from './dto/createFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { APP_GUARD } from '@nestjs/core';
@@ -14,9 +14,13 @@ export class UsersService {
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
     // const password = passwordHash.then();
+    const createdUsers = await this.userRepository.findLoginOrEmail(
+      inputModel.login,
+    );
+    if (createdUsers) return false;
     console.log('passwordHash', passwordHash);
     // console.log('password', password);
-    const newUser = new CreateUsersDto(
+    const newUser = new CreateFactory(
       String(+new Date()),
       {
         login: inputModel.login,
