@@ -58,6 +58,13 @@ export class UsersService {
     if (!isValid) return false;
     return user;
   }
+  async checkRefreshToken(loginOrEmail: string) {
+    const user = await this.userRepository.findLoginOrEmail(loginOrEmail);
+    if (!user) {
+      return false;
+    }
+    return user;
+  }
 
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);

@@ -25,6 +25,8 @@ import { Response } from 'express';
 import { LocalStrategy } from './strategy/local.strategy';
 import { setting } from '../service/setting';
 import * as jwt from 'jsonwebtoken';
+import { payloadRefreshToken } from '../helper/auth.function';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -58,7 +60,7 @@ export class AuthController {
     }
     if (user) {
       const deviceId = String(randomUUID());
-      const token = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
+      const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
         expiresIn: '7m',
       });
       const refreshToken = await jwt.sign(
@@ -85,8 +87,47 @@ export class AuthController {
       //   refreshToken,
       //   deviceId,
       // );
-      const result = { accessToken: token };
+      const result = { accessToken: accessToken };
       return res
+        .cookie('refreshToken', refreshToken, {
+          expires: new Date(Date.now() + 6000000),
+          httpOnly: false,
+          secure: false,
+        })
+        .send(result);
+    } else {
+      return res.sendStatus(401);
+    }
+  }
+
+  @UseGuards(JwtStrategy)
+  @Post('refresh-token')
+  async updateResfreshToken(@Req() req, @Res() res: Response) {
+    console.log(req.user, 'req.user');
+    const user = await this.usersService.checkRefreshToken(
+      req.user!.accountData.login,
+    );
+    console.log(user, 'user');
+    if (user) {
+      const token = await payloadRefreshToken(req.cookies.refreshToken);
+      // const accessToken = await jwtService.createdJWT(user);
+      // const refreshToken = await jwtService.createdRefreshJWT(
+      //   user,
+      //   token.deviceId,
+      // );
+      const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
+        expiresIn: '7m',
+      });
+      const refreshToken = await jwt.sign(
+        { id: user.id, deviceId: token.deviceId },
+        setting.JWT_SECRET,
+        { expiresIn: '7m' },
+      );
+      // await sessionService.updateSession(user, refreshToken);
+      // await usersRepository.updateToken(user.id, refreshToken, token.deviceId)
+      const result = { accessToken: accessToken };
+      return res
+        .status(200)
         .cookie('refreshToken', refreshToken, {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
@@ -97,34 +138,6 @@ export class AuthController {
       return res.sendStatus(401);
     }
   }
-  // @UseGuards(JwtAuthGuard)
-  // @Get(':id')
-  // async updateResfreshToken(req: Request, res: Response) {
-  //   const user = await usersService.checkRefreshToken(
-  //     req.user!.accountData.login,
-  //   );
-  //   if (user) {
-  //     const token = await payloadRefreshToken(req.cookies.refreshToken);
-  //     const accessToken = await jwtService.createdJWT(user);
-  //     const refreshToken = await jwtService.createdRefreshJWT(
-  //       user,
-  //       token.deviceId,
-  //     );
-  //     await sessionService.updateSession(user, refreshToken);
-  //     // await usersRepository.updateToken(user.id, refreshToken, token.deviceId)
-  //     const result = { accessToken: accessToken };
-  //     return res
-  //       .status(200)
-  //       .cookie('refreshToken', refreshToken, {
-  //         expires: new Date(Date.now() + 6000000),
-  //         httpOnly: true,
-  //         secure: true,
-  //       })
-  //       .send(result);
-  //   } else {
-  //     return res.sendStatus(401);
-  //   }
-  // }
 
   // @Patch(':id')
   // async myAccount(req: Request, res: Response) {

@@ -12,6 +12,7 @@ import { jwtConstants } from './constants';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../users/users.entity';
+import { JwtStrategy } from './strategy/jwt.strategy';
 // import { AuthGuard } from '../helper/auth.guard';
 
 @Module({
@@ -25,7 +26,7 @@ import { User, UserSchema } from '../users/users.entity';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, UsersQueryRepository],
+  providers: [AuthService, LocalStrategy, JwtStrategy, UsersQueryRepository],
   exports: [AuthService],
 })
 export class AuthModule {}
