@@ -4,22 +4,24 @@ import { CreateUserInputModel, CreateUsersDto } from './dto/create.users.dto';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { APP_GUARD } from '@nestjs/core';
+import { _generatePasswordForDb } from '../helper/auth.function';
+import * as bcrypt from 'bcrypt';
 // import { _generatePasswordForDb } from '../helper/auth.function';
 @Injectable()
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
 
-  createUsers(inputModel: CreateUserInputModel) {
-    // const passwordHash = _generatePasswordForDb(inputModel.password);
+  async createUsers(inputModel: CreateUserInputModel) {
+    const passwordHash = await _generatePasswordForDb(inputModel.password);
     // const password = passwordHash.then();
-    // console.log('passwordHash', passwordHash);
+    console.log('passwordHash', passwordHash);
     // console.log('password', password);
     const newUser = new CreateUsersDto(
       String(+new Date()),
       {
         login: inputModel.login,
         email: inputModel.email,
-        passwordHash: 'sadda',
+        passwordHash: passwordHash,
         createdAt: new Date().toISOString(),
       },
       {
@@ -41,6 +43,18 @@ export class UsersService {
       createdAt: newUser.accountData.createdAt,
     };
   }
+  async checkCredentials(loginOrEmail: string, password: string) {
+    //todo !!!ПЕРЕНСТИ ЭТО В ГВАРД ИЛИ ФУНКИЦЮ!!!
+    const user = await this.userRepository.findLoginOrEmail(loginOrEmail);
+    if (!user) return false;
+    const isValid = await bcrypt.compare(
+      password,
+      user.accountData.passwordHash,
+    );
+    if (!isValid) return false;
+    return user;
+  }
+
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
   }

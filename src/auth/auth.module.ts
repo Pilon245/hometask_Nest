@@ -12,6 +12,7 @@ import { jwtConstants } from './constants';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../users/users.entity';
+// import { AuthGuard } from '../helper/auth.guard';
 
 @Module({
   imports: [

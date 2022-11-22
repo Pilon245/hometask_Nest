@@ -14,15 +14,16 @@ import {
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LoginInputModel } from './dto/create-auth.dto';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import { randomUUID } from 'crypto';
 import { SessionService } from '../session/session.service';
 import { response } from 'express';
 import { LocalAuthGuard } from './strategy/local-auth.guard';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { Response } from 'express';
 import { LocalStrategy } from './strategy/local.strategy';
+import { setting } from '../service/setting';
 
 @Controller('auth')
 export class AuthController {
@@ -31,22 +32,29 @@ export class AuthController {
     protected usersService: UsersService,
     protected jwtService: JwtService, // protected sessionService: SessionService,
   ) {}
-  @UseGuards(AuthGuard('local'))
+  // @UseGuards(AuthGuard('local'))
   // @UseGuards(JwtAuthGuard)
   // @Post()
   // async login(@Request() req) {
   //   console.log('user', req.user);
   //   return req.user;
   // }
-  @UseGuards(LocalStrategy)
+  // @UseGuards(LocalStrategy)
+  // @UseGuards(AuthGuard)
   @Post('login')
   async singInAccount(
     @Req() req,
     @Body() inputModel: LoginInputModel,
     @Res() res: Response,
   ) {
-    const user = req.user;
-    console.log('user', req.user);
+    const user = await this.usersService.checkCredentials(
+      inputModel.loginOrEmail,
+      inputModel.password,
+    );
+    console.log('user', user);
+    if (!user) {
+      return res.sendStatus(401);
+    }
     if (user) {
       const deviceId = String(randomUUID());
       // const accessToken = await this.jwtService.createdJWT(user);
@@ -54,6 +62,13 @@ export class AuthController {
       //   user,
       //   deviceId,
       // );
+      const token = await this.jwtService.sign(
+        { id: user.id },
+        //setting.JWT_SECRET as JwtSignOptions,
+        // {
+        //   expiresIn: '7m',
+        // },
+      );
       // await this.sessionService.createSession(
       //   user,
       //   req.ip,
@@ -61,16 +76,16 @@ export class AuthController {
       //   refreshToken,
       //   deviceId,
       // );
-      // const result = { accessToken: accessToken };
+      const result = { accessToken: token };
       return res
         .cookie('refreshToken', 'refreshToken', {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
           secure: true,
         })
-        .send('result');
+        .send(result);
     } else {
-      return response.sendStatus(401);
+      return res.sendStatus(401);
     }
   }
   // @UseGuards(JwtAuthGuard)
