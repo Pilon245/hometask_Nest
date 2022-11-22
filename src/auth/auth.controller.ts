@@ -24,6 +24,7 @@ import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { Response } from 'express';
 import { LocalStrategy } from './strategy/local.strategy';
 import { setting } from '../service/setting';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('auth')
 export class AuthController {
@@ -57,18 +58,26 @@ export class AuthController {
     }
     if (user) {
       const deviceId = String(randomUUID());
+      const token = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
+        expiresIn: '7m',
+      });
+      const refreshToken = await jwt.sign(
+        { id: user.id, deviceId: deviceId },
+        setting.JWT_SECRET,
+        { expiresIn: '7m' },
+      );
       // const accessToken = await this.jwtService.createdJWT(user);
       // const refreshToken = await this.jwtService.createdRefreshJWT(
       //   user,
       //   deviceId,
       // );
-      const token = await this.jwtService.sign(
-        { id: user.id },
-        //setting.JWT_SECRET as JwtSignOptions,
-        // {
-        //   expiresIn: '7m',
-        // },
-      );
+      // const token = await this.jwtService.sign(
+      //   { id: user.id },
+      //setting.JWT_SECRET as JwtSignOptions,
+      // {
+      //   expiresIn: '7m',
+      // },
+      // );
       // await this.sessionService.createSession(
       //   user,
       //   req.ip,
@@ -78,7 +87,7 @@ export class AuthController {
       // );
       const result = { accessToken: token };
       return res
-        .cookie('refreshToken', 'refreshToken', {
+        .cookie('refreshToken', refreshToken, {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
           secure: true,
