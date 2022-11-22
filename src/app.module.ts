@@ -81,7 +81,7 @@ const schemas = [
     PostsQueryRepository,
     // UsersQueryRepository,
     CommentsQueryRepository,
-    LocalStrategy,
+    // LocalStrategy,
     BasicStrategy,
   ],
 })

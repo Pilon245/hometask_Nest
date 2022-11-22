@@ -3,6 +3,7 @@ import { UsersRepository } from '../users/users.repository';
 import { randomUUID } from 'crypto';
 import { _generatePasswordForDb } from '../helper/auth.function';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -14,13 +15,14 @@ export class AuthService {
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
     const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
     console.log('user', user);
-    const passwordHash = await _generatePasswordForDb(password);
-    if (user && user.accountData.passwordHash === passwordHash) {
-      // const { passwordHash, ...result } = user;
-      // return result;
-      return user;
-    }
-    return null;
+    if (!user) return false;
+    const isValid = await bcrypt.compare(
+      password,
+      user.accountData.passwordHash,
+    );
+    if (!isValid) return false;
+    return user;
+    // return null;
   }
   async login(user: any) {
     const deviceId = String(randomUUID());

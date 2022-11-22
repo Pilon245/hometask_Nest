@@ -27,6 +27,7 @@ import { setting } from '../service/setting';
 import * as jwt from 'jsonwebtoken';
 import { payloadRefreshToken } from '../helper/auth.function';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -44,6 +45,7 @@ export class AuthController {
   // }
   // @UseGuards(LocalStrategy)
   // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard('local'))
   @Post('login')
   async singInAccount(
     @Req() req,
