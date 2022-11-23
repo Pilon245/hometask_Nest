@@ -9,12 +9,17 @@ import {
   Query,
   UseGuards,
   Request,
+  Delete,
 } from '@nestjs/common';
 import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
-import { UpdateCommentInputModel } from './dto/update.comments.dto';
+import {
+  UpdateCommentInputModel,
+  UpdateLikeInputModel,
+} from './dto/update.comments.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import { LikeValueComment } from './entities/likes.comments.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -106,15 +111,6 @@ export class CommentsController {
     @Body() updateModel: UpdateCommentInputModel,
     @Request() req,
   ) {
-    console.log('req.user', req.user);
-    const isUpdate = await this.commentsService.updateComment(
-      commentId,
-      updateModel.content,
-    );
-    console.log('isUpdate', isUpdate);
-    if (!isUpdate) {
-      throw new HttpException('invalid blog', 404);
-    }
     const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
       req.user.id,
       commentId,
@@ -122,23 +118,49 @@ export class CommentsController {
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
+    const isUpdate = await this.commentsService.updateComment(
+      commentId,
+      updateModel.content,
+    );
+    if (!isUpdate) {
+      throw new HttpException('invalid blog', 404);
+    }
     return isUpdate;
   }
-  // async updateLike(req: Request, res: Response) {
-  //   const isUpdate = await commentsService.updateLike(
-  //     req.user!.id,
-  //     req.params.commentId,
-  //     req.body.likeStatus,
-  //   );
-  //   console.log('isUpdate', isUpdate);
-  //   res.send(204);
-  // }
-  // async deleteComment(req: Request, res: Response) {
-  //   const isDelete = await commentsService.deleteComment(req.params.commentId);
-  //   if (isDelete) {
-  //     res.send(204);
-  //   } else {
-  //     res.sendStatus(404);
-  //   }
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Put(':commentId/like-status')
+  @HttpCode(204)
+  async updateLike(
+    @Param('commentId') commentId: string,
+    @Body() updateModel: UpdateLikeInputModel,
+    @Request() req,
+  ) {
+    const like = updateModel.likeStatus;
+    const isUpdate = await this.commentsService.updateLike(
+      req.user.id,
+      commentId,
+      like as LikeValueComment,
+    );
+    console.log('isUpdate', isUpdate);
+    return;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':commentId')
+  @HttpCode(204)
+  async deleteComment(@Param('commentId') commentId: string, @Request() req) {
+    const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
+      req.user.id,
+      commentId,
+    );
+    if (!found) {
+      throw new HttpException('invalid blog', 403);
+    }
+    const isDelete = await this.commentsService.deleteComment(
+      req.params.commentId,
+    );
+    if (!isDelete) {
+      throw new HttpException('invalid blog', 404);
+    }
+    return isDelete;
+  }
 }

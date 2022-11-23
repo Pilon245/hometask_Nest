@@ -11,7 +11,6 @@ export class BlogsRepository {
 
   async createBlogs(blog: CreateBlogDTO) {
     const blogs = await new this.blogModel(blog);
-    console.log(blog);
     blogs.save();
     return blog;
   }
