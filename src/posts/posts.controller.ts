@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { extendedLikesInfoType, PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -20,6 +21,8 @@ import { LikeValuePost } from './entities/likes.posts.entity';
 import { CreatePostInputDTO } from './dto/postsFactory';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
+import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import { UsersQueryRepository } from '../users/users.query.repository';
 
 @Controller('posts')
 export class PostsController {
@@ -29,6 +32,7 @@ export class PostsController {
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
+    protected usersQueryRepository: UsersQueryRepository,
   ) {}
   @Get()
   getPosts(@Query() query) {
@@ -67,11 +71,13 @@ export class PostsController {
     }
     return this.postsService.createPosts(inputModel);
   }
+  @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
   async createCommentOnPostId(
     @Param('postId') postId: string,
     @Query() query,
     @Body() inputmodel,
+    @Request() req,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
@@ -79,11 +85,12 @@ export class PostsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
+    const user = await this.usersQueryRepository.findUsersForDTO(req.user.id);
     return this.commentsService.createComment(
       postId,
       inputmodel.content,
-      inputmodel.userId,
-      inputmodel.userLogin,
+      user.id,
+      user.accountData.login,
     );
   }
   @UseGuards(BasicAuthGuard)

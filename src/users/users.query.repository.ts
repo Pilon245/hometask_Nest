@@ -20,10 +20,8 @@ export class UsersQueryRepository {
     @InjectModel(User.name) private userModel: Model<UserDocument>, // private cfgSer: ConfigService,
   ) {}
   async findUsersById(id: string) {
-    const users = await this.userModel
-      .findOne({ id }, { _id: false, __v: 0 })
-      .lean();
-
+    const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
+    if (!users) return false;
     return {
       id: users.id,
       login: users.accountData.login,
@@ -76,17 +74,8 @@ export class UsersQueryRepository {
       })),
     };
   }
-  async findUsersForRepos(id: string) {
-    const users = await this.userModel
-      .findOne({ id }, { _id: false, __v: 0 })
-      .lean();
-
-    return {
-      id: users.id,
-      login: users.accountData.login,
-      email: users.accountData.email,
-      createdAt: users.accountData.createdAt,
-    };
+  async findUsersForDTO(id: string): Promise<User> {
+    return await this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
   }
   async deleteAllUsers() {
     const result = await this.userModel.deleteMany();

@@ -32,6 +32,11 @@ export class CommentsQueryRepository {
     private likeCommentModel: Model<LikeCommentDocument>,
   ) {}
 
+  async findCommentByIdAndLogin(userId: string, commentId: string) {
+    return await this.commentModel.findOne({
+      $and: [{ id: commentId }, { userId: userId }],
+    });
+  }
   async findCommentByIdNoAuth(id: string): Promise<Comment | null> {
     const comments = await this.commentModel.findOne(
       { id },

@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
@@ -103,7 +104,9 @@ export class CommentsController {
   async updateComment(
     @Param('commentId') commentId: string,
     @Body() updateModel: UpdateCommentInputModel,
+    @Request() req,
   ) {
+    console.log('req.user', req.user);
     const isUpdate = await this.commentsService.updateComment(
       commentId,
       updateModel.content,
@@ -111,6 +114,13 @@ export class CommentsController {
     console.log('isUpdate', isUpdate);
     if (!isUpdate) {
       throw new HttpException('invalid blog', 404);
+    }
+    const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
+      req.user.id,
+      commentId,
+    );
+    if (!found) {
+      throw new HttpException('invalid blog', 403);
     }
     return isUpdate;
   }

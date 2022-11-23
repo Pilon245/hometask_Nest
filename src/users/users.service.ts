@@ -6,6 +6,7 @@ import { add } from 'date-fns';
 import { APP_GUARD } from '@nestjs/core';
 import { _generatePasswordForDb } from '../helper/auth.function';
 import * as bcrypt from 'bcrypt';
+import { User } from './users.entity';
 // import { _generatePasswordForDb } from '../helper/auth.function';
 @Injectable()
 export class UsersService {
@@ -14,8 +15,9 @@ export class UsersService {
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
     // const password = passwordHash.then();
-    const createdUsers = await this.userRepository.findLoginOrEmail(
+    const createdUsers = await this.userRepository.findLoginAndEmail(
       inputModel.login,
+      inputModel.email,
     );
     if (createdUsers) return false;
     const newUser = new CreateFactory(
@@ -37,7 +39,7 @@ export class UsersService {
         isConfirmed: false,
       },
     );
-    this.userRepository.createUsers(newUser);
+    await this.userRepository.createUsers(newUser);
     return newUser;
   }
   async checkCredentials(loginOrEmail: string, password: string) {
