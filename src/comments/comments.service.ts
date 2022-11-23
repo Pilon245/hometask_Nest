@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { CommentsQueryRepository } from './comments.query.repository';
-import { CreateCommentsDto } from './dto/create.comments.dto';
+import { CreateFactory } from './dto/createFactory';
 import { LikeValueComment } from './entities/likes.comments.entity';
 @Injectable()
 export class CommentsService {
@@ -15,7 +15,7 @@ export class CommentsService {
     userId: string,
     userLogin: string,
   ) {
-    const newComment = new CreateCommentsDto(
+    const newComment = new CreateFactory(
       String(+new Date()),
       content,
       userId,
@@ -45,9 +45,9 @@ export class CommentsService {
     // };
     return createdComment;
   }
-  // async updateComment(id: string, content: string) {
-  //   return await this.commentsRepository.updateComment(id, content);
-  // }
+  async updateComment(id: string, content: string) {
+    return await this.commentsRepository.updateComment(id, content);
+  }
   // async updateLike(userId: string, commentId: string, value: LikeValue) {
   //   const user = await this.commentsRepository.findLikeByIdAndCommentId(
   //     userId,

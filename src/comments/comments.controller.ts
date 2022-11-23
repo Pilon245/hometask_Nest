@@ -1,7 +1,19 @@
-import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpException,
+  Param,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
+import { UpdateCommentInputModel } from './dto/update.comments.dto';
+import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -85,17 +97,23 @@ export class CommentsController {
   //     res.status(201).send(newComment);
   //   }
   // }
-  // async updateComment(req: Request, res: Response) {
-  //   const isUpdate = await commentsService.updateComment(
-  //     req.params.commentId,
-  //     req.body.content,
-  //   );
-  //   if (isUpdate) {
-  //     res.send(204);
-  //   } else {
-  //     res.sendStatus(404);
-  //   }
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Put(':commentId')
+  @HttpCode(204)
+  async updateComment(
+    @Param('commentId') commentId: string,
+    @Body() updateModel: UpdateCommentInputModel,
+  ) {
+    const isUpdate = await this.commentsService.updateComment(
+      commentId,
+      updateModel.content,
+    );
+    console.log('isUpdate', isUpdate);
+    if (!isUpdate) {
+      throw new HttpException('invalid blog', 404);
+    }
+    return isUpdate;
+  }
   // async updateLike(req: Request, res: Response) {
   //   const isUpdate = await commentsService.updateLike(
   //     req.user!.id,

@@ -34,6 +34,8 @@ import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './auth/strategy/local.strategy';
 import { BasicStrategy } from './auth/strategy/basic-strategy.service';
+import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
+import { EmailAdapter } from './adapters/emailAdapter';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -83,6 +85,8 @@ const schemas = [
     CommentsQueryRepository,
     // LocalStrategy,
     BasicStrategy,
+    PasswordEmailAdapter,
+    EmailAdapter,
   ],
 })
 export class AppModule {}

@@ -13,6 +13,9 @@ import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../users/users.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { EmailManager } from '../managers/email.manager';
+import { EmailAdapter } from '../adapters/emailAdapter';
+import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 // import { AuthGuard } from '../helper/auth.guard';
 
 @Module({
@@ -26,8 +29,23 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, UsersQueryRepository],
-  exports: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    UsersQueryRepository,
+    EmailManager,
+    EmailAdapter,
+    PasswordEmailAdapter,
+  ],
+  exports: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    EmailManager,
+    EmailAdapter,
+    PasswordEmailAdapter,
+  ],
 })
 export class AuthModule {}
 

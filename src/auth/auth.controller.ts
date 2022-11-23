@@ -91,7 +91,7 @@ export class AuthController {
         })
         .send(result);
     } else {
-      return res.sendStatus(401);
+      return res.sendStatus(401); //todo сделать через Exzeption  которые встроенны в нест
     }
   }
 

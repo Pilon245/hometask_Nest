@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment, CommentDocument } from './entities/comments.entity';
-import {
-  CreateCommentsDto,
-  CreateLikeInputDTO,
-} from './dto/create.comments.dto';
+import { CreateFactory, CreateLikeInputDTO } from './dto/createFactory';
 import {
   LikeComment,
   LikeCommentDocument,
@@ -20,7 +17,7 @@ export class CommentsRepository {
     @InjectModel(LikeComment.name)
     private likeCommentModel: Model<LikeCommentDocument>,
   ) {}
-  async createComments(model: CreateCommentsDto) {
+  async createComments(model: CreateFactory) {
     const comment = new this.commentModel(model);
     await comment.save();
     return model;

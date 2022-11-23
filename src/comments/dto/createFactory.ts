@@ -1,6 +1,6 @@
 import { LikeValueComment } from '../entities/likes.comments.entity';
 
-export class CreateCommentsDto {
+export class CreateFactory {
   constructor(
     public id: string,
     public content: string,
