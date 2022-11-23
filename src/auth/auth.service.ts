@@ -4,6 +4,8 @@ import { randomUUID } from 'crypto';
 import { _generatePasswordForDb } from '../helper/auth.function';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import { setting } from '../service/setting';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +27,31 @@ export class AuthService {
     // return null;
   }
   async login(user: any) {
-    const deviceId = String(randomUUID());
-    const payload = { id: user.id, deviceId: deviceId };
-    console.log('user', deviceId);
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    console.log('user', user);
+    if (!user) {
+      return false;
+    }
+    if (user) {
+      const deviceId = String(randomUUID());
+      const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
+        expiresIn: '7m',
+      });
+      const refreshToken = await jwt.sign(
+        { id: user.id, deviceId: deviceId },
+        setting.JWT_SECRET,
+        { expiresIn: '7m' },
+      );
+      const result = { accessToken: accessToken };
+      return { refreshToken: refreshToken, accessToken: accessToken };
+    } else {
+      return false;
+    }
+    // const deviceId = String(randomUUID());
+    // const payload = { id: user.id, deviceId: deviceId };
+    // console.log('user', deviceId);
+    // return {
+    //   access_token: await this.jwtService.sign(payload),
+    // };
   }
   async confirmationEmail(code: string) {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
