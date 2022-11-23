@@ -1,6 +1,7 @@
 import { IsOptional, IsUrl, Length } from 'class-validator';
 import { Prop } from '@nestjs/mongoose';
 import { extendedLikesInfoType } from '../posts.service';
+import { LikeValuePost } from '../entities/likes.posts.entity';
 
 export class PostsFactory {
   constructor(
@@ -33,4 +34,26 @@ export class CreatePostByBlogIdInputDTO {
   content: string;
   @Length(0)
   blogId: string;
+}
+
+export class LikesPostFactory {
+  constructor(
+    public likesStatus: number,
+    public dislikesStatus: number,
+    public myStatus: LikeValuePost,
+    public userId: string,
+    public postId: string,
+    public login: string,
+    public addedAt: string,
+  ) {}
+}
+
+export class CreateLikeInputDTO {
+  likesStatus: number;
+  dislikesStatus: number;
+  myStatus: LikeValuePost;
+  userId: string;
+  postId: string;
+  login: string;
+  addedAt: string;
 }

@@ -23,6 +23,8 @@ import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { UsersQueryRepository } from '../users/users.query.repository';
+import { UpdateLikeInputModel } from '../comments/dto/update.comments.dto';
+import { LikeValueComment } from '../comments/entities/likes.comments.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -46,6 +48,7 @@ export class PostsController {
     }
     return this.postsQueryRepository.findPostByIdNoAuth(id);
   }
+  @UseGuards(JwtAuthGuard)
   @Get(':postId/comments')
   async getCommentOnPostId(@Param('postId') postId: string, @Query() query) {
     console.log('blogId', postId);
@@ -107,6 +110,34 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     return this.postsService.updatePosts(postId, model);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put(':postId/like-status')
+  @HttpCode(204)
+  async updateLike(
+    @Param('postId') postId: string,
+    @Body() updateModel: UpdateLikeInputModel,
+    @Request() req,
+  ) {
+    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+      postId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    const like = updateModel.likeStatus;
+    const user = await this.usersQueryRepository.findUsersById(req.user.id);
+    if (!user) {
+      throw new HttpException('invalid blog', 404);
+    }
+    const isUpdate = await this.postsService.updateLike(
+      user.id,
+      postId,
+      like as LikeValuePost,
+      user.login,
+    );
+    console.log('isUpdate', isUpdate);
+    return;
   }
   @UseGuards(BasicAuthGuard)
   @Delete(':id')

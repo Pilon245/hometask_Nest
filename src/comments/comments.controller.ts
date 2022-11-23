@@ -135,6 +135,11 @@ export class CommentsController {
     @Body() updateModel: UpdateLikeInputModel,
     @Request() req,
   ) {
+    const resultFound =
+      await this.commentsQueryRepository.findCommentByIdNoAuth(commentId);
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
     const like = updateModel.likeStatus;
     const isUpdate = await this.commentsService.updateLike(
       req.user.id,
