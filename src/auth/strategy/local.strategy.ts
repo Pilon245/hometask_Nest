@@ -15,8 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   // const port = this.configService.get('PORT');
   // return await this.userModel.find({}, { _id: false, __v: 0 }).exec();
   async validate(req, username: string, password: string): Promise<any> {
-    console.log('LocalStrategy');
-
     const user = await this.authService.validateUser(username, password);
     return user;
     // console.log('user', user);

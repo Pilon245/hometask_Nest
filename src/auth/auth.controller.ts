@@ -38,15 +38,6 @@ export class AuthController {
     protected jwtService: JwtService, // protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
   ) {}
-  // @UseGuards(AuthGuard('local'))
-  // @UseGuards(JwtAuthGuard)
-  // @Post()
-  // async login(@Request() req) {
-  //   console.log('user', req.user);
-  //   return req.user;
-  // }
-  // @UseGuards(LocalStrategy)
-  // @UseGuards(AuthGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async singInAccount(
@@ -56,7 +47,6 @@ export class AuthController {
   ) {
     const result = await this.authService.login(req.user);
     if (!result) return res.sendStatus(401);
-    console.log(result, 'result');
     const accessToken = { accessToken: result.accessToken };
     return res
       .cookie('refreshToken', result.refreshToken, {
@@ -115,13 +105,12 @@ export class AuthController {
     // }
   }
 
-  @UseGuards(JwtStrategy)
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
-    console.log(req.cookies.refreshToken, 'req');
     // const user = await this.usersService.checkRefreshToken(
     //   req.user!.accountData.login,
     // );
+    if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = jwt.verify(
       req.cookies.refreshToken,
       setting.JWT_SECRET,
