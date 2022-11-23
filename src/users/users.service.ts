@@ -18,8 +18,6 @@ export class UsersService {
       inputModel.login,
     );
     if (createdUsers) return false;
-    console.log('passwordHash', passwordHash);
-    // console.log('password', password);
     const newUser = new CreateFactory(
       String(+new Date()),
       {
@@ -40,12 +38,7 @@ export class UsersService {
       },
     );
     this.userRepository.createUsers(newUser);
-    return {
-      id: newUser.id,
-      login: newUser.accountData.login,
-      email: newUser.accountData.email,
-      createdAt: newUser.accountData.createdAt,
-    };
+    return newUser;
   }
   async checkCredentials(loginOrEmail: string, password: string) {
     //todo !!!ПЕРЕНСТИ ЭТО В ГВАРД ИЛИ ФУНКИЦЮ!!!

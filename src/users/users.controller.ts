@@ -30,11 +30,11 @@ export class UsersController {
   @UseGuards(BasicAuthGuard)
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
-    const result = await this.usersService.createUsers(inputModel);
-    if (!result) {
+    const created = await this.usersService.createUsers(inputModel);
+    if (!created) {
       throw new HttpException('invalid blog', 404);
     }
-    return result;
+    return this.usersQueryRepository.findUsersById(created.id);
   }
   @UseGuards(BasicAuthGuard)
   @Delete(':id')

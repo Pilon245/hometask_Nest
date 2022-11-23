@@ -76,6 +76,18 @@ export class UsersQueryRepository {
       })),
     };
   }
+  async findUsersForRepos(id: string) {
+    const users = await this.userModel
+      .findOne({ id }, { _id: false, __v: 0 })
+      .lean();
+
+    return {
+      id: users.id,
+      login: users.accountData.login,
+      email: users.accountData.email,
+      createdAt: users.accountData.createdAt,
+    };
+  }
   async deleteAllUsers() {
     const result = await this.userModel.deleteMany();
     return result;

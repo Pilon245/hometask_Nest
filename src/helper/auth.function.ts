@@ -16,7 +16,7 @@ export const _generatePasswordForDb = async (password: string) => {
   // const salt = await bcrypt.genSalt(6);
   // console.log(salt, 'salt');
 
-  const hash = await bcrypt.hash(password, setting.SALT);
+  const hash = await bcrypt.hash(password, 6);
   return hash;
 };
 

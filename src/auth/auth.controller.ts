@@ -29,6 +29,9 @@ import { payloadRefreshToken } from '../helper/auth.function';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersQueryRepository } from '../users/users.query.repository';
+import { RegistrationInputModel } from './dto/registration.dto';
+import { CreateUserInputModel } from '../users/dto/createFactory';
+import { EmailManager } from '../managers/email.manager';
 
 @Controller('auth')
 export class AuthController {
@@ -37,6 +40,7 @@ export class AuthController {
     protected usersService: UsersService,
     protected jwtService: JwtService, // protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
+    protected emailManager: EmailManager,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -55,76 +59,18 @@ export class AuthController {
         secure: false,
       })
       .send(accessToken);
-    // const user = await this.usersService.checkCredentials(
-    //   inputModel.loginOrEmail,
-    //   inputModel.password,
-    // );
-    // console.log('user', user);
-    // if (!user) {
-    //   return res.sendStatus(401);
-    // }
-    // if (user) {
-    //   const deviceId = String(randomUUID());
-    //   const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
-    //     expiresIn: '7m',
-    //   });
-    //   const refreshToken = await jwt.sign(
-    //     { id: user.id, deviceId: deviceId },
-    //     setting.JWT_SECRET,
-    //     { expiresIn: '7m' },
-    //   );
-    //   // const accessToken = await this.jwtService.createdJWT(user);
-    //   // const refreshToken = await this.jwtService.createdRefreshJWT(
-    //   //   user,
-    //   //   deviceId,
-    //   // );
-    //   // const token = await this.jwtService.sign(
-    //   //   { id: user.id },
-    //   //setting.JWT_SECRET as JwtSignOptions,
-    //   // {
-    //   //   expiresIn: '7m',
-    //   // },
-    //   // );
-    //   // await this.sessionService.createSession(
-    //   //   user,
-    //   //   req.ip,
-    //   //   req.headers['user-agent']!,
-    //   //   refreshToken,
-    //   //   deviceId,
-    //   // );
-    //   const result = { accessToken: accessToken };
-    //   return res
-    //     .cookie('refreshToken', refreshToken, {
-    //       expires: new Date(Date.now() + 6000000),
-    //       httpOnly: false,
-    //       secure: false,
-    //     })
-    //     .send(result);
-    // } else {
-    //   return res.sendStatus(401);
-    // }
   }
 
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
-    // const user = await this.usersService.checkRefreshToken(
-    //   req.user!.accountData.login,
-    // );
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = jwt.verify(
       req.cookies.refreshToken,
       setting.JWT_SECRET,
     );
-    console.log(result, 'result');
     const user = await this.usersQueryRepository.findUsersById(result.id);
-    console.log(user, 'user');
     if (user) {
       const token = await payloadRefreshToken(req.cookies.refreshToken);
-      // const accessToken = await jwtService.createdJWT(user);
-      // const refreshToken = await jwtService.createdRefreshJWT(
-      //   user,
-      //   token.deviceId,
-      // );
       const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
         expiresIn: '7m',
       });
@@ -155,18 +101,19 @@ export class AuthController {
   //   return res.status(200).send(Account);
   // }
   //
-  // async createRegistrationUser(req: Request, res: Response) {
-  //   const newUsers = await usersService.createUsers(
-  //     req.body.login,
-  //     req.body.password,
-  //     req.body.email,
-  //   );
-  //   const emailSend = await emailAdapter.sendEmail(
-  //     newUsers.accountData.email,
-  //     newUsers.emailConfirmation.confirmationCode,
-  //   );
-  //   return res.sendStatus(204);
-  // }
+  @Post('registration')
+  async createRegistrationUser(
+    @Req() req,
+    @Body() inputModel: CreateUserInputModel,
+    @Res() res: Response,
+  ) {
+    const newUsers = await this.usersService.createUsers(inputModel);
+    if (!newUsers) return res.sendStatus(404);
+    const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
+      newUsers,
+    );
+    return res.sendStatus(204);
+  }
   // async confirmationEmail(req: Request, res: Response) {
   //   const result = await authService.confirmationEmail(req.body.code);
   //   res.sendStatus(204);

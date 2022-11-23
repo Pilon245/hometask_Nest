@@ -4,14 +4,15 @@ import {
   PasswordConfirmationType,
   UsersAccountDataType,
 } from './entity.dto';
-import { Length } from 'class-validator';
+import { Length, Matches } from 'class-validator';
 
 export class CreateUserInputModel {
-  @Length(0)
+  @Matches(/^[a-zA-Z0-9_-]*$/)
+  @Length(3, 10)
   login: string;
-  @Length(0)
+  @Length(6, 20)
   password: string;
-  @Length(0)
+  @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   email: string;
 }
 
