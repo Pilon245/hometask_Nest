@@ -16,7 +16,7 @@ export class CreateUserInputModel {
   email: string;
 }
 
-export class CreateFactory {
+export class UsersFactory {
   constructor(
     public id: string,
     public accountData: UsersAccountDataType,

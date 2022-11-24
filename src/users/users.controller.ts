@@ -13,7 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
 import { pagination } from '../middlewares/query.validation';
-import { CreateUserInputModel, CreateFactory } from './dto/createFactory';
+import { CreateUserInputModel, UsersFactory } from './dto/usersFactory';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
 
 @Controller('users')

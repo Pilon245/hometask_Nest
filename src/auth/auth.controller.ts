@@ -30,9 +30,9 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { RegistrationInputModel } from './dto/registration.dto';
-import { CreateUserInputModel } from '../users/dto/createFactory';
+import { CreateUserInputModel } from '../users/dto/usersFactory';
 import { EmailManager } from '../managers/email.manager';
-import { JwtGenerate } from './helper/generate.token';
+import { generateTokens } from './helper/generate.token';
 
 @Controller('auth')
 export class AuthController {
@@ -42,7 +42,6 @@ export class AuthController {
     protected jwtService: JwtService, // protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
-    protected jwtgenerate: JwtGenerate,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -51,16 +50,15 @@ export class AuthController {
     @Body() inputModel: LoginInputModel,
     @Res() res: Response,
   ) {
-    const result = await this.authService.login(req.user);
-    if (!result) return res.sendStatus(401);
-    const accessToken = { accessToken: result.accessToken };
+    const tokens = await this.authService.login(req);
+    if (!tokens) return res.sendStatus(401);
     return res
-      .cookie('refreshToken', result.refreshToken, {
+      .cookie('refreshToken', tokens.refreshToken, {
         expires: new Date(Date.now() + 6000000),
         httpOnly: false,
         secure: false,
       })
-      .send(accessToken);
+      .send({ accessToken: tokens.accessToken });
   }
 
   @Post('refresh-token')
@@ -73,16 +71,13 @@ export class AuthController {
     const user = await this.usersQueryRepository.findUsersById(result.id);
     if (user) {
       const token = await payloadRefreshToken(req.cookies.refreshToken);
-      const generateTokens = await this.jwtgenerate.generateTokens(
-        user,
-        token.deviceId,
-      );
+      const tokens = await generateTokens(user, token.deviceId); //todo тут как функцию или как класс?
       // await sessionService.updateSession(user, refreshToken);
       // await usersRepository.updateToken(user.id, refreshToken, token.deviceId)
-      const result = { accessToken: generateTokens.accessToken };
+      const result = { accessToken: tokens.accessToken };
       return res
         .status(200)
-        .cookie('refreshToken', generateTokens.refreshToken, {
+        .cookie('refreshToken', tokens.refreshToken, {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
           secure: true,

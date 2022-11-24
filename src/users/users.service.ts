@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { CreateUserInputModel, CreateFactory } from './dto/createFactory';
+import { CreateUserInputModel, UsersFactory } from './dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { APP_GUARD } from '@nestjs/core';
@@ -20,7 +20,7 @@ export class UsersService {
       inputModel.email,
     );
     if (createdUsers) return false;
-    const newUser = new CreateFactory(
+    const newUser = new UsersFactory(
       String(+new Date()),
       {
         login: inputModel.login,

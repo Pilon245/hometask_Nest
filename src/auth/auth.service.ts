@@ -6,12 +6,15 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { setting } from '../service/setting';
+import { generateTokens, verifyTokens } from './helper/generate.token';
+import { SessionService } from '../session/session.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     protected usersRepository: UsersRepository,
     private jwtService: JwtService,
+    private sessionService: SessionService,
   ) {}
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
@@ -25,22 +28,30 @@ export class AuthService {
     return user;
     // return null;
   }
-  async login(user: any) {
-    if (!user) {
+  async login(req: any) {
+    if (!req.user) {
       return false;
     }
-    if (user) {
+    if (req.user) {
       const deviceId = String(randomUUID());
-      const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
-        expiresIn: '7m',
-      });
-      const refreshToken = await jwt.sign(
-        { id: user.id, deviceId: deviceId },
-        setting.JWT_SECRET,
-        { expiresIn: '7m' },
+      const tokens = await generateTokens(req.user, deviceId);
+      // const payload = await jwtService.getUserIdByRefreshToken(
+      //   req.split(' ')[0],
+      // );
+      const refreshToken = await verifyTokens(
+        tokens.refreshToken.split(' ')[0],
       );
-      const result = { accessToken: accessToken };
-      return { refreshToken: refreshToken, accessToken: accessToken };
+      const sessia = await this.sessionService.createSession(
+        req.user,
+        req.ip,
+        req.headers['user-agent']!,
+        refreshToken,
+        deviceId,
+      );
+      return {
+        refreshToken: tokens.refreshToken,
+        accessToken: tokens.accessToken,
+      };
     } else {
       return false;
     }

@@ -16,13 +16,14 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
-import { JwtGenerate } from './helper/generate.token';
+import { SessionModule } from '../session/session.module';
 // import { AuthGuard } from '../helper/auth.guard';
 
 @Module({
   imports: [
     PassportModule,
     UsersModule,
+    SessionModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
       secret: jwtConstants.secret,
@@ -38,7 +39,6 @@ import { JwtGenerate } from './helper/generate.token';
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
-    JwtGenerate,
   ],
   exports: [
     AuthService,
@@ -47,7 +47,6 @@ import { JwtGenerate } from './helper/generate.token';
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
-    JwtGenerate,
   ],
 })
 export class AuthModule {}
