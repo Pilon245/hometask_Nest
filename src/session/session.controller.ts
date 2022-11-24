@@ -33,7 +33,7 @@ export class SessionController {
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
     console.log('result', result);
-    await this.sessionsService.deleteDevices(result.userId, result.id);
+    await this.sessionsService.deleteDevices(result.id, result.deviceId);
     return res.sendStatus(401);
   }
 
@@ -46,7 +46,7 @@ export class SessionController {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
-    await this.sessionsService.deleteDevicesById(result.id);
+    await this.sessionsService.deleteDevicesById(result.deviceId);
     return res.sendStatus(401);
   }
 }
