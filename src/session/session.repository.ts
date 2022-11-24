@@ -20,7 +20,12 @@ export class SessionRepository {
         userId: userId,
       })
       .lean();
-    return result;
+    return result.map((d) => ({
+      ip: d.ip,
+      title: d.title,
+      lastActiveDate: d.lastActiveDate,
+      deviceId: d.deviceId,
+    }));
   }
   async findDevicesByDeviceIdAndUserId(userId: string, deviceId: string) {
     const result = await this.sessionModel

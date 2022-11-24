@@ -21,19 +21,20 @@ export class SessionController {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
-    console.log('result', result);
-    const devices = await this.sessionsService.findDevices(result.userId);
-    console.log('devices', devices);
-    return devices;
+    const devices = await this.sessionsService.findDevices(result.id);
+    return res.status(200).send(devices);
   }
 
   @Delete('devices')
   @HttpCode(204)
   async deleteAllSessionsExceptOne(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
+    console.log('req.cookies.refreshToken', req.cookies.refreshToken);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
-    return this.sessionsService.deleteDevices(result.userId, result.deviceId);
+    console.log('result', result);
+    await this.sessionsService.deleteDevices(result.userId, result.id);
+    return res.sendStatus(401);
   }
 
   @Delete('devices/:deviceId')
@@ -45,7 +46,7 @@ export class SessionController {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
-
-    return await this.sessionsService.deleteDevicesById(result.deviceId);
+    await this.sessionsService.deleteDevicesById(result.id);
+    return res.sendStatus(401);
   }
 }
