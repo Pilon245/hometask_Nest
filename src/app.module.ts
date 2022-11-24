@@ -36,6 +36,7 @@ import { LocalStrategy } from './auth/strategy/local.strategy';
 import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
 import { EmailAdapter } from './adapters/emailAdapter';
+import { Session, SessionSchema } from './session/entities/session.entity';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -44,6 +45,7 @@ const schemas = [
   { name: Comment.name, schema: CommentSchema },
   { name: LikePost.name, schema: LikePostSchema },
   { name: LikeComment.name, schema: LikeCommentSchema },
+  { name: Session.name, schema: SessionSchema },
 ];
 
 @Module({
