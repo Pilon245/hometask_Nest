@@ -64,17 +64,16 @@ export class AuthController {
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = jwt.verify(
-      req.cookies.refreshToken,
-      setting.JWT_SECRET,
-    );
+    const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     const user = await this.usersQueryRepository.findUsersById(result.id);
     if (user) {
-      const token = await payloadRefreshToken(req.cookies.refreshToken);
-      const tokens = await generateTokens(user, token.deviceId); //todo тут как функцию или как класс?
-      // await sessionService.updateSession(user, refreshToken);
-      // await usersRepository.updateToken(user.id, refreshToken, token.deviceId)
-      const result = { accessToken: tokens.accessToken };
+      const tokens = await this.authService.refreshToken(
+        user,
+        req.cookies.refreshToken,
+      );
+      if (!tokens) {
+        return res.sendStatus(401);
+      }
       return res
         .status(200)
         .cookie('refreshToken', tokens.refreshToken, {
@@ -82,7 +81,7 @@ export class AuthController {
           httpOnly: true,
           secure: true,
         })
-        .send(result);
+        .send({ accessToken: tokens.accessToken });
     } else {
       return res.sendStatus(401); //todo сделать через Exzeption  которые встроенны в нест
     }

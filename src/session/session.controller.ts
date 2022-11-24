@@ -1,40 +1,51 @@
 import {
   Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
   Delete,
+  Get,
+  HttpCode,
+  Param,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
+import { AuthService } from '../auth/auth.service';
+import { verifyTokens } from '../auth/helper/generate.token';
+import { Response } from 'express';
+import { payloadRefreshToken } from '../helper/auth.function';
 
-@Controller('session')
+@Controller('security')
 export class SessionController {
-  // constructor(private readonly sessionService: SessionService) {}
-  //
-  // @Post()
-  // create(@Body() createSessionDto: CreateSessionDto) {
-  //   return this.sessionService.create(createSessionDto);
-  // }
-  //
-  // @Get()
-  // findAll() {
-  //   return this.sessionService.findAll();
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.sessionService.findOne(+id);
-  // }
-  //
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateSessionDto: UpdateSessionDto) {
-  //   return this.sessionService.update(+id, updateSessionDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.sessionService.remove(+id);
-  // }
+  constructor(private readonly sessionsService: SessionService) {}
+  @Get('devices')
+  async getDevices(@Param('id') id: string, @Req() req, @Res() res: Response) {
+    if (!req.cookies.refreshToken) return res.sendStatus(401);
+    const result: any = await payloadRefreshToken(req.cookies.refreshToken);
+    if (!result) return res.sendStatus(401);
+    console.log('result', result);
+    const devices = await this.sessionsService.findDevices(result.userId);
+    console.log('devices', devices);
+    return devices;
+  }
+
+  @Delete('devices')
+  @HttpCode(204)
+  async deleteAllSessionsExceptOne(@Req() req, @Res() res: Response) {
+    if (!req.cookies.refreshToken) return res.sendStatus(401);
+    const result: any = await payloadRefreshToken(req.cookies.refreshToken);
+    if (!result) return res.sendStatus(401);
+    return this.sessionsService.deleteDevices(result.userId, result.deviceId);
+  }
+
+  @Delete('devices/:deviceId')
+  async deleteSessionsByDeviceId(
+    @Param('deviceId') deviceId: string,
+    @Req() req,
+    @Res() res: Response,
+  ) {
+    if (!req.cookies.refreshToken) return res.sendStatus(401);
+    const result: any = await payloadRefreshToken(req.cookies.refreshToken);
+    if (!result) return res.sendStatus(401);
+
+    return await this.sessionsService.deleteDevicesById(result.deviceId);
+  }
 }

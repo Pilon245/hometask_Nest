@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersController } from '../users/users.controller';
-import { UsersRepository } from '../users/users.repository';
-import { UsersService } from '../users/users.service';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy';
@@ -17,7 +14,7 @@ import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { SessionModule } from '../session/session.module';
-// import { AuthGuard } from '../helper/auth.guard';
+import { UsersRepository } from '../users/users.repository';
 
 @Module({
   imports: [
@@ -39,6 +36,7 @@ import { SessionModule } from '../session/session.module';
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
+    UsersRepository,
   ],
   exports: [
     AuthService,

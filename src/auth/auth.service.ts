@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { randomUUID } from 'crypto';
-import { _generatePasswordForDb } from '../helper/auth.function';
+import {
+  _generatePasswordForDb,
+  payloadRefreshToken,
+} from '../helper/auth.function';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -13,7 +16,6 @@ import { SessionService } from '../session/session.service';
 export class AuthService {
   constructor(
     protected usersRepository: UsersRepository,
-    private jwtService: JwtService,
     private sessionService: SessionService,
   ) {}
 
@@ -26,7 +28,6 @@ export class AuthService {
     );
     if (!isValid) return false;
     return user;
-    // return null;
   }
   async login(req: any) {
     if (!req.user) {
@@ -41,13 +42,38 @@ export class AuthService {
       const refreshToken = await verifyTokens(
         tokens.refreshToken.split(' ')[0],
       );
-      const sessia = await this.sessionService.createSession(
+      await this.sessionService.createSession(
         req.user,
         req.ip,
         req.headers['user-agent']!,
         refreshToken,
         deviceId,
       );
+      return {
+        refreshToken: tokens.refreshToken,
+        accessToken: tokens.accessToken,
+      };
+    } else {
+      return false;
+    }
+    // const deviceId = String(randomUUID());
+    // const payload = { id: user.id, deviceId: deviceId };
+    // console.log('user', deviceId);
+    // return {
+    //   access_token: await this.jwtService.sign(payload),
+    // };
+  }
+  async refreshToken(user: any, token: string) {
+    if (!user) {
+      return false;
+    }
+    if (user) {
+      const payload = await payloadRefreshToken(token);
+      const tokens = await generateTokens(user, payload.deviceId); //todo тут как функцию или как класс?
+      const refreshToken = await verifyTokens(
+        tokens.refreshToken.split(' ')[0],
+      );
+      await this.sessionService.updateSession(user, refreshToken);
       return {
         refreshToken: tokens.refreshToken,
         accessToken: tokens.accessToken,
@@ -91,7 +117,7 @@ export class AuthService {
     console.log('newCode', newCode);
     if (user) {
       const result = await this.usersRepository.updatePasswordCode(
-        user!.id,
+        user.id,
         newCode,
       );
       return result;

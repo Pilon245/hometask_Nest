@@ -41,7 +41,7 @@ export class SessionService {
     );
     await this.sessionRepository.createSecurityDevices(session);
   }
-  async updateSession(user: UserAccountDBType, token: string, payload: any) {
+  async updateSession(user: UserAccountDBType, payload: any) {
     const userId = user.id;
     // const payload = await jwtService.getUserIdByRefreshToken(
     //   token.split(' ')[0],

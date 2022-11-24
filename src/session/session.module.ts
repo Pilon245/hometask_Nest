@@ -11,13 +11,16 @@ import { JwtStrategy } from '../auth/strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
+import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    UsersModule,
   ],
   controllers: [SessionController],
-  providers: [SessionService, SessionRepository],
+  providers: [SessionService, SessionRepository, AuthService],
   exports: [SessionService, SessionRepository],
 })
 export class SessionModule {}
