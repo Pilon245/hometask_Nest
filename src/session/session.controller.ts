@@ -34,7 +34,7 @@ export class SessionController {
     if (!result) return res.sendStatus(401);
     console.log('result', result);
     await this.sessionsService.deleteDevices(result.id, result.deviceId);
-    return res.sendStatus(401);
+    return res.sendStatus(200);
   }
 
   @Delete('devices/:deviceId')
@@ -47,6 +47,6 @@ export class SessionController {
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     if (!result) return res.sendStatus(401);
     await this.sessionsService.deleteDevicesById(result.deviceId);
-    return res.sendStatus(401);
+    return res.sendStatus(200);
   }
 }

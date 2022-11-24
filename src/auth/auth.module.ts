@@ -15,6 +15,7 @@ import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { SessionModule } from '../session/session.module';
 import { UsersRepository } from '../users/users.repository';
+import { BearerAuthGuard } from './strategy/bearer.auth.guard';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UsersRepository } from '../users/users.repository';
     EmailAdapter,
     PasswordEmailAdapter,
     UsersRepository,
+    BearerAuthGuard,
   ],
   exports: [
     AuthService,
@@ -45,6 +47,7 @@ import { UsersRepository } from '../users/users.repository';
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
+    BearerAuthGuard,
   ],
 })
 export class AuthModule {}

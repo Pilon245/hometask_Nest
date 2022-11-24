@@ -10,6 +10,8 @@ import {
   UseGuards,
   Request,
   Delete,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
@@ -20,6 +22,8 @@ import {
 } from './dto/update.comments.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
+import { OptionalBearerAuthGuard } from '../auth/strategy/optional.bearer.auth.guard';
+import { Response } from 'express';
 
 @Controller('comments')
 export class CommentsController {
@@ -27,82 +31,26 @@ export class CommentsController {
     protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
-
+  @UseGuards(OptionalBearerAuthGuard)
   @Get(':id')
-  async getCommentById(@Param('id') id: string, @Query() query) {
-    const resultFound =
-      await this.commentsQueryRepository.findCommentByIdNoAuth(id);
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
+  async getCommentById(
+    @Param('id') id: string,
+    @Query() query,
+    @Req() req,
+    @Res() res: Response,
+  ) {
+    if (!req.user) {
+      const resultFound =
+        await this.commentsQueryRepository.findCommentByIdNoAuth(id);
+      if (!resultFound) {
+        throw new HttpException('invalid blog', 404);
+      }
+      return this.commentsQueryRepository.findCommentByIdNoAuth(id);
     }
-    return this.commentsQueryRepository.findCommentByIdNoAuth(id);
+    console.log('req.user', req.user);
+    return;
   }
-  // async getComment(req: Request, res: Response) {
-  //   const { pageNumber, pageSize, sortBy, sortDirection } = queryValidation(
-  //     req.query,
-  //   );
-  //   if (req.user) {
-  //     const foundComments = await commentsQueryRepository.findCommentOnPost(
-  //       req.params.postId,
-  //       req.user.id,
-  //       {
-  //         pageNumber,
-  //         pageSize,
-  //         sortBy,
-  //         sortDirection,
-  //       },
-  //     );
-  //     return res.status(200).send(foundComments);
-  //   }
-  //   if (!req.user) {
-  //     const foundComments =
-  //       await commentsQueryRepository.findCommentOnPostNoAuth(
-  //         req.params.postId,
-  //         {
-  //           pageNumber,
-  //           pageSize,
-  //           sortBy,
-  //           sortDirection,
-  //         },
-  //       );
-  //     return res.status(200).send(foundComments);
-  //   }
-  // }
-  // async getCommentById(req: Request, res: Response) {
-  //   if (req.user) {
-  //     const comment = await commentsQueryRepository.findComments(
-  //       req.params.id,
-  //       req.user.id,
-  //     );
-  //     if (comment) {
-  //       res.status(200).send(comment);
-  //     } else {
-  //       res.send(404);
-  //     }
-  //   }
-  //   if (!req.user) {
-  //     const comment = await commentsQueryRepository.findCommentsNotAuth(
-  //       req.params.id,
-  //     );
-  //     if (comment) {
-  //       res.status(200).send(comment);
-  //     } else {
-  //       res.send(404);
-  //     }
-  //   }
-  // }
-  // async createComment(@Param(":postId") postId: string,
-  //                     @Body() inputModel: ) {
-  //   const newComment = await this.commentsService.createComment(
-  //     req.params.postId,
-  //     req.body.content,
-  //     req.user!.id,
-  //     req.user!.accountData.login,
-  //   );
-  //   if (newComment) {
-  //     res.status(201).send(newComment);
-  //   }
-  // }
+
   @UseGuards(JwtAuthGuard)
   @Put(':commentId')
   @HttpCode(204)
