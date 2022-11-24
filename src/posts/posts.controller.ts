@@ -48,7 +48,6 @@ export class PostsController {
     }
     return this.postsQueryRepository.findPostByIdNoAuth(id);
   }
-  @UseGuards(JwtAuthGuard)
   @Get(':postId/comments')
   async getCommentOnPostId(@Param('postId') postId: string, @Query() query) {
     console.log('blogId', postId);

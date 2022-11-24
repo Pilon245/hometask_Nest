@@ -32,6 +32,7 @@ import { UsersQueryRepository } from '../users/users.query.repository';
 import { RegistrationInputModel } from './dto/registration.dto';
 import { CreateUserInputModel } from '../users/dto/createFactory';
 import { EmailManager } from '../managers/email.manager';
+import { JwtGenerate } from './helper/generate.token';
 
 @Controller('auth')
 export class AuthController {
@@ -41,6 +42,7 @@ export class AuthController {
     protected jwtService: JwtService, // protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
+    protected jwtgenerate: JwtGenerate,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -71,20 +73,16 @@ export class AuthController {
     const user = await this.usersQueryRepository.findUsersById(result.id);
     if (user) {
       const token = await payloadRefreshToken(req.cookies.refreshToken);
-      const accessToken = await jwt.sign({ id: user.id }, setting.JWT_SECRET, {
-        expiresIn: '7m',
-      });
-      const refreshToken = await jwt.sign(
-        { id: user.id, deviceId: token.deviceId },
-        setting.JWT_SECRET,
-        { expiresIn: '7m' },
+      const generateTokens = await this.jwtgenerate.generateTokens(
+        user,
+        token.deviceId,
       );
       // await sessionService.updateSession(user, refreshToken);
       // await usersRepository.updateToken(user.id, refreshToken, token.deviceId)
-      const result = { accessToken: accessToken };
+      const result = { accessToken: generateTokens.accessToken };
       return res
         .status(200)
-        .cookie('refreshToken', refreshToken, {
+        .cookie('refreshToken', generateTokens.refreshToken, {
           expires: new Date(Date.now() + 6000000),
           httpOnly: true,
           secure: true,

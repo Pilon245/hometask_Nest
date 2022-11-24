@@ -16,6 +16,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
+import { JwtGenerate } from './helper/generate.token';
 // import { AuthGuard } from '../helper/auth.guard';
 
 @Module({
@@ -37,6 +38,7 @@ import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
+    JwtGenerate,
   ],
   exports: [
     AuthService,
@@ -45,6 +47,7 @@ import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
+    JwtGenerate,
   ],
 })
 export class AuthModule {}
