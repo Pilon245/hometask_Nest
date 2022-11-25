@@ -323,7 +323,4 @@ export class PostsQueryRepository {
       items: items,
     };
   }
-  async deleteAllPosts() {
-    return await this.postModel.deleteMany();
-  }
 }

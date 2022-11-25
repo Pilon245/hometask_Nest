@@ -44,11 +44,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
       };
       const responseBody: any = exception.getResponse();
       responseBody.message.forEach((m) =>
-        errorsResponse.errorsMessages.push(
-          m,
-          //   message: m,
-          //   field: 'Incorrect input',
-        ),
+        errorsResponse.errorsMessages.push({
+          // m,
+          message: m,
+          field: 'Incorrect input',
+        }),
       );
       response.status(status).json(errorsResponse);
     } else {

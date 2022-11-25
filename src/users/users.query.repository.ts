@@ -77,8 +77,4 @@ export class UsersQueryRepository {
   async findUsersForDTO(id: string): Promise<User> {
     return await this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
   }
-  async deleteAllUsers() {
-    const result = await this.userModel.deleteMany();
-    return result;
-  }
 }

@@ -170,6 +170,9 @@ export class PostsService {
   deletePosts(id: string) {
     return this.postsRepository.deletePosts(id);
   }
+  async deleteAllPost() {
+    return this.postsRepository.deleteAllPost();
+  }
 }
 
 export class extendedLikesInfoType {

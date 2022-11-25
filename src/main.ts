@@ -14,10 +14,9 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,
-      transform: true, //"10" = 10
+      // transform: true, //"10" = 10
       exceptionFactory: (errors) => {
         const errorsForResponce = [];
-
         errors.forEach((e) => {
           const constrainsKeys = Object.keys(e.constraints);
           constrainsKeys.forEach((ckey) => {

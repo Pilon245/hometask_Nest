@@ -31,4 +31,7 @@ export class BlogsService {
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);
   }
+  async deleteAllBlogs() {
+    return this.blogsRepository.deleteAllBlogs();
+  }
 }

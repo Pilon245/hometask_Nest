@@ -114,7 +114,7 @@ export class CommentsService {
   async deleteComment(id: string): Promise<boolean> {
     return await this.commentsRepository.deleteComment(id);
   }
-  // async deleteAllComment() {
-  //   return await commentsRepository.deleteAllComment();
-  // }
+  async deleteAllComment() {
+    return this.commentsRepository.deleteAllComment();
+  }
 }

@@ -1,21 +1,27 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
-import { BlogsQueryRepository } from './blogs/blogs.query.repository';
-import { PostsQueryRepository } from './posts/posts.query.repository';
-import { UsersQueryRepository } from './users/users.query.repository';
+import { PostsService } from './posts/posts.service';
+import { UsersService } from './users/users.service';
+import { CommentsService } from './comments/comments.service';
+import { SessionService } from './session/session.service';
+import { BlogsService } from './blogs/blogs.service';
 
 @Controller('testing/all-data')
 export class RemoveController {
   constructor(
-    protected blogsQueryRepository: BlogsQueryRepository,
-    protected postsQueryRepository: PostsQueryRepository,
-    protected usersQueryRepository: UsersQueryRepository,
+    protected blogsService: BlogsService,
+    protected postsService: PostsService,
+    protected usersService: UsersService,
+    protected commentsService: CommentsService,
+    protected sessionService: SessionService,
   ) {}
   @Delete()
   @HttpCode(204)
   deleteAllData() {
-    this.blogsQueryRepository.deleteAllBlogs();
-    this.postsQueryRepository.deleteAllPosts();
-    this.usersQueryRepository.deleteAllUsers();
+    this.blogsService.deleteAllBlogs();
+    this.postsService.deleteAllPost();
+    this.usersService.deleteAllUsers();
+    this.commentsService.deleteAllComment();
+    this.sessionService.deleteAllSessions();
     return;
   }
 }

@@ -79,6 +79,7 @@ export class CommentsRepository {
   }
   async deleteAllComment() {
     await this.commentModel.deleteMany({});
+    await this.likeCommentModel.deleteMany({});
     return true;
   }
 }

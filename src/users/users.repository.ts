@@ -86,9 +86,6 @@ export class UsersRepository {
     );
     return result.modifiedCount === 1;
   }
-  async deleteAllUsers() {
-    return await this.userModel.deleteMany({});
-  }
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
     const user = await this.userModel.findOne({
       'emailConfirmation.confirmationCode': emailConfirmationCode,
@@ -115,5 +112,9 @@ export class UsersRepository {
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;
+  }
+  async deleteAllUsers() {
+    const result = await this.userModel.deleteMany();
+    return result;
   }
 }

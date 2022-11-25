@@ -74,4 +74,9 @@ export class PostsRepository {
     const result = await this.postModel.deleteOne({ id });
     return result.deletedCount === 1;
   }
+  async deleteAllPost() {
+    await this.postModel.deleteMany();
+    await this.likePostModel.deleteMany();
+    return true;
+  }
 }
