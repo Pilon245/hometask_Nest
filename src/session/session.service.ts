@@ -5,7 +5,9 @@ import { Session, SessionDocument } from './entities/session.entity';
 import { Model } from 'mongoose';
 import { UsersRepository } from '../users/users.repository';
 import { SessionRepository } from './session.repository';
-import { UserAccountDBType } from '../users/dto/entity.dto';
+import { UserAccountDBType, UserOutputModel } from '../users/dto/entity.dto';
+import { randomUUID } from 'crypto';
+import { generateTokens, verifyTokens } from '../auth/helper/generate.token';
 
 @Injectable()
 export class SessionService {
@@ -18,28 +20,21 @@ export class SessionService {
     const devices = await this.sessionRepository.findDevices(deviceId);
     return devices;
   }
-  async createSession(
-    user: UserAccountDBType,
-    ip: string,
-    deviceName: string,
-    payload: any,
-    device: string,
-  ) {
+  async createSession(user: UserOutputModel, ip: string, deviceName: string) {
     const userId = user.id;
-    const deviceId = device;
-
-    // const payload = await jwtService.getUserIdByRefreshToken(
-    //   token.split(' ')[0],
-    // );
+    const deviceId = String(randomUUID());
+    const tokens = await generateTokens(user, deviceId);
+    const refreshToken = await verifyTokens(tokens.refreshToken.split(' ')[0]);
     const session = new SessionFactory(
       ip,
       deviceName,
-      new Date(payload.iat * 1000).toISOString(),
-      new Date(payload.iat * 1000).toDateString(),
+      new Date(refreshToken.iat * 1000).toISOString(),
+      new Date(refreshToken.iat * 1000).toDateString(),
       deviceId,
       userId,
     );
     await this.sessionRepository.createSecurityDevices(session);
+    return tokens;
   }
   async updateSession(user: UserAccountDBType, payload: any) {
     const userId = user.id;

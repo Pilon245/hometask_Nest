@@ -31,14 +31,15 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     protected usersService: UsersService,
-    protected jwtService: JwtService, // protected sessionService: SessionService,
+    protected jwtService: JwtService,
+    protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async singInAccount(
-    @Req() req: Request,
+    @Req() req,
     @Body() inputModel: LoginInputModel,
     @Res() res: Response,
     @Ip() ip,
@@ -48,15 +49,19 @@ export class AuthController {
     //   ip: ip,
     //   agent: req.headers['user-agent'],
     // };
-    const tokens = await this.authService.login(req);
-    if (!tokens) return res.sendStatus(401);
+    // const tokens = await this.authService.login(req);
+    const session = await this.sessionService.createSession(
+      req.user,
+      req.ip,
+      req.headers['user-agent'],
+    );
     return res
-      .cookie('refreshToken', tokens.refreshToken, {
+      .cookie('refreshToken', session.refreshToken, {
         expires: new Date(Date.now() + 6000000),
         httpOnly: false,
         secure: false,
       })
-      .send({ accessToken: tokens.accessToken });
+      .send({ accessToken: session.accessToken });
   }
 
   @Post('refresh-token')
@@ -85,12 +90,12 @@ export class AuthController {
     }
   }
 
-  // @Patch(':id')
-  // async myAccount(req: Request, res: Response) {
-  //   const Account = await usersService.findUserById(req.user!.id);
-  //   return res.status(200).send(Account);
-  // }
-  //
+  @Get('me')
+  async myAccount(@Req() req, @Res() res: Response) {
+    const Account = await this.usersQueryRepository.findUsersById(req.user.id);
+    return res.status(200).send(Account);
+  }
+
   @Post('registration')
   async createRegistrationUser(
     @Req() req,

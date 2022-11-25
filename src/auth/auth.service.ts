@@ -30,38 +30,11 @@ export class AuthService {
     return user;
   }
   async login(req: any) {
-    if (!req.user) {
-      return false;
-    }
-    if (req.user) {
-      const deviceId = String(randomUUID());
-      const tokens = await generateTokens(req.user, deviceId);
-      // const payload = await jwtService.getUserIdByRefreshToken(
-      //   req.split(' ')[0],
-      // );
-      const refreshToken = await verifyTokens(
-        tokens.refreshToken.split(' ')[0],
-      );
-      await this.sessionService.createSession(
-        req.user,
-        req.ip,
-        req.headers['user-agent'],
-        refreshToken,
-        deviceId,
-      );
-      return {
-        refreshToken: tokens.refreshToken,
-        accessToken: tokens.accessToken,
-      };
-    } else {
-      return false;
-    }
-    // const deviceId = String(randomUUID());
-    // const payload = { id: user.id, deviceId: deviceId };
-    // console.log('user', deviceId);
-    // return {
-    //   access_token: await this.jwtService.sign(payload),
-    // };
+    return await this.sessionService.createSession(
+      req.user,
+      req.ip,
+      req.headers['user-agent'],
+    );
   }
   async refreshToken(user: any, token: string) {
     if (!user) {
