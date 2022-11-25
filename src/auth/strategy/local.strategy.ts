@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    super({ usernameField: 'loginOrEmail', passReqToCallback: true });
+    super({ usernameField: 'loginOrEmail', passReqToCallback: true }); //опиция повзовляет работать с реквестом
   }
   async validate(req, username: string, password: string): Promise<any> {
     const user = await this.authService.validateUser(username, password);

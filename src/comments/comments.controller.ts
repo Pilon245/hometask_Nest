@@ -24,6 +24,7 @@ import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
 import { OptionalBearerAuthGuard } from '../auth/strategy/optional.bearer.auth.guard';
 import { Response } from 'express';
+import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -31,7 +32,7 @@ export class CommentsController {
     protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
-  @UseGuards(OptionalBearerAuthGuard)
+  @UseGuards(BearerAuthGuard)
   @Get(':id')
   async getCommentById(
     @Param('id') id: string,
@@ -53,8 +54,23 @@ export class CommentsController {
       console.log('comments', comments);
       return res.status(200).send(comments);
     }
+    if (req.user) {
+      const resultFound = await this.commentsQueryRepository.findCommentById(
+        id,
+        req.user.id,
+      );
+      if (!resultFound) {
+        throw new HttpException('invalid blog', 404);
+      }
+      const comments = await this.commentsQueryRepository.findCommentById(
+        id,
+        req.user.id,
+      );
+      console.log('comments', comments);
+      return res.status(200).send(comments);
+    }
     console.log('req.user', req.user);
-    return res.sendStatus(203);
+    return res.sendStatus(404);
   }
 
   @UseGuards(JwtAuthGuard)

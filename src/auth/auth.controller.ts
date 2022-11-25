@@ -9,7 +9,7 @@ import {
   UseGuards,
   Res,
   Req,
-  Request,
+  Ip,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -20,19 +20,11 @@ import { SessionService } from '../session/session.service';
 import { response } from 'express';
 import { LocalAuthGuard } from './strategy/local-auth.guard';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { JwtAuthGuard } from './strategy/jwt-auth.guard';
-import { Response } from 'express';
-import { LocalStrategy } from './strategy/local.strategy';
-import { setting } from '../service/setting';
-import * as jwt from 'jsonwebtoken';
+import { Response, Request } from 'express';
 import { payloadRefreshToken } from '../helper/auth.function';
-import { JwtStrategy } from './strategy/jwt.strategy';
-import { AuthGuard } from '@nestjs/passport';
 import { UsersQueryRepository } from '../users/users.query.repository';
-import { RegistrationInputModel } from './dto/registration.dto';
 import { CreateUserInputModel } from '../users/dto/usersFactory';
 import { EmailManager } from '../managers/email.manager';
-import { generateTokens } from './helper/generate.token';
 
 @Controller('auth')
 export class AuthController {
@@ -46,10 +38,16 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async singInAccount(
-    @Req() req,
+    @Req() req: Request,
     @Body() inputModel: LoginInputModel,
     @Res() res: Response,
+    @Ip() ip,
   ) {
+    // const LoginDto = {
+    //   user: req.user,
+    //   ip: ip,
+    //   agent: req.headers['user-agent'],
+    // };
     const tokens = await this.authService.login(req);
     if (!tokens) return res.sendStatus(401);
     return res

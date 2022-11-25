@@ -41,18 +41,18 @@ import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 //   youtubeUrl: string;
 // }
 
-export class CreateBlogInputModelType {
-  constructor(public name: string, public youtubeUrl: string) {}
-}
-export class CreateBlogInputModelType2 {
-  public name: string;
-  public youtubeUrl: string;
-  constructor(name: string, youtubeUrl: string) {
-    this.name = name;
-    this.youtubeUrl = youtubeUrl;
-  }
-}
-const someBlog = new CreateBlogInputModelType2('Vasya', 'url');
+// export class CreateBlogInputModelType {
+//   constructor(public name: string, public youtubeUrl: string) {}
+// }
+// export class CreateBlogInputModelType2 {
+//   public name: string;
+//   public youtubeUrl: string;
+//   constructor(name: string, youtubeUrl: string) {
+//     this.name = name;
+//     this.youtubeUrl = youtubeUrl;
+//   }
+// }
+// const someBlog = new CreateBlogInputModelType2('Vasya', 'url');
 
 @Controller('blogs')
 export class BlogsController {
