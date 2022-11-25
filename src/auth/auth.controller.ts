@@ -72,14 +72,15 @@ export class AuthController {
 
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
+    console.log('req.cookies.refreshToken', req.cookies.refreshToken);
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
+    console.log('result', result);
     const user = await this.usersQueryRepository.findUsersById(result.id);
     const foundLastDate =
       await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
-    // console.log("foundUser.iat", new Date(foundUser.iat * 1000).toISOString())
-    // console.log("foundLastDate!.lastActiveDate", foundLastDate!.lastActiveDate)
     if (
+      !foundLastDate ||
       foundLastDate.lastActiveDate !== new Date(result.iat * 1000).toISOString()
     ) {
       return res.sendStatus(401);
@@ -162,10 +163,17 @@ export class AuthController {
   @Post('logout')
   async logOutAccount(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
-    console.log('!req.cookies.refreshToken', req.cookies.refreshToken);
     const result: any = await payloadRefreshToken(
       req.cookies.refreshToken.split(' ')[0],
     );
+    const foundLastDate =
+      await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
+    if (
+      !foundLastDate ||
+      foundLastDate.lastActiveDate !== new Date(result.iat * 1000).toISOString()
+    ) {
+      return res.sendStatus(401);
+    }
     await this.sessionService.deleteDevicesById(result.deviceId);
     // await this.usersRepository.deleteToken(
     //   req.user.id,
