@@ -45,7 +45,7 @@ export class AuthService {
       await this.sessionService.createSession(
         req.user,
         req.ip,
-        req.headers['user-agent']!,
+        req.headers['user-agent'],
         refreshToken,
         deviceId,
       );
