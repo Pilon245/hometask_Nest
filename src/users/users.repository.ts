@@ -100,7 +100,7 @@ export class UsersRepository {
     return user;
   }
   // async deleteToken(userId: string, refreshToken: string, deviceId: string) {
-  //   const result = await TokenModelClass.updateOne(
+  //   const result = await this..updateOne(
   //     { userId: userId, deviceId: deviceId },
   //     { refreshToken },
   //   );

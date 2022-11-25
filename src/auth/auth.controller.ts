@@ -25,6 +25,10 @@ import { payloadRefreshToken } from '../helper/auth.function';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { CreateUserInputModel } from '../users/dto/usersFactory';
 import { EmailManager } from '../managers/email.manager';
+import { JwtAuthGuard } from './strategy/jwt-auth.guard';
+import { UsersRepository } from '../users/users.repository';
+import { SessionRepository } from '../session/session.repository';
+import { SessionQueryRepository } from '../session/session.query.repository';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +36,9 @@ export class AuthController {
     private readonly authService: AuthService,
     protected usersService: UsersService,
     protected jwtService: JwtService,
+    protected usersRepository: UsersRepository,
     protected sessionService: SessionService,
+    protected sessionQueryRepository: SessionQueryRepository,
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
   ) {}
@@ -69,6 +75,15 @@ export class AuthController {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
     const user = await this.usersQueryRepository.findUsersById(result.id);
+    const foundLastDate =
+      await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
+    // console.log("foundUser.iat", new Date(foundUser.iat * 1000).toISOString())
+    // console.log("foundLastDate!.lastActiveDate", foundLastDate!.lastActiveDate)
+    if (
+      foundLastDate.lastActiveDate !== new Date(result.iat * 1000).toISOString()
+    ) {
+      return res.sendStatus(401);
+    }
     if (user) {
       const tokens = await this.authService.refreshToken(
         user,
@@ -90,6 +105,7 @@ export class AuthController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
     const Account = await this.usersQueryRepository.findUsersById(req.user.id);
@@ -143,16 +159,19 @@ export class AuthController {
   //   );
   //   res.sendStatus(204);
   // }
-  // async logOutAccount(req: Request, res: Response) {
-  //   const payload = await jwtService.getUserIdByRefreshToken(
-  //     req.cookies.refreshToken.split(' ')[0],
-  //   );
-  //   await sessionService.deleteDevicesById(payload.deviceId);
-  //   await usersRepository.deleteToken(
-  //     req.user!.id,
-  //     req.cookies.refreshToken,
-  //     payload.deviceId,
-  //   );
-  //   return res.sendStatus(204);
-  // }
+  @Post('logout')
+  async logOutAccount(@Req() req, @Res() res: Response) {
+    if (!req.cookies.refreshToken) return res.sendStatus(401);
+    console.log('!req.cookies.refreshToken', req.cookies.refreshToken);
+    const result: any = await payloadRefreshToken(
+      req.cookies.refreshToken.split(' ')[0],
+    );
+    await this.sessionService.deleteDevicesById(result.deviceId);
+    // await this.usersRepository.deleteToken(
+    //   req.user.id,
+    //   req.cookies.refreshToken,
+    //   payload.deviceId,
+    // );
+    return res.sendStatus(204);
+  }
 }

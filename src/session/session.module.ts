@@ -13,6 +13,7 @@ import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { SessionQueryRepository } from './session.query.repository';
 
 @Module({
   imports: [
@@ -20,7 +21,12 @@ import { UsersModule } from '../users/users.module';
     UsersModule,
   ],
   controllers: [SessionController],
-  providers: [SessionService, SessionRepository, AuthService],
-  exports: [SessionService, SessionRepository],
+  providers: [
+    SessionService,
+    SessionRepository,
+    AuthService,
+    SessionQueryRepository,
+  ],
+  exports: [SessionService, SessionRepository, SessionQueryRepository],
 })
 export class SessionModule {}
