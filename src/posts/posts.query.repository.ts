@@ -225,6 +225,7 @@ export class PostsQueryRepository {
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
+    if (!posts) return false;
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }],

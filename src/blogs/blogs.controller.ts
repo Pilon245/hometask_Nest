@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -32,6 +33,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
 import { LocalStrategy } from '../auth/strategy/local.strategy';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
+import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -76,17 +78,30 @@ export class BlogsController {
       );
     return result;
   }
+  @UseGuards(BearerAuthGuard)
   @Get(':blogId/posts')
-  async getPostsOnBlogId(@Param('blogId') blogId: string, @Query() query) {
+  async getPostsOnBlogId(
+    @Param('blogId') blogId: string,
+    @Query() query,
+    @Req() req,
+    @Res() res: Response,
+  ) {
     const result = await this.postsQueryRepository.findPostByBlogIdNoAuth(
       blogId,
       pagination(query),
     );
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
+    if (!result) {
       throw new HttpException('invalid blog', 404);
     }
-    return result;
+    if (req.user) {
+      const posts = await this.postsQueryRepository.findPostByBlogId(
+        blogId,
+        req.user.id,
+        pagination(query),
+      );
+      return res.status(200).send(posts);
+    }
+    return res.status(200).send(result);
   }
 
   @UseGuards(BasicAuthGuard)

@@ -16,6 +16,7 @@ export class UsersRepository {
     return result;
   }
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
+    //todo где это надо писать , если используется в сервисе
     const user = await this.userModel.findOne({
       $or: [
         { 'accountData.login': LoginOrEmailL },

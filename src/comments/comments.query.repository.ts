@@ -145,7 +145,7 @@ export class CommentsQueryRepository {
       items: items,
     };
   }
-  async findCommentOnPost(
+  async findCommentByPostId(
     postId: string,
     userId: string,
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,

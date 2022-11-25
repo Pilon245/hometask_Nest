@@ -11,6 +11,8 @@ import {
   Query,
   UseGuards,
   Request,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { extendedLikesInfoType, PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -25,6 +27,8 @@ import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { UpdateLikeInputModel } from '../comments/dto/update.comments.dto';
 import { LikeValueComment } from '../comments/entities/likes.comments.entity';
+import { Response } from 'express';
+import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -36,31 +40,69 @@ export class PostsController {
     protected commentsQueryRepository: CommentsQueryRepository,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
+  @UseGuards(BearerAuthGuard)
   @Get()
-  getPosts(@Query() query) {
-    return this.postsQueryRepository.findPostsNoAuth(pagination(query));
+  async getPosts(@Query() query, @Req() req, @Res() res: Response) {
+    if (req.user) {
+      const posts = await this.postsQueryRepository.findPosts(
+        req.user.id,
+        pagination(query),
+      );
+      return res.status(200).send(posts);
+    } else {
+      const posts = await this.postsQueryRepository.findPostsNoAuth(
+        pagination(query),
+      );
+      return res.status(200).send(posts);
+    }
   }
+  @UseGuards(BearerAuthGuard)
   @Get(':id')
-  async getPost(@Param('id') id: string) {
+  async getPost(@Param('id') id: string, @Req() req, @Res() res: Response) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.postsQueryRepository.findPostByIdNoAuth(id);
+    if (req.user) {
+      const posts = await this.postsQueryRepository.findPostById(
+        id,
+        req.user.id,
+      );
+      return res.status(200).send(posts);
+    } else {
+      const posts = await this.postsQueryRepository.findPostByIdNoAuth(id);
+      return res.status(200).send(posts);
+    }
   }
+  @UseGuards(BearerAuthGuard)
   @Get(':postId/comments')
-  async getCommentOnPostId(@Param('postId') postId: string, @Query() query) {
-    console.log('blogId', postId);
+  async getCommentOnPostId(
+    @Param('postId') postId: string,
+    @Query() query,
+    @Req() req,
+    @Res() res: Response,
+  ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.commentsQueryRepository.findCommentByPostIdNoAuth(
-      postId,
-      pagination(query),
-    );
+    if (req.user) {
+      const comments = await this.commentsQueryRepository.findCommentByPostId(
+        postId,
+        req.user.id,
+        pagination(query),
+      );
+      return res.status(200).send(comments);
+    } else {
+      const comments =
+        await this.commentsQueryRepository.findCommentByPostIdNoAuth(
+          postId,
+          pagination(query),
+        );
+      return res.status(200).send(comments);
+    }
   }
   @UseGuards(BasicAuthGuard)
   @Post()
