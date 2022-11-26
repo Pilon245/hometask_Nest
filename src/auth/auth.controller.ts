@@ -36,6 +36,7 @@ import {
 } from './dto/registration.dto';
 import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
+import { JwtGenerate } from './helper/generate.token';
 
 @Controller('auth')
 export class AuthController {
@@ -43,6 +44,7 @@ export class AuthController {
     private readonly authService: AuthService,
     protected usersService: UsersService,
     protected jwtService: JwtService,
+    protected jwtGenerate: JwtGenerate,
     protected usersRepository: UsersRepository,
     protected sessionService: SessionService,
     protected sessionQueryRepository: SessionQueryRepository,
@@ -81,7 +83,9 @@ export class AuthController {
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = await payloadRefreshToken(req.cookies.refreshToken);
+    const result: any = await this.jwtGenerate.verifyTokens(
+      req.cookies.refreshToken,
+    );
     const user = await this.usersQueryRepository.findUsersById(result.id);
     const foundLastDate =
       await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
@@ -189,7 +193,7 @@ export class AuthController {
   @Post('logout')
   async logOutAccount(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = await payloadRefreshToken(
+    const result: any = await this.jwtGenerate.verifyTokens(
       req.cookies.refreshToken.split(' ')[0],
     );
     const foundLastDate =

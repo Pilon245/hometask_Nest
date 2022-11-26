@@ -2,8 +2,8 @@
 /dist
 /node_modules
 # тут правильный путь?
-/src/auth/constants.ts
-/src/service/SETTING.ts
+#/src/auth/constants.ts
+#/src/service/SETTING.ts
 .env
 .test
 

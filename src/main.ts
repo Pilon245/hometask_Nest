@@ -37,6 +37,7 @@ async function bootstrap() {
   await app.listen(4000, () => {
     `Server start on port: ${4000}`;
   });
+  console.log('process.env.mongo', process.env.MONGO_URI);
 }
 bootstrap();
 

@@ -1,17 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { UserOutputModel } from '../../users/dto/entity.dto';
-import { SETTING } from '../../service/SETTING'; //todo  тут сделать через env?
+import { ConfigService } from '@nestjs/config'; //todo  тут сделать через env?
 
 @Injectable() //todo тут нужно экжентить?
 export class JwtGenerate {
+  constructor(private configService: ConfigService) {}
+  private accessTokenJwtSecret =
+    this.configService.get<string>('ACCESS_JWT_SECRET');
+  private refreshTokenJwtSecret =
+    this.configService.get<string>('REFRESH_JWT_SECRET');
   async generateTokens(user: UserOutputModel, deviceId: string) {
-    const accessToken = jwt.sign({ id: user.id }, SETTING.JWT_SECRET, {
+    const accessToken = jwt.sign({ id: user.id }, this.accessTokenJwtSecret, {
       expiresIn: '7m',
     });
     const refreshToken = jwt.sign(
       { id: user.id, deviceId: deviceId },
-      SETTING.JWT_SECRET,
+      this.refreshTokenJwtSecret,
       { expiresIn: '7m' },
     );
     return {
@@ -22,7 +27,7 @@ export class JwtGenerate {
 
   async verifyTokens(token: string) {
     try {
-      const result: any = jwt.verify(token, SETTING.JWT_SECRET);
+      const result: any = jwt.verify(token, this.accessTokenJwtSecret);
       return result;
     } catch (error) {
       return null;

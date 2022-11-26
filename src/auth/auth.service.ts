@@ -39,7 +39,7 @@ export class AuthService {
       return false;
     }
     if (user) {
-      const payload = await payloadRefreshToken(token);
+      const payload = await this.jwtGenerate.verifyTokens(token);
       const tokens = await this.jwtGenerate.generateTokens(
         user,
         payload.deviceId,
