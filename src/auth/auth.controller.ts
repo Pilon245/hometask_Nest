@@ -30,6 +30,7 @@ import { UsersRepository } from '../users/users.repository';
 import { SessionRepository } from '../session/session.repository';
 import { SessionQueryRepository } from '../session/session.query.repository';
 import {
+  ConfirmationInputModel,
   NewPasswordInputModel,
   RegistrationEmailInputModel,
 } from './dto/registration.dto';
@@ -130,10 +131,11 @@ export class AuthController {
     );
     return res.sendStatus(204);
   }
-  // async confirmationEmail(req: Request, res: Response) {
-  //   const result = await authService.confirmationEmail(req.body.code);
-  //   res.sendStatus(204);
-  // }
+  @Post('registration-confirmation')
+  async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
+    const result = await this.authService.confirmationEmail(inputModel.code);
+    return;
+  }
   @Post('registration-email-resending')
   async resendingEmail(
     @Req() req,

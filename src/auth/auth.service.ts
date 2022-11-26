@@ -62,7 +62,9 @@ export class AuthService {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
       code,
     );
-    const result = await this.usersRepository.updateEmailConfirmation(user!.id);
+    if (!user) return false;
+    console.log('user', user);
+    const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;
   }
   async confirmationPassword(code: string) {

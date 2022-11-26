@@ -10,6 +10,10 @@ export class RegistrationInputModel {
   email: string;
 }
 
+export class ConfirmationInputModel {
+  @Length(0)
+  code: string;
+}
 export class RegistrationEmailInputModel {
   @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   email: string;
