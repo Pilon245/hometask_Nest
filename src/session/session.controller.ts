@@ -10,12 +10,14 @@ import {
 import { SessionService } from './session.service';
 import { Response } from 'express';
 import { JwtGenerate } from '../auth/helper/generate.token';
+import { SessionRepository } from './session.repository';
 
 @Controller('security')
 export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,
     protected jwtGenerate: JwtGenerate,
+    private readonly sessionsRepository: SessionRepository,
   ) {}
   @Get('devices')
   async getDevices(@Param('id') id: string, @Req() req, @Res() res: Response) {
@@ -52,6 +54,12 @@ export class SessionController {
     const result: any = await this.jwtGenerate.verifyTokens(
       req.cookies.refreshToken,
     );
+    const foundUser =
+      await this.sessionsRepository.findDevicesByDeviceIdAndUserId(
+        result.id,
+        result.deviceId,
+      );
+    if (!foundUser) return res.sendStatus(403);
     if (!result) return res.sendStatus(401);
     await this.sessionsService.deleteDevicesById(result.deviceId);
     return res.sendStatus(200);

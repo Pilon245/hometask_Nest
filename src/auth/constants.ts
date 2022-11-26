@@ -1,3 +1,4 @@
 export const jwtConstants = {
-  secret: 'secretKey',
+  secret: process.env.ACCESS_JWT_SECRET || '',
 };
+//todo сделать переменную окружения

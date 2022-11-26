@@ -86,10 +86,7 @@ export class BlogsController {
     @Req() req,
     @Res() res: Response,
   ) {
-    const result = await this.postsQueryRepository.findPostByBlogIdNoAuth(
-      blogId,
-      pagination(query),
-    );
+    const result = await this.blogsQueryRepository.findBlogById(blogId);
     if (!result) {
       throw new HttpException('invalid blog', 404);
     }

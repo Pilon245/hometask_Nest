@@ -20,6 +20,9 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGenerate } from './helper/generate.token';
+import { ConfigService } from '@nestjs/config';
+const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
+console.log('result', result);
 
 @Module({
   imports: [
@@ -28,7 +31,7 @@ import { JwtGenerate } from './helper/generate.token';
     SessionModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
-      secret: jwtConstants.secret,
+      secret: result,
       signOptions: { expiresIn: '7m' },
     }),
     ThrottlerModule.forRoot({

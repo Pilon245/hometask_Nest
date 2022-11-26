@@ -225,7 +225,6 @@ export class PostsQueryRepository {
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    if (!posts) return false;
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }],
@@ -259,6 +258,10 @@ export class PostsQueryRepository {
         },
       };
     });
+    // if (posts.length === 0) {
+    //   console.log('posts2', posts);
+    //   return null;
+    // }
     const items = await Promise.all(Promises);
 
     const totalCount = await this.postModel.countDocuments({ blogId });
