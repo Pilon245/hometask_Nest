@@ -14,7 +14,6 @@ export class UsersService {
 
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
-    // const password = passwordHash.then();
     const createdUsers = await this.userRepository.findLoginAndEmail(
       inputModel.login,
       inputModel.email,

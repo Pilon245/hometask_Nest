@@ -24,7 +24,7 @@ import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
 import { OptionalBearerAuthGuard } from '../auth/strategy/optional.bearer.auth.guard';
 import { Response } from 'express';
-import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
+import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 
 @Controller('comments')
 export class CommentsController {
@@ -32,7 +32,7 @@ export class CommentsController {
     protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
   ) {}
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getCommentById(
     @Param('id') id: string,

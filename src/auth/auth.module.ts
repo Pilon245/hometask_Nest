@@ -15,7 +15,7 @@ import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { SessionModule } from '../session/session.module';
 import { UsersRepository } from '../users/users.repository';
-import { BearerAuthGuard } from './strategy/bearer.auth.guard';
+import { BearerAuthGuardOnGet } from './strategy/bearer-auth-guard-on-get.service';
 import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
 
 @Module({
@@ -39,7 +39,7 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
     EmailAdapter,
     PasswordEmailAdapter,
     UsersRepository,
-    BearerAuthGuard,
+    BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
   ],
   exports: [
@@ -49,7 +49,7 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
-    BearerAuthGuard,
+    BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
   ],
 })

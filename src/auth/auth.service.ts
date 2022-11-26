@@ -5,10 +5,7 @@ import {
   _generatePasswordForDb,
   payloadRefreshToken,
 } from '../helper/auth.function';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-import { setting } from '../service/setting';
 import { generateTokens, verifyTokens } from './helper/generate.token';
 import { SessionService } from '../session/session.service';
 
@@ -78,10 +75,7 @@ export class AuthService {
   async updateEmailCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
     const newCode = randomUUID();
-    const result = await this.usersRepository.updateEmailCode(
-      user!.id,
-      newCode,
-    );
+    const result = await this.usersRepository.updateEmailCode(user.id, newCode);
     return result;
   }
   async updatePasswordCode(email: string) {

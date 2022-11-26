@@ -37,7 +37,7 @@ import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
 import { EmailAdapter } from './adapters/emailAdapter';
 import { Session, SessionSchema } from './session/entities/session.entity';
-import { BearerAuthGuard } from './auth/strategy/bearer.auth.guard';
+import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.service';
 import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.guard';
 
 const schemas = [
@@ -91,7 +91,7 @@ const schemas = [
     BasicStrategy,
     PasswordEmailAdapter,
     EmailAdapter,
-    BearerAuthGuard,
+    BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
   ],
 })

@@ -28,7 +28,7 @@ import { UsersQueryRepository } from '../users/users.query.repository';
 import { UpdateLikeInputModel } from '../comments/dto/update.comments.dto';
 import { LikeValueComment } from '../comments/entities/likes.comments.entity';
 import { Response } from 'express';
-import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
+import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 
 @Controller('posts')
 export class PostsController {
@@ -40,7 +40,7 @@ export class PostsController {
     protected commentsQueryRepository: CommentsQueryRepository,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get()
   async getPosts(@Query() query, @Req() req, @Res() res: Response) {
     if (req.user) {
@@ -56,7 +56,7 @@ export class PostsController {
       return res.status(200).send(posts);
     }
   }
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getPost(@Param('id') id: string, @Req() req, @Res() res: Response) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(id);
@@ -74,7 +74,7 @@ export class PostsController {
       return res.status(200).send(posts);
     }
   }
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get(':postId/comments')
   async getCommentOnPostId(
     @Param('postId') postId: string,

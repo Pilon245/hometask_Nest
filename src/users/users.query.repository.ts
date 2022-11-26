@@ -29,6 +29,15 @@ export class UsersQueryRepository {
       createdAt: users.accountData.createdAt,
     };
   }
+  async findUsersByIdOnMyAccount(id: string) {
+    const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
+    if (!users) return false;
+    return {
+      login: users.accountData.login,
+      email: users.accountData.email,
+      createdAt: users.accountData.createdAt,
+    };
+  }
   async findUsers({
     searchLoginTerm,
     searchEmailTerm,

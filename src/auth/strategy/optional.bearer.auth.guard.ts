@@ -1,9 +1,9 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
-import { BearerAuthGuard } from './bearer.auth.guard';
+import { BearerAuthGuardOnGet } from './bearer-auth-guard-on-get.service';
 
 @Injectable()
-export class OptionalBearerAuthGuard extends BearerAuthGuard {
+export class OptionalBearerAuthGuard extends BearerAuthGuardOnGet {
   override async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       return await super.canActivate(context);

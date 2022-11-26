@@ -9,3 +9,8 @@ export class RegistrationInputModel {
   @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   email: string;
 }
+
+export class RegistrationEmailInputModel {
+  @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+  email: string;
+}

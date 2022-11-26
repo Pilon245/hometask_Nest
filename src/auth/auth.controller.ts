@@ -29,6 +29,7 @@ import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { UsersRepository } from '../users/users.repository';
 import { SessionRepository } from '../session/session.repository';
 import { SessionQueryRepository } from '../session/session.query.repository';
+import { RegistrationEmailInputModel } from './dto/registration.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -72,10 +73,8 @@ export class AuthController {
 
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
-    console.log('req.cookies.refreshToken', req.cookies.refreshToken);
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await payloadRefreshToken(req.cookies.refreshToken);
-    console.log('result', result);
     const user = await this.usersQueryRepository.findUsersById(result.id);
     const foundLastDate =
       await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
@@ -109,7 +108,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
-    const Account = await this.usersQueryRepository.findUsersById(req.user.id);
+    const Account = await this.usersQueryRepository.findUsersByIdOnMyAccount(
+      req.user.id,
+    );
     return res.status(200).send(Account);
   }
 
@@ -130,36 +131,44 @@ export class AuthController {
   //   const result = await authService.confirmationEmail(req.body.code);
   //   res.sendStatus(204);
   // }
-  // async resendingEmail(req: Request, res: Response) {
-  //   const updateCode = await authService.updateEmailCode(req.body.email);
-  //   const user = await usersRepository.findLoginOrEmail(req.body.email);
-  //   const emailSend = await emailAdapter.sendEmail(
-  //     user!.accountData.email,
-  //     user!.emailConfirmation.confirmationCode,
-  //   );
-  //   return res.sendStatus(204);
-  // }
-
-  // async recoveryPassword(req: Request, res: Response) {
-  //   const updateCode = await authService.updatePasswordCode(req.body.email);
-  //   const user = await usersRepository.findLoginOrEmail(req.body.email);
-  //   if (user) {
-  //     const update = usersRepository.updatePasswordUsers(user!.id, 'password');
-  //     const passwordEmail = passwordEmailAdapter.sendPasswordOnEmail(
-  //       user!.accountData.email,
-  //       user!.passwordConfirmation.confirmationCode,
-  //     );
-  //   }
-  //   return res.sendStatus(204);
-  // }
-  // async confirmationRecoveryPassword(req: Request, res: Response) {
-  //   // const result = await authService.confirmationPassword(req.body.recoveryCode)
-  //   const update = await authService.updatePasswordUsers(
-  //     req.body.recoveryCode,
-  //     req.body.newPassword,
-  //   );
-  //   res.sendStatus(204);
-  // }
+  @Post('registration-email-resending')
+  async resendingEmail(
+    @Req() req,
+    @Body() inputModel: RegistrationEmailInputModel,
+    @Res() res: Response,
+  ) {
+    const updateCode = await this.authService.updateEmailCode(req.body.email);
+    const user = await this.usersRepository.findLoginOrEmail(req.body.email);
+    const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
+    return res.sendStatus(204);
+  }
+  @Post('password-recovery')
+  async recoveryPassword(
+    @Req() req,
+    @Body() inputModel: RegistrationEmailInputModel,
+    @Res() res: Response,
+  ) {
+    const updateCode = await this.authService.updatePasswordCode(
+      req.body.email,
+    );
+    const user = await this.usersRepository.findLoginOrEmail(req.body.email);
+    if (user) {
+      const update = this.usersRepository.updatePasswordUsers(
+        user.id,
+        'password', //todo тут можно отправить поле null,
+      );
+      const passwordEmail = this.emailManager.sendNewPasswordMessage(user);
+    }
+    return res.sendStatus(204);
+  }
+  async confirmationRecoveryPassword(req: Request, res: Response) {
+    // const result = await authService.confirmationPassword(req.body.recoveryCode)
+    const update = await authService.updatePasswordUsers(
+      req.body.recoveryCode,
+      req.body.newPassword,
+    );
+    res.sendStatus(204);
+  }
   @Post('logout')
   async logOutAccount(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
@@ -175,11 +184,6 @@ export class AuthController {
       return res.sendStatus(401);
     }
     await this.sessionService.deleteDevicesById(result.deviceId);
-    // await this.usersRepository.deleteToken(
-    //   req.user.id,
-    //   req.cookies.refreshToken,
-    //   payload.deviceId,
-    // );
     return res.sendStatus(204);
   }
 }

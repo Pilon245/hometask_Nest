@@ -33,7 +33,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
 import { LocalStrategy } from '../auth/strategy/local.strategy';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
-import { BearerAuthGuard } from '../auth/strategy/bearer.auth.guard';
+import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -78,7 +78,7 @@ export class BlogsController {
       );
     return result;
   }
-  @UseGuards(BearerAuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get(':blogId/posts')
   async getPostsOnBlogId(
     @Param('blogId') blogId: string,
