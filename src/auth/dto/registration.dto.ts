@@ -14,3 +14,9 @@ export class RegistrationEmailInputModel {
   @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   email: string;
 }
+export class NewPasswordInputModel {
+  @Length(6, 20)
+  newPassword: string;
+  @Length(0)
+  recoveryCode: string;
+}

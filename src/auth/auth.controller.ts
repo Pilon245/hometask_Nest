@@ -29,7 +29,10 @@ import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { UsersRepository } from '../users/users.repository';
 import { SessionRepository } from '../session/session.repository';
 import { SessionQueryRepository } from '../session/session.query.repository';
-import { RegistrationEmailInputModel } from './dto/registration.dto';
+import {
+  NewPasswordInputModel,
+  RegistrationEmailInputModel,
+} from './dto/registration.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -137,8 +140,8 @@ export class AuthController {
     @Body() inputModel: RegistrationEmailInputModel,
     @Res() res: Response,
   ) {
-    const updateCode = await this.authService.updateEmailCode(req.body.email);
-    const user = await this.usersRepository.findLoginOrEmail(req.body.email);
+    const updateCode = await this.authService.updateEmailCode(inputModel.email);
+    const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
@@ -161,13 +164,18 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  async confirmationRecoveryPassword(req: Request, res: Response) {
-    // const result = await authService.confirmationPassword(req.body.recoveryCode)
-    const update = await authService.updatePasswordUsers(
-      req.body.recoveryCode,
-      req.body.newPassword,
+
+  @Post('new-password')
+  async confirmationRecoveryPassword(
+    @Req() req,
+    @Body() inputModel: NewPasswordInputModel,
+    @Res() res: Response,
+  ) {
+    const update = await this.authService.updatePasswordUsers(
+      inputModel.recoveryCode,
+      inputModel.newPassword,
     );
-    res.sendStatus(204);
+    return;
   }
   @Post('logout')
   async logOutAccount(@Req() req, @Res() res: Response) {
