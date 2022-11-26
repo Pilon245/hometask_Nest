@@ -7,11 +7,14 @@ import { UsersRepository } from '../users/users.repository';
 import { SessionRepository } from './session.repository';
 import { UserAccountDBType, UserOutputModel } from '../users/dto/entity.dto';
 import { randomUUID } from 'crypto';
-import { generateTokens, verifyTokens } from '../auth/helper/generate.token';
+import { JwtGenerate } from '../auth/helper/generate.token';
 
 @Injectable()
 export class SessionService {
-  constructor(protected sessionRepository: SessionRepository) {}
+  constructor(
+    protected sessionRepository: SessionRepository,
+    protected jwtGenerate: JwtGenerate,
+  ) {}
   async findDevices(id: string) {
     const devices = await this.sessionRepository.findDevices(id);
     return devices;
@@ -23,8 +26,10 @@ export class SessionService {
   async createSession(user: UserOutputModel, ip: string, deviceName: string) {
     const userId = user.id;
     const deviceId = String(randomUUID());
-    const tokens = await generateTokens(user, deviceId);
-    const refreshToken = await verifyTokens(tokens.refreshToken.split(' ')[0]);
+    const tokens = await this.jwtGenerate.generateTokens(user, deviceId);
+    const refreshToken = await this.jwtGenerate.verifyTokens(
+      tokens.refreshToken.split(' ')[0],
+    );
     const session = new SessionFactory(
       ip,
       deviceName,

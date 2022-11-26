@@ -32,9 +32,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    // if (status === 404) {
-    //   response.sendStatus(404);
-    // }
+    if (status === 404) {
+      response.sendStatus(404);
+    }
     // if (status === 500 && process.env.envorinment === 'production') {
     //   response.status(500).send({});
     // }
@@ -42,13 +42,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const errorsResponse = {
         errorsMessages: [],
       };
+      // {
+      //   const errorResponse = {
+      //     errorsMessages: [],
+      //   };
+      //   const responseBody: any = exception.getResponse();
+      //   responseBody.message.forEach((m) =>
+      //     errorResponse.errorsMessages.push(m),
+      //   );
+      //   response.status(status).json(errorResponse);
+      // }
       const responseBody: any = exception.getResponse();
       responseBody.message.forEach((m) =>
-        errorsResponse.errorsMessages.push({
-          // m,
-          message: m,
-          field: 'Incorrect input',
-        }),
+        errorsResponse.errorsMessages.push(m),
       );
       response.status(status).json(errorsResponse);
     } else {

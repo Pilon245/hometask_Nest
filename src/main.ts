@@ -26,11 +26,7 @@ async function bootstrap() {
             });
           });
         });
-        throw new BadRequestException(
-          errors.map((e) => {
-            return e.constraints;
-          }),
-        );
+        throw new BadRequestException(errorsForResponce);
       },
     }),
   );

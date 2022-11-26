@@ -3,7 +3,7 @@
 /node_modules
 # тут правильный путь?
 /src/auth/constants.ts
-/src/service/setting.ts
+/src/service/SETTING.ts
 .env
 .test
 

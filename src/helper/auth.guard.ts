@@ -27,12 +27,15 @@ export class AuthGuard implements CanActivate {
     protected usersService: UsersService,
     protected userRepository: UsersRepository,
   ) {}
-  async canActivate(context: ExecutionContext) {
+  async canActivate(
+    context: ExecutionContext,
+    // @Body() inputModel: { password: string },
+  ) {
     const request: Request = context.switchToHttp().getRequest();
+    const body = request.body as unknown as { password: string };
     // @ts-ignore
     const loginOrEmail = request.body.loginOrEmail;
-    // @ts-ignore
-    const password = request.body.password;
+    const password = body.password;
     console.log('loginOrEmail', loginOrEmail);
     console.log('password', password);
     const user = await this.userRepository.findLoginOrEmail(loginOrEmail);

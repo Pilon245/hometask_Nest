@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { setting } from '../service/setting';
+import { SETTING } from '../service/SETTING';
 import * as jwt from 'jsonwebtoken';
 
 // export class AuthFunction {
@@ -23,7 +23,7 @@ export const _generatePasswordForDb = async (password: string) => {
 export const payloadRefreshToken = async (token: string) => {
   const refToken = token.split(' ')[0];
   try {
-    const result: any = jwt.verify(token, setting.JWT_SECRET);
+    const result: any = jwt.verify(token, SETTING.JWT_SECRET);
     return result;
   } catch (error) {
     return null;

@@ -14,6 +14,7 @@ import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { SessionQueryRepository } from './session.query.repository';
+import { JwtGenerate } from '../auth/helper/generate.token';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SessionQueryRepository } from './session.query.repository';
     SessionRepository,
     AuthService,
     SessionQueryRepository,
+    JwtGenerate,
   ],
   exports: [SessionService, SessionRepository, SessionQueryRepository],
 })

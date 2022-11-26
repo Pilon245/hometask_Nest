@@ -34,6 +34,8 @@ import {
   NewPasswordInputModel,
   RegistrationEmailInputModel,
 } from './dto/registration.dto';
+import { Throttle } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -47,6 +49,7 @@ export class AuthController {
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
   ) {}
+  @UseGuards(CustomThrottlerGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async singInAccount(
@@ -74,7 +77,7 @@ export class AuthController {
       })
       .send({ accessToken: session.accessToken });
   }
-
+  @UseGuards(CustomThrottlerGuard)
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
@@ -108,7 +111,7 @@ export class AuthController {
       return res.sendStatus(401); //todo сделать через Exzeption  которые встроенны в нест
     }
   }
-
+  @Throttle() //todo это откдючить гвард?
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
@@ -117,7 +120,7 @@ export class AuthController {
     );
     return res.status(200).send(Account);
   }
-
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration')
   async createRegistrationUser(
     @Req() req,
@@ -125,17 +128,19 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const newUsers = await this.usersService.createUsers(inputModel);
-    if (!newUsers) return res.sendStatus(404);
+    if (!newUsers) return res.sendStatus(400); //todo перверку на созданого юзера где делать?
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
       newUsers,
     );
     return res.sendStatus(204);
   }
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration-confirmation')
   async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
     const result = await this.authService.confirmationEmail(inputModel.code);
     return;
   }
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
   async resendingEmail(
     @Req() req,
@@ -147,6 +152,7 @@ export class AuthController {
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
+  @UseGuards(CustomThrottlerGuard)
   @Post('password-recovery')
   async recoveryPassword(
     @Req() req,
@@ -158,15 +164,15 @@ export class AuthController {
     );
     const user = await this.usersRepository.findLoginOrEmail(req.body.email);
     if (user) {
-      const update = this.usersRepository.updatePasswordUsers(
-        user.id,
-        'password', //todo тут можно отправить поле null,
-      );
+      // const update = this.usersRepository.updatePasswordUsers(//todo спросить у вани на счет этого
+      //   user.id,
+      //   'password', //todo тут можно отправить поле null,
+      // );
       const passwordEmail = this.emailManager.sendNewPasswordMessage(user);
     }
     return res.sendStatus(204);
   }
-
+  @UseGuards(CustomThrottlerGuard)
   @Post('new-password')
   async confirmationRecoveryPassword(
     @Req() req,
@@ -179,6 +185,7 @@ export class AuthController {
     );
     return;
   }
+  @UseGuards(CustomThrottlerGuard)
   @Post('logout')
   async logOutAccount(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);

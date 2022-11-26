@@ -6,14 +6,15 @@ import {
   payloadRefreshToken,
 } from '../helper/auth.function';
 import * as bcrypt from 'bcrypt';
-import { generateTokens, verifyTokens } from './helper/generate.token';
 import { SessionService } from '../session/session.service';
+import { JwtGenerate } from './helper/generate.token';
 
 @Injectable()
 export class AuthService {
   constructor(
     protected usersRepository: UsersRepository,
     private sessionService: SessionService,
+    protected jwtGenerate: JwtGenerate,
   ) {}
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
@@ -39,8 +40,11 @@ export class AuthService {
     }
     if (user) {
       const payload = await payloadRefreshToken(token);
-      const tokens = await generateTokens(user, payload.deviceId); //todo тут как функцию или как класс?
-      const refreshToken = await verifyTokens(
+      const tokens = await this.jwtGenerate.generateTokens(
+        user,
+        payload.deviceId,
+      ); //todo тут как функцию или как класс?
+      const refreshToken = await this.jwtGenerate.verifyTokens(
         tokens.refreshToken.split(' ')[0],
       );
       await this.sessionService.updateSession(user, refreshToken);
@@ -100,7 +104,7 @@ export class AuthService {
     const passwordHash = await _generatePasswordForDb(password);
     await this.usersRepository.updatePasswordConfirmation(user!.id);
     const update = await this.usersRepository.updatePasswordUsers(
-      user!.id,
+      user.id,
       passwordHash,
     );
     return update;

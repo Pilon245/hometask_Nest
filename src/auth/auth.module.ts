@@ -17,6 +17,9 @@ import { SessionModule } from '../session/session.module';
 import { UsersRepository } from '../users/users.repository';
 import { BearerAuthGuardOnGet } from './strategy/bearer-auth-guard-on-get.service';
 import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGenerate } from './helper/generate.token';
 
 @Module({
   imports: [
@@ -27,6 +30,10 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '7m' },
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 10,
+      limit: 5,
     }),
   ],
   controllers: [AuthController],
@@ -41,6 +48,7 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
     UsersRepository,
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
+    JwtGenerate,
   ],
   exports: [
     AuthService,
@@ -51,6 +59,7 @@ import { OptionalBearerAuthGuard } from './strategy/optional.bearer.auth.guard';
     PasswordEmailAdapter,
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
+    JwtGenerate,
   ],
 })
 export class AuthModule {}

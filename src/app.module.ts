@@ -39,6 +39,9 @@ import { EmailAdapter } from './adapters/emailAdapter';
 import { Session, SessionSchema } from './session/entities/session.entity';
 import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.service';
 import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.guard';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGenerate } from './auth/helper/generate.token';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -61,6 +64,7 @@ const schemas = [
       }),
       inject: [ConfigService],
     }),
+
     MongooseModule.forFeature(schemas),
     LikesModule,
     SessionModule,
@@ -93,6 +97,7 @@ const schemas = [
     EmailAdapter,
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
+    JwtGenerate,
   ],
 })
 export class AppModule {}
