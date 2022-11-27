@@ -66,7 +66,11 @@ export class AuthService {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
       code,
     );
-    if (!user) return false;
+    console.log(
+      'user.emailConfirmation.isConfirmed',
+      user.emailConfirmation.isConfirmed,
+    );
+    if (!user || user.emailConfirmation.isConfirmed == true) return false;
     console.log('user', user);
     const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;
@@ -80,6 +84,7 @@ export class AuthService {
   }
   async updateEmailCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
+    if (!user) return false;
     const newCode = randomUUID();
     const result = await this.usersRepository.updateEmailCode(user.id, newCode);
     return result;
