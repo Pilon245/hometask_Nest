@@ -1,5 +1,6 @@
 import { Prop } from '@nestjs/mongoose';
 import {
+  BanInfoType,
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
@@ -22,5 +23,6 @@ export class UsersFactory {
     public accountData: UsersAccountDataType,
     public emailConfirmation: EmailConfirmationType,
     public passwordConfirmation: PasswordConfirmationType,
+    public banInfo: BanInfoType,
   ) {}
 }

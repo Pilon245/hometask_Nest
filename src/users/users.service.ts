@@ -15,22 +15,22 @@ export class UsersService {
     inputModel: CreateUserInputModel,
   ): Promise<User | string> {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
-    const createdLoginUsers = await this.userRepository.findLogin(
-      inputModel.login,
-    );
-    if (createdLoginUsers) {
-      var login = { login: 'Created Login' };
-    }
-
-    const createdEmailUsers = await this.userRepository.findEmail(
-      inputModel.email,
-    );
-    if (createdEmailUsers) {
-      var email = { email: 'Created Email' };
-    }
-    console.log('{ login, email }', ` ${login.login}, ${email.email} `);
-    if (createdLoginUsers || createdEmailUsers)
-      return `${login.login}, ${email.email}`;
+    // const createdLoginUsers = await this.userRepository.findLogin(
+    //   inputModel.login,
+    // );
+    // if (createdLoginUsers) {
+    //   var login = { login: 'Created Login' };
+    // }
+    //
+    // const createdEmailUsers = await this.userRepository.findEmail(
+    //   inputModel.email,
+    // );
+    // if (createdEmailUsers) {
+    //   var email = { email: 'Created Email' };
+    // }
+    // console.log('{ login, email }', ` ${login.login}, ${email.email} `);
+    // if (createdLoginUsers || createdEmailUsers)
+    //   return `${login.login}, ${email.email}`;
     const newUser = new UsersFactory(
       String(+new Date()),
       {
@@ -48,6 +48,11 @@ export class UsersService {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
         isConfirmed: false,
+      },
+      {
+        isBanned: false,
+        banDate: new Date().toISOString(),
+        banReason: 'string',
       },
     );
     await this.userRepository.createUsers(newUser);
@@ -77,6 +82,11 @@ export class UsersService {
         confirmationCode: randomUUID(),
         expirationDate: add(new Date(), { hours: 1, minutes: 1 }),
         isConfirmed: false,
+      },
+      {
+        isBanned: false,
+        banDate: new Date().toISOString(),
+        banReason: 'string',
       },
     );
     await this.userRepository.createUsers(newUser);

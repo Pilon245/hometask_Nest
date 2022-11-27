@@ -11,6 +11,7 @@ import {
   Req,
   Ip,
   HttpCode,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -137,12 +138,12 @@ export class AuthController {
     const newUsers = await this.usersService.registrationUsers(inputModel);
     console.log('newUsers', newUsers);
 
-    if (newUsers == 'Created Login, Created Email')
-      return res
-        .status(400)
-        .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] }); //todo перверку на созданого юзера где делать?
-    console.log('dddddddddddddddddddddddddddd');
-    return;
+    if (!newUsers) return res.sendStatus(400);
+    // if (newUsers == 'Created Login, Created Email')
+    //   throw new BadRequestException(newUsers);
+    // return res
+    //   .status(400)
+    //   .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] }); //todo перверку на созданого юзера где делать?
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
       newUsers,
     );
@@ -156,10 +157,10 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const result = await this.authService.confirmationEmail(inputModel.code);
-    if (!result)
-      return res
-        .status(400)
-        .send({ errorsMessages: [{ message: 'Any<string>', field: 'code' }] });
+    // if (!result)
+    //   return res
+    //     .status(400)
+    //     .send({ errorsMessages: [{ message: 'Any<string>', field: 'code' }] });
     return;
   }
   @UseGuards(CustomThrottlerGuard)

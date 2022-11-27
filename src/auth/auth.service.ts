@@ -66,12 +66,12 @@ export class AuthService {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
       code,
     );
-    console.log(
-      'user.emailConfirmation.isConfirmed',
-      user.emailConfirmation.isConfirmed,
-    );
-    if (!user || user.emailConfirmation.isConfirmed == true) return false;
-    console.log('user', user);
+    // console.log(
+    //   'user.emailConfirmation.isConfirmed',
+    //   user.emailConfirmation.isConfirmed,
+    // );
+    // if (!user || user.emailConfirmation.isConfirmed == true) return false;
+    // console.log('user', user);
     const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;
   }

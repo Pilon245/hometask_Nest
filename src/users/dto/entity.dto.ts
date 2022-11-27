@@ -4,6 +4,7 @@ export class UserAccountDBType {
     public accountData: UsersAccountDataType,
     public emailConfirmation: EmailConfirmationType,
     public passwordConfirmation: PasswordConfirmationType,
+    public banInfo: BanInfoType,
   ) {}
 }
 export class UsersAccountDataType {
@@ -12,6 +13,13 @@ export class UsersAccountDataType {
     public email: string,
     public passwordHash: string,
     public createdAt: string,
+  ) {}
+}
+export class BanInfoType {
+  constructor(
+    public isBanned: boolean,
+    public banDate: string,
+    public banReason: string,
   ) {}
 }
 export class EmailConfirmationType {
