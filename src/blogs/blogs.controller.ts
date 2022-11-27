@@ -29,11 +29,11 @@ import {
 } from '../posts/dto/postsFactory';
 import { LocalAuthGuard } from '../auth/strategy/local-auth.guard';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
 import { LocalStrategy } from '../auth/strategy/local.strategy';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
+import { AuthGuard } from '../auth/strategy/forbiten.giard';
 
 // export class CreateBlogInputDTO {
 //   @Length(0, 100, { message: 'incorrect name' })
@@ -78,7 +78,8 @@ export class BlogsController {
       );
     return result;
   }
-  @UseGuards(BearerAuthGuardOnGet)
+  // @UseGuards(BearerAuthGuardOnGet)
+  @UseGuards(AuthGuard)
   @Get(':blogId/posts')
   async getPostsOnBlogId(
     @Param('blogId') blogId: string,

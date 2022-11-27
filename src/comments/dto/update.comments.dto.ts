@@ -7,6 +7,6 @@ export class UpdateCommentInputModel {
 }
 
 export class UpdateLikeInputModel {
-  @Length(0, 7)
+  @Length(0, 7) //todo седать валидацию лайков
   likeStatus: string;
 }

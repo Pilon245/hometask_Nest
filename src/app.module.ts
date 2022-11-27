@@ -42,6 +42,7 @@ import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.gu
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGenerate } from './auth/helper/generate.token';
+import { AuthGuard } from './auth/strategy/forbiten.giard';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -98,6 +99,7 @@ const schemas = [
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
     JwtGenerate,
+    AuthGuard,
   ],
 })
 export class AppModule {}

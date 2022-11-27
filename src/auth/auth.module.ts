@@ -21,6 +21,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from './strategy/forbiten.giard';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 console.log('result', result);
 
@@ -52,6 +53,7 @@ console.log('result', result);
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
     JwtGenerate,
+    AuthGuard,
   ],
   exports: [
     AuthService,
@@ -63,6 +65,7 @@ console.log('result', result);
     BearerAuthGuardOnGet,
     OptionalBearerAuthGuard,
     JwtGenerate,
+    AuthGuard,
   ],
 })
 export class AuthModule {}
