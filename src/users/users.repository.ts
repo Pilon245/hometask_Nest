@@ -31,27 +31,19 @@ export class UsersRepository {
     });
     return user;
   }
+  async findLogin(Login: string): Promise<User> {
+    const user = await this.userModel.findOne({ 'accountData.login': Login });
+    return user;
+  }
+  async findEmail(Email: string): Promise<User> {
+    const user = await this.userModel.findOne({ 'accountData.email': Email });
+    return user;
+  }
   // async findTokenByUserIdAndDeviceId(userId: string, deviceId: string) {
   //   const result = await TokenModelClass.findOne({
   //     $and: [{ userId: userId }, { deviceId: deviceId }],
   //   });
   //   return result;
-  // }
-  // async createToken(userId: string, refreshToken: string, deviceId: string) {
-  //   const result = await TokenModelClass.insertMany({
-  //     userId: userId,
-  //     refreshToken: refreshToken,
-  //     deviceId: deviceId,
-  //   });
-  //   return result;
-  // }
-  // async updateToken(userId: string, refreshToken: string, deviceId: string) {
-  //   const result = await TokenModelClass.updateOne(
-  //     { userId: userId, deviceId: deviceId },
-  //     { refreshToken },
-  //   );
-  //   return result.modifiedCount === 1;
-  // }
   async updateEmailConfirmation(id: string) {
     const result = await this.userModel.updateOne(
       { id: id },
@@ -99,13 +91,6 @@ export class UsersRepository {
     });
     return user;
   }
-  // async deleteToken(userId: string, refreshToken: string, deviceId: string) {
-  //   const result = await this..updateOne(
-  //     { userId: userId, deviceId: deviceId },
-  //     { refreshToken },
-  //   );
-  //   return result.modifiedCount === 1;
-  // }
   async createUsers(user: any) {
     const users = await new this.userModel(user);
     return users.save();

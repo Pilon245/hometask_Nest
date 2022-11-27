@@ -10,6 +10,7 @@ import {
   Res,
   Req,
   Ip,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -23,7 +24,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { Response, Request } from 'express';
 import { payloadRefreshToken } from '../helper/auth.function';
 import { UsersQueryRepository } from '../users/users.query.repository';
-import { CreateUserInputModel } from '../users/dto/usersFactory';
+import { CreateUserInputModel, UsersFactory } from '../users/dto/usersFactory';
 import { EmailManager } from '../managers/email.manager';
 import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { UsersRepository } from '../users/users.repository';
@@ -37,6 +38,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { JwtGenerate } from './helper/generate.token';
+import { User } from '../users/users.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -74,8 +76,8 @@ export class AuthController {
     return res
       .cookie('refreshToken', session.refreshToken, {
         expires: new Date(Date.now() + 6000000),
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
       })
       .send({ accessToken: session.accessToken });
   }
@@ -126,13 +128,21 @@ export class AuthController {
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('registration')
+  @HttpCode(204)
   async createRegistrationUser(
     @Req() req,
     @Body() inputModel: CreateUserInputModel,
     @Res() res: Response,
   ) {
-    const newUsers = await this.usersService.createUsers(inputModel);
-    if (!newUsers) return res.sendStatus(400); //todo перверку на созданого юзера где делать?
+    const newUsers = await this.usersService.registrationUsers(inputModel);
+    console.log('newUsers', newUsers);
+
+    if (newUsers == 'Created Login, Created Email')
+      return res
+        .status(400)
+        .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] }); //todo перверку на созданого юзера где делать?
+    console.log('dddddddddddddddddddddddddddd');
+    return;
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
       newUsers,
     );
@@ -140,24 +150,38 @@ export class AuthController {
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('registration-confirmation')
-  async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
+  @HttpCode(204)
+  async confirmationEmail(
+    @Body() inputModel: ConfirmationInputModel,
+    @Res() res: Response,
+  ) {
     const result = await this.authService.confirmationEmail(inputModel.code);
+    if (!result)
+      return res
+        .status(400)
+        .send({ errorsMessages: [{ message: 'Any<string>', field: 'code' }] });
     return;
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
+  @HttpCode(204)
   async resendingEmail(
     @Req() req,
     @Body() inputModel: RegistrationEmailInputModel,
     @Res() res: Response,
   ) {
     const updateCode = await this.authService.updateEmailCode(inputModel.email);
+    if (!updateCode)
+      return res
+        .status(400)
+        .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] });
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('password-recovery')
+  @HttpCode(204)
   async recoveryPassword(
     @Req() req,
     @Body() inputModel: RegistrationEmailInputModel,
@@ -178,6 +202,7 @@ export class AuthController {
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('new-password')
+  @HttpCode(204)
   async confirmationRecoveryPassword(
     @Req() req,
     @Body() inputModel: NewPasswordInputModel,
@@ -191,6 +216,7 @@ export class AuthController {
   }
   @UseGuards(CustomThrottlerGuard)
   @Post('logout')
+  @HttpCode(204)
   async logOutAccount(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await this.jwtGenerate.verifyTokens(

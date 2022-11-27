@@ -78,8 +78,7 @@ export class BlogsController {
       );
     return result;
   }
-  // @UseGuards(BearerAuthGuardOnGet)
-  @UseGuards(AuthGuard)
+  @UseGuards(BearerAuthGuardOnGet)
   @Get(':blogId/posts')
   async getPostsOnBlogId(
     @Param('blogId') blogId: string,
