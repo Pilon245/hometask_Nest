@@ -70,7 +70,7 @@ export class AuthService {
     //   'user.emailConfirmation.isConfirmed',
     //   user.emailConfirmation.isConfirmed,
     // );
-    // if (!user || user.emailConfirmation.isConfirmed == true) return false;
+    if (!user) return false;
     // console.log('user', user);
     const result = await this.usersRepository.updateEmailConfirmation(user.id);
     return result;

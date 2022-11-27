@@ -1,4 +1,6 @@
-import { IsUrl, Length } from 'class-validator';
+import { IsEmpty, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
+import { Trim } from 'class-sanitizer';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class BlogsFactory {
   // для созадния обЪекта
@@ -12,15 +14,17 @@ export class BlogsFactory {
 }
 export class CreateBlogInputDTO {
   // для валидации
-
-  @Length(0, 15, { message: 'incorrect name' })
+  @Length(1, 15, { message: 'incorrect name' })
+  // @IsString()
+  @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
-  @Length(0, 500)
+  @Length(1, 500)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
-
-  @Length(0, 100)
+  @Length(1, 100)
   @IsUrl()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
 export class CreateBlogDTO {

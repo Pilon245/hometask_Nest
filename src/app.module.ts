@@ -22,7 +22,6 @@ import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
-import { LikesModule } from './likes/likes.module';
 import { SessionModule } from './session/session.module';
 import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
 import {
@@ -67,7 +66,6 @@ const schemas = [
     }),
 
     MongooseModule.forFeature(schemas),
-    LikesModule,
     SessionModule,
     UsersModule,
     AuthModule,

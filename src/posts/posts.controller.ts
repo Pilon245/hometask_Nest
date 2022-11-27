@@ -13,6 +13,7 @@ import {
   Request,
   Req,
   Res,
+  BadRequestException,
 } from '@nestjs/common';
 import { extendedLikesInfoType, PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -111,7 +112,7 @@ export class PostsController {
       inputModel.blogId,
     );
     if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
+      throw new BadRequestException('invalid blog');
     }
     return this.postsService.createPosts(inputModel);
   }
@@ -148,7 +149,9 @@ export class PostsController {
       postId,
     );
     if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
+      throw new BadRequestException([
+        { message: 'blogId Not Found', filed: 'blogId' },
+      ]);
     }
     return this.postsService.updatePosts(postId, model);
   }

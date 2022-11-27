@@ -2,6 +2,7 @@ import { IsOptional, IsUrl, Length } from 'class-validator';
 import { Prop } from '@nestjs/mongoose';
 import { extendedLikesInfoType } from '../posts.service';
 import { LikeValuePost } from '../entities/likes.posts.entity';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class PostsFactory {
   constructor(
@@ -17,21 +18,29 @@ export class PostsFactory {
 }
 export class CreatePostInputDTO {
   @Length(0, 30)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   title: string;
   @Length(0, 100)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
   @Length(0, 1000)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
   @Length(0)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   blogId: string;
 }
 export class CreatePostByBlogIdInputDTO {
   @Length(0, 30)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   title: string;
   @Length(0, 100)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
   @Length(0, 1000)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
+  @IsOptional()
   @Length(0)
   blogId: string;
 }

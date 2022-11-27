@@ -54,7 +54,7 @@ export class AuthController {
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
   ) {}
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async singInAccount(
@@ -82,7 +82,7 @@ export class AuthController {
       })
       .send({ accessToken: session.accessToken });
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
     if (!req.cookies.refreshToken) return res.sendStatus(401);
@@ -118,7 +118,7 @@ export class AuthController {
       return res.sendStatus(401); //todo сделать через Exzeption  которые встроенны в нест
     }
   }
-  @Throttle() //todo это откдючить гвард?
+  // @Throttle() //todo это откдючить гвард?
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
@@ -127,7 +127,7 @@ export class AuthController {
     );
     return res.status(200).send(Account);
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('registration')
   @HttpCode(204)
   async createRegistrationUser(
@@ -149,7 +149,7 @@ export class AuthController {
     );
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(
@@ -163,7 +163,7 @@ export class AuthController {
     //     .send({ errorsMessages: [{ message: 'Any<string>', field: 'code' }] });
     return;
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
   @HttpCode(204)
   async resendingEmail(
@@ -180,7 +180,7 @@ export class AuthController {
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('password-recovery')
   @HttpCode(204)
   async recoveryPassword(
@@ -201,7 +201,7 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('new-password')
   @HttpCode(204)
   async confirmationRecoveryPassword(
@@ -215,7 +215,7 @@ export class AuthController {
     );
     return;
   }
-  @UseGuards(CustomThrottlerGuard)
+  // @UseGuards(CustomThrottlerGuard)
   @Post('logout')
   @HttpCode(204)
   async logOutAccount(@Req() req, @Res() res: Response) {
