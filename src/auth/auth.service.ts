@@ -91,6 +91,9 @@ export class AuthService {
   }
   async updatePasswordCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
+    if (!user) {
+      return false;
+    }
     const newCode = randomUUID();
     console.log('newCode', newCode);
     if (user) {
@@ -106,6 +109,7 @@ export class AuthService {
     const user = await this.usersRepository.findUserByConfirmationPasswordCode(
       code,
     );
+    if (!user) return false;
     const passwordHash = await _generatePasswordForDb(password);
     await this.usersRepository.updatePasswordConfirmation(user!.id);
     const update = await this.usersRepository.updatePasswordUsers(

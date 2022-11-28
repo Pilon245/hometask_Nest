@@ -158,10 +158,10 @@ export class AuthController {
     const result = await this.authService.confirmationEmail(inputModel.code);
     if (!result) {
       throw new BadRequestException([
-        { message: 'Any<string>', field: 'code' },
+        { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    return;
+    return res.sendStatus(204);
   }
   // @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
@@ -172,10 +172,11 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const updateCode = await this.authService.updateEmailCode(inputModel.email);
-    if (!updateCode)
-      return res
-        .status(400)
-        .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] });
+    if (!updateCode) {
+      throw new BadRequestException([
+        { message: 'Incorrect email', field: 'email' },
+      ]);
+    }
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
@@ -192,6 +193,11 @@ export class AuthController {
       req.body.email,
     );
     const user = await this.usersRepository.findLoginOrEmail(req.body.email);
+    if (!user) {
+      throw new BadRequestException([
+        { message: 'Incorrect code', field: 'code' },
+      ]);
+    }
     if (user) {
       // const update = this.usersRepository.updatePasswordUsers(//todo спросить у вани на счет этого
       //   user.id,
@@ -213,7 +219,12 @@ export class AuthController {
       inputModel.recoveryCode,
       inputModel.newPassword,
     );
-    return;
+    if (!update) {
+      throw new BadRequestException([
+        { message: 'Incorrect code', field: 'code' },
+      ]);
+    }
+    return res.sendStatus(204);
   }
   // @UseGuards(CustomThrottlerGuard)
   @Post('logout')

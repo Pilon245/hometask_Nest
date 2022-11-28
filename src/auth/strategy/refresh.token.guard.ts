@@ -36,6 +36,11 @@ export class RefreshTokenGuard implements CanActivate {
       !foundLastDate ||
       foundLastDate.lastActiveDate !== new Date(user.iat * 1000).toISOString()
     ) {
+      console.log(
+        'foundLast22222222222222222222222222222222222222222Date',
+        foundLastDate,
+      );
+
       throw new UnauthorizedException();
     }
     req.user = await this.usersQueryRepository.findUsersById(user.userId);

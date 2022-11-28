@@ -23,7 +23,7 @@ export class SessionController {
   ) {}
   @UseGuards(RefreshTokenGuard)
   @Get('devices')
-  async getDevices(@Param('id') id: string, @Req() req, @Res() res: Response) {
+  async getDevices(@Req() req, @Res() res: Response) {
     // console.log('req.cookies.refreshToken', req.cookies.refreshToken);
     // if (!req.cookies.refreshToken) return res.sendStatus(401);
     // const result: any = await this.jwtGenerate.verifyTokens(
@@ -32,7 +32,9 @@ export class SessionController {
     // console.count(result);
     // if (!result) return res.sendStatus(401);
     console.log('req.user', req.user);
-    const devices = await this.sessionsQueryRepository.findDevices(req.user.id);
+    const devices = await this.sessionsQueryRepository.findDevices(
+      req.user.deviceId,
+    );
     return res.status(200).send(devices);
   }
 
