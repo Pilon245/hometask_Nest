@@ -10,23 +10,25 @@ import {
 import { SessionService } from './session.service';
 import { Response } from 'express';
 import { JwtGenerate } from '../auth/helper/generate.token';
-import { SessionRepository } from './session.repository';
+import { SessionQueryRepository } from './session.query.repository';
 
 @Controller('security')
 export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,
     protected jwtGenerate: JwtGenerate,
-    private readonly sessionsRepository: SessionRepository,
+    private sessionsQueryRepository: SessionQueryRepository,
   ) {}
   @Get('devices')
   async getDevices(@Param('id') id: string, @Req() req, @Res() res: Response) {
+    console.log('req.cookies.refreshToken', req.cookies.refreshToken);
     if (!req.cookies.refreshToken) return res.sendStatus(401);
     const result: any = await this.jwtGenerate.verifyTokens(
       req.cookies.refreshToken,
     );
+    console.count(result);
     if (!result) return res.sendStatus(401);
-    const devices = await this.sessionsService.findDevices(result.id);
+    const devices = await this.sessionsQueryRepository.findDevices(result.id);
     return res.status(200).send(devices);
   }
 
@@ -55,7 +57,7 @@ export class SessionController {
       req.cookies.refreshToken,
     );
     const foundUser =
-      await this.sessionsRepository.findDevicesByDeviceIdAndUserId(
+      await this.sessionsQueryRepository.findDevicesByDeviceIdAndUserId(
         result.id,
         result.deviceId,
       );

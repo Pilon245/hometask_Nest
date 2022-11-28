@@ -31,17 +31,17 @@ export class CreatePostInputDTO {
   blogId: string;
 }
 export class CreatePostByBlogIdInputDTO {
-  @Length(0, 30)
+  @Length(1, 30)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   title: string;
-  @Length(0, 100)
+  @Length(1, 100)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
-  @Length(0, 1000)
+  @Length(1, 1000)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
   @IsOptional()
-  @Length(0)
+  @Length(1)
   blogId: string;
 }
 
