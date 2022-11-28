@@ -19,31 +19,28 @@ export class RefreshTokenGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const refToken = req.cookies.refreshToken;
-    console.log('refToken', refToken);
     if (!refToken) {
       throw new UnauthorizedException();
     }
     const token = refToken.split(' ')[0];
     const user = await this.jwtGenerate.verifyTokens(token);
-    console.log('user', user);
     if (!user) {
       throw new UnauthorizedException();
     }
+    console.log('user', user);
     const foundLastDate =
       await this.sessionQueryRepository.findDevicesByDeviceId(user.deviceId);
     console.log('foundLastDate', foundLastDate);
+
     if (
       !foundLastDate ||
       foundLastDate.lastActiveDate !== new Date(user.iat * 1000).toISOString()
     ) {
-      console.log(
-        'foundLast22222222222222222222222222222222222222222Date',
-        foundLastDate,
-      );
-
       throw new UnauthorizedException();
     }
-    req.user = await this.usersQueryRepository.findUsersById(user.userId);
+    req.user = user;
+    console.log('user', user);
+
     return true;
   }
 }

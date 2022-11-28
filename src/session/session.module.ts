@@ -28,6 +28,9 @@ import { JwtGenerate } from '../auth/helper/generate.token';
     AuthService,
     SessionQueryRepository,
     JwtGenerate,
+    EmailManager,
+    EmailAdapter,
+    PasswordEmailAdapter,
   ],
   exports: [SessionService, SessionRepository, SessionQueryRepository],
 })

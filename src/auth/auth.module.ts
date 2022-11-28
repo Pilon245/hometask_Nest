@@ -69,6 +69,7 @@ console.log('result', result);
     JwtGenerate,
     AuthGuard,
     RefreshTokenGuard,
+    EmailAdapter,
   ],
 })
 export class AuthModule {}

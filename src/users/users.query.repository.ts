@@ -27,6 +27,11 @@ export class UsersQueryRepository {
       login: users.accountData.login,
       email: users.accountData.email,
       createdAt: users.accountData.createdAt,
+      banInfo: {
+        banDate: null,
+        banReason: null,
+        isBanned: false,
+      },
     };
   }
   async findUsersByIdOnMyAccount(id: string) {
@@ -90,5 +95,14 @@ export class UsersQueryRepository {
   }
   async findUsersForDTO(id: string): Promise<User> {
     return await this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
+  }
+  async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
+    const user = await this.userModel.findOne({
+      $or: [
+        { 'accountData.login': LoginOrEmailL },
+        { 'accountData.email': LoginOrEmailL },
+      ],
+    });
+    return user;
   }
 }

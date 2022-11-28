@@ -39,5 +39,3 @@ async function bootstrap() {
   });
 }
 bootstrap();
-
-//todo переделать 429 ошибку и  авторизацию

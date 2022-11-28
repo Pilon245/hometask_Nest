@@ -40,6 +40,7 @@ import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { JwtGenerate } from './helper/generate.token';
 import { User } from '../users/users.entity';
+import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -77,46 +78,27 @@ export class AuthController {
     return res
       .cookie('refreshToken', session.refreshToken, {
         expires: new Date(Date.now() + 6000000),
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
       })
       .send({ accessToken: session.accessToken });
   }
   // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
-    if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = await this.jwtGenerate.verifyTokens(
+    const tokens = await this.authService.refreshToken(
+      req.user,
       req.cookies.refreshToken,
     );
-    const user = await this.usersQueryRepository.findUsersById(result.id);
-    const foundLastDate =
-      await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
-    if (
-      !foundLastDate ||
-      foundLastDate.lastActiveDate !== new Date(result.iat * 1000).toISOString()
-    ) {
-      return res.sendStatus(401);
-    }
-    if (user) {
-      const tokens = await this.authService.refreshToken(
-        user,
-        req.cookies.refreshToken,
-      );
-      if (!tokens) {
-        return res.sendStatus(401);
-      }
-      return res
-        .status(200)
-        .cookie('refreshToken', tokens.refreshToken, {
-          expires: new Date(Date.now() + 6000000),
-          httpOnly: true,
-          secure: true,
-        })
-        .send({ accessToken: tokens.accessToken });
-    } else {
-      return res.sendStatus(401); //todo сделать через Exzeption  которые встроенны в нест
-    }
+    return res
+      .status(200)
+      .cookie('refreshToken', tokens.refreshToken, {
+        expires: new Date(Date.now() + 6000000),
+        httpOnly: true,
+        secure: true,
+      })
+      .send({ accessToken: tokens.accessToken });
   }
   // @Throttle() //todo это откдючить гвард?
   @UseGuards(JwtAuthGuard)
@@ -135,17 +117,29 @@ export class AuthController {
     @Body() inputModel: CreateUserInputModel,
     @Res() res: Response,
   ) {
-    const newUsers = await this.usersService.registrationUsers(inputModel);
-    console.log('newUsers', newUsers);
-
-    // if (!newUsers) return res.sendStatus(400);
-    if (newUsers == 'Created Login, Created Email')
-      throw new BadRequestException([
-        { message: 'Code Incorrect', field: 'code' },
-      ]);
-    const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
-      newUsers,
+    const newUsers = await this.authService.registrationUsers(inputModel);
+    const findUserByEmail = await this.usersQueryRepository.findLoginOrEmail(
+      inputModel.email,
     );
+    if (findUserByEmail) {
+      throw new BadRequestException([
+        {
+          message: 'Email already exists',
+          field: 'Email',
+        },
+      ]);
+    }
+    const findUserByLogin = await this.usersQueryRepository.findLoginOrEmail(
+      inputModel.login,
+    );
+    if (findUserByLogin) {
+      throw new BadRequestException([
+        {
+          message: 'Login already exists',
+          field: 'Login',
+        },
+      ]);
+    }
     return res.sendStatus(204);
   }
   // @UseGuards(CustomThrottlerGuard)
@@ -227,22 +221,12 @@ export class AuthController {
     return res.sendStatus(204);
   }
   // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(RefreshTokenGuard)
   @Post('logout')
   @HttpCode(204)
   async logOutAccount(@Req() req, @Res() res: Response) {
-    if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = await this.jwtGenerate.verifyTokens(
-      req.cookies.refreshToken.split(' ')[0],
-    );
-    const foundLastDate =
-      await this.sessionQueryRepository.findDevicesByDeviceId(result.deviceId);
-    if (
-      !foundLastDate ||
-      foundLastDate.lastActiveDate !== new Date(result.iat * 1000).toISOString()
-    ) {
-      return res.sendStatus(401);
-    }
-    await this.sessionService.deleteDevicesById(result.deviceId);
+    console.log('req.user', req.user);
+    await this.sessionService.deleteDevicesById(req.user.deviceId);
     return res.sendStatus(204);
   }
 }

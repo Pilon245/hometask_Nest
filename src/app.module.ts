@@ -10,17 +10,13 @@ import { PostsService } from './posts/posts.service';
 import { PostsRepository } from './posts/posts.repository';
 import { Post, PostSchema } from './posts/entities/posts.entity';
 import { RemoveController } from './remove.controller';
-import { UsersService } from './users/users.service';
-import { UsersRepository } from './users/users.repository';
 import { User, UserSchema } from './users/users.entity';
 import { Comment, CommentSchema } from './comments/entities/comments.entity';
 import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/comments.repository';
 import { CommentsController } from './comments/comments.controller';
-import { UsersController } from './users/users.controller';
 import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
-import { UsersQueryRepository } from './users/users.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
 import { SessionModule } from './session/session.module';
 import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
@@ -31,17 +27,15 @@ import {
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './auth/strategy/local.strategy';
 import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
 import { EmailAdapter } from './adapters/emailAdapter';
 import { Session, SessionSchema } from './session/entities/session.entity';
 import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.service';
 import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.guard';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtGenerate } from './auth/helper/generate.token';
 import { AuthGuard } from './auth/strategy/forbiten.giard';
+import { EmailManager } from './managers/email.manager';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -98,6 +92,7 @@ const schemas = [
     OptionalBearerAuthGuard,
     JwtGenerate,
     AuthGuard,
+    EmailManager,
   ],
 })
 export class AppModule {}

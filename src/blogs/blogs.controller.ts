@@ -116,7 +116,7 @@ export class BlogsController {
   ) {
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
     if (!resultFound) {
-      throw new HttpException('invalid blog', 400);
+      throw new HttpException('invalid blog', 404);
     }
     const newPost: CreatePostByBlogIdInputDTO = {
       title: inputModel.title,
