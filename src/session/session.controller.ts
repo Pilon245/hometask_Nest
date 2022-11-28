@@ -6,11 +6,13 @@ import {
   Param,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
 import { Response } from 'express';
 import { JwtGenerate } from '../auth/helper/generate.token';
 import { SessionQueryRepository } from './session.query.repository';
+import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
 
 @Controller('security')
 export class SessionController {
@@ -19,16 +21,18 @@ export class SessionController {
     protected jwtGenerate: JwtGenerate,
     private sessionsQueryRepository: SessionQueryRepository,
   ) {}
+  @UseGuards(RefreshTokenGuard)
   @Get('devices')
   async getDevices(@Param('id') id: string, @Req() req, @Res() res: Response) {
-    console.log('req.cookies.refreshToken', req.cookies.refreshToken);
-    if (!req.cookies.refreshToken) return res.sendStatus(401);
-    const result: any = await this.jwtGenerate.verifyTokens(
-      req.cookies.refreshToken,
-    );
-    console.count(result);
-    if (!result) return res.sendStatus(401);
-    const devices = await this.sessionsQueryRepository.findDevices(result.id);
+    // console.log('req.cookies.refreshToken', req.cookies.refreshToken);
+    // if (!req.cookies.refreshToken) return res.sendStatus(401);
+    // const result: any = await this.jwtGenerate.verifyTokens(
+    //   req.cookies.refreshToken,
+    // );
+    // console.count(result);
+    // if (!result) return res.sendStatus(401);
+    console.log('req.user', req.user);
+    const devices = await this.sessionsQueryRepository.findDevices(req.user.id);
     return res.status(200).send(devices);
   }
 

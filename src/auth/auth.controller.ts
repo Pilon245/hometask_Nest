@@ -77,8 +77,8 @@ export class AuthController {
     return res
       .cookie('refreshToken', session.refreshToken, {
         expires: new Date(Date.now() + 6000000),
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
       })
       .send({ accessToken: session.accessToken });
   }
@@ -138,12 +138,11 @@ export class AuthController {
     const newUsers = await this.usersService.registrationUsers(inputModel);
     console.log('newUsers', newUsers);
 
-    if (!newUsers) return res.sendStatus(400);
-    // if (newUsers == 'Created Login, Created Email')
-    //   throw new BadRequestException(newUsers);
-    // return res
-    //   .status(400)
-    //   .send({ errorsMessages: [{ message: 'Any<string>', field: 'email' }] }); //todo перверку на созданого юзера где делать?
+    // if (!newUsers) return res.sendStatus(400);
+    if (newUsers == 'Created Login, Created Email')
+      throw new BadRequestException([
+        { message: 'Code Incorrect', field: 'code' },
+      ]);
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(
       newUsers,
     );
@@ -157,10 +156,11 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const result = await this.authService.confirmationEmail(inputModel.code);
-    // if (!result)
-    //   return res
-    //     .status(400)
-    //     .send({ errorsMessages: [{ message: 'Any<string>', field: 'code' }] });
+    if (!result) {
+      throw new BadRequestException([
+        { message: 'Any<string>', field: 'code' },
+      ]);
+    }
     return;
   }
   // @UseGuards(CustomThrottlerGuard)

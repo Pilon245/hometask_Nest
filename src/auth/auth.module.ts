@@ -22,6 +22,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from './strategy/forbiten.giard';
+import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 console.log('result', result);
 
@@ -54,6 +55,7 @@ console.log('result', result);
     OptionalBearerAuthGuard,
     JwtGenerate,
     AuthGuard,
+    RefreshTokenGuard,
   ],
   exports: [
     AuthService,
@@ -66,6 +68,7 @@ console.log('result', result);
     OptionalBearerAuthGuard,
     JwtGenerate,
     AuthGuard,
+    RefreshTokenGuard,
   ],
 })
 export class AuthModule {}
