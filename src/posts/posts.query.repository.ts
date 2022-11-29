@@ -221,7 +221,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })
-      .sort([[`accountData.${sortBy}`, sortDirection]])
+      .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -278,7 +278,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })
-      .sort([[`accountData.${sortBy}`, sortDirection]])
+      .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
