@@ -158,9 +158,7 @@ export class PostsController {
       postId,
     );
     if (!resultFound) {
-      throw new BadRequestException([
-        { message: 'blogId Not Found', filed: 'blogId' },
-      ]);
+      throw new HttpException('Invalid id', 404);
     }
     return this.postsService.updatePosts(postId, model);
   }

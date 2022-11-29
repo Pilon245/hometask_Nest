@@ -112,10 +112,10 @@ export class CommentsController {
   @Delete(':commentId')
   @HttpCode(204)
   async deleteComment(@Param('commentId') commentId: string, @Request() req) {
-    const isDelete = await this.commentsService.deleteComment(
-      req.params.commentId,
+    const result = await this.commentsQueryRepository.findCommentByIdNoAuth(
+      commentId,
     );
-    if (!isDelete) {
+    if (!result) {
       throw new HttpException('invalid blog', 404);
     }
     const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
@@ -125,7 +125,9 @@ export class CommentsController {
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
-
+    const isDelete = await this.commentsService.deleteComment(
+      req.params.commentId,
+    );
     return isDelete;
   }
 }
