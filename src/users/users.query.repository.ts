@@ -67,7 +67,8 @@ export class UsersQueryRepository {
     };
     const users = await this.userModel
       .find(filter, { _id: false, __v: 0 })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
+      // .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();

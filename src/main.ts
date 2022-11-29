@@ -15,6 +15,7 @@ async function bootstrap() {
     new ValidationPipe({
       stopAtFirstError: true,
       transform: true, //todo прочитать по это
+      // whitelist: true,
       exceptionFactory: (errors) => {
         const errorsForResponce = [];
         errors.forEach((e) => {

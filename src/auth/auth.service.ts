@@ -40,10 +40,6 @@ export class AuthService {
   }
   async registrationUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
-    const createdLoginUsers = await this.usersRepository.findLoginOrEmail(
-      inputModel.login,
-    );
-    if (!createdLoginUsers) return false;
     const newUser = new UsersFactory(
       String(+new Date()),
       {
@@ -68,6 +64,7 @@ export class AuthService {
         banReason: 'string',
       },
     );
+    console.log('code!!!!', newUser.emailConfirmation.confirmationCode);
     await this.emailManager.sendPasswordRecoveryMessage(newUser);
     await this.usersRepository.createUsers(newUser);
     return newUser;

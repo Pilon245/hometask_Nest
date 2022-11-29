@@ -58,6 +58,7 @@ export class AuthController {
   // @UseGuards(CustomThrottlerGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @HttpCode(200)
   async singInAccount(
     @Req() req,
     @Body() inputModel: LoginInputModel,
@@ -117,7 +118,6 @@ export class AuthController {
     @Body() inputModel: CreateUserInputModel,
     @Res() res: Response,
   ) {
-    const newUsers = await this.authService.registrationUsers(inputModel);
     const findUserByEmail = await this.usersQueryRepository.findLoginOrEmail(
       inputModel.email,
     );
@@ -125,7 +125,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Email already exists',
-          field: 'Email',
+          field: 'email',
         },
       ]);
     }
@@ -140,6 +140,8 @@ export class AuthController {
         },
       ]);
     }
+    const newUsers = await this.authService.registrationUsers(inputModel);
+    console.log('code!!!!', newUsers.emailConfirmation.confirmationCode);
     return res.sendStatus(204);
   }
   // @UseGuards(CustomThrottlerGuard)
@@ -193,7 +195,7 @@ export class AuthController {
       ]);
     }
     if (user) {
-      // const update = this.usersRepository.updatePasswordUsers(//todo спросить у вани на счет этого
+      // const update = this.usersRepository.updatePasswordUsers(
       //   user.id,
       //   'password', //todo тут можно отправить поле null,
       // );

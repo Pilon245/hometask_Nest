@@ -82,24 +82,6 @@ export class UsersService {
     await this.userRepository.createUsers(newUser);
     return newUser;
   }
-  async checkCredentials(loginOrEmail: string, password: string) {
-    //todo !!!ПЕРЕНСТИ ЭТО В ГВАРД ИЛИ ФУНКИЦЮ!!!
-    const user = await this.userRepository.findLoginOrEmail(loginOrEmail);
-    if (!user) return false;
-    const isValid = await bcrypt.compare(
-      password,
-      user.accountData.passwordHash,
-    );
-    if (!isValid) return false;
-    return user;
-  }
-  async checkRefreshToken(loginOrEmail: string) {
-    const user = await this.userRepository.findLoginOrEmail(loginOrEmail);
-    if (!user) {
-      return false;
-    }
-    return user;
-  }
 
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
