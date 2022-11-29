@@ -27,11 +27,6 @@ export class UsersQueryRepository {
       login: users.accountData.login,
       email: users.accountData.email,
       createdAt: users.accountData.createdAt,
-      banInfo: {
-        banDate: null,
-        banReason: null,
-        isBanned: false,
-      },
     };
   }
   async findUsersByIdOnMyAccount(id: string) {
@@ -85,11 +80,6 @@ export class UsersQueryRepository {
         login: u.accountData.login,
         email: u.accountData.email,
         createdAt: u.accountData.createdAt,
-        banInfo: {
-          banDate: null,
-          banReason: null,
-          isBanned: false,
-        },
       })),
     };
   }
