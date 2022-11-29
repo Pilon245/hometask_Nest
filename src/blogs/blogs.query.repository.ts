@@ -34,7 +34,7 @@ export class BlogsQueryRepository {
     }
     const blogs = await this.blogModel
       .find(filter, { _id: false, __v: 0 }, {})
-      .sort([[`accountData.${sortBy}`, sortDirection]])
+      .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
