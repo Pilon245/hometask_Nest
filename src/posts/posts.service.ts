@@ -106,7 +106,7 @@ export class PostsService {
         return await this.postsRepository.createLike(newLike);
       }
     }
-    if (value === LikeValuePost.like && user!.likesStatus === 0) {
+    if (value === LikeValuePost.like && user.likesStatus === 0) {
       const likesStatus = 1;
       const dislikesStatus = 0;
       const myStatus = value;
@@ -125,7 +125,7 @@ export class PostsService {
         addedAt,
       );
     }
-    if (value === LikeValuePost.dislike && user!.dislikesStatus === 0) {
+    if (value === LikeValuePost.dislike && user.dislikesStatus === 0) {
       console.log('value22', value);
       const likesStatus = 0;
       const dislikesStatus = 1;

@@ -152,11 +152,11 @@ export class BlogsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteBlogs(@Param('id') blogId: string) {
-    const result = this.blogsService.deleteBlogs(blogId);
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
+    const result = this.blogsService.deleteBlogs(blogId);
     return result;
   }
 }

@@ -50,11 +50,11 @@ export class UsersService {
   // }
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
-    const createdUsers = await this.userRepository.findLoginAndEmail(
-      inputModel.login,
-      inputModel.email,
-    );
-    if (createdUsers) return false;
+    // const createdUsers = await this.userRepository.findLoginAndEmail(
+    //   inputModel.login,
+    //   inputModel.email,
+    // );
+    // //todo скорее всего не надо
     const newUser = new UsersFactory(
       String(+new Date()),
       {
