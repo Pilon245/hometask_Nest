@@ -309,7 +309,9 @@ export class PostsQueryRepository {
         extendedLikesInfo: {
           likesCount: totalLike,
           dislikesCount: totalDislike,
-          myStatus: LikeValuePost.none,
+          myStatus: likeStatus?.myStatus
+            ? likeStatus.myStatus
+            : LikeValuePost.none,
           newestLikes: lastLikes.slice(0, 3).map((l) => ({
             addedAt: l.addedAt,
             userId: l.userId,
