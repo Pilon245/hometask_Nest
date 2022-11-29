@@ -136,7 +136,7 @@ export class AuthController {
       throw new BadRequestException([
         {
           message: 'Login already exists',
-          field: 'Login',
+          field: 'login',
         },
       ]);
     }

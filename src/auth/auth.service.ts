@@ -119,7 +119,7 @@ export class AuthService {
   }
   async updateEmailCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
-    if (!user) return false;
+    if (!user || user.emailConfirmation.isConfirmed) return false;
     const newCode = randomUUID();
     const result = await this.usersRepository.updateEmailCode(user.id, newCode);
     return result;
