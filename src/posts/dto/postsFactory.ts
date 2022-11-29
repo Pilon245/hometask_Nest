@@ -1,8 +1,9 @@
-import { IsOptional, IsUrl, Length } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsUrl, Length } from 'class-validator';
 import { Prop } from '@nestjs/mongoose';
 import { extendedLikesInfoType } from '../posts.service';
 import { LikeValuePost } from '../entities/likes.posts.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { LikeValueComment } from '../../comments/entities/likes.comments.entity';
 
 export class PostsFactory {
   constructor(
@@ -45,6 +46,13 @@ export class CreatePostByBlogIdInputDTO {
   blogId: string;
 }
 
+export class UpdatePostLikeInputModel {
+  @IsNotEmpty()
+  @IsEnum(LikeValuePost)
+  // @Transform(({ value }: TransformFnParams) => value?.trim())
+  // @Length(1, 7) //todo седать валидацию лайков
+  likeStatus: LikeValuePost;
+}
 export class LikesPostFactory {
   constructor(
     public likesStatus: number,

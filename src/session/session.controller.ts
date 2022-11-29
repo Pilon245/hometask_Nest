@@ -43,6 +43,17 @@ export class SessionController {
     @Req() req,
     @Res() res: Response,
   ) {
+    const foundDevice =
+      await this.sessionsQueryRepository.findDevicesByDeviceId(deviceId);
+    console.log('foundDevice', foundDevice);
+    if (!foundDevice) return res.sendStatus(404);
+    const foundUser =
+      await this.sessionsQueryRepository.findDevicesByDeviceIdAndUserId(
+        req.user.id,
+        deviceId,
+      );
+    console.log('foundUser', foundUser);
+    if (!foundUser) return res.sendStatus(403);
     await this.sessionsService.deleteDevicesById(deviceId);
     return res.sendStatus(200);
   }

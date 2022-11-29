@@ -21,7 +21,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({}, { _id: false, __v: 0 })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -74,7 +74,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({}, { _id: false, __v: 0 })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -221,7 +221,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -278,7 +278,7 @@ export class PostsQueryRepository {
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();

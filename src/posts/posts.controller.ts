@@ -21,12 +21,18 @@ import { PostsQueryRepository } from './posts.query.repository';
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
 import { pagination } from '../middlewares/query.validation';
 import { LikeValuePost } from './entities/likes.posts.entity';
-import { CreatePostInputDTO } from './dto/postsFactory';
+import {
+  CreatePostInputDTO,
+  UpdatePostLikeInputModel,
+} from './dto/postsFactory';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 import { BasicAuthGuard } from '../guards/basic-auth.guard';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { UsersQueryRepository } from '../users/users.query.repository';
-import { UpdateLikeInputModel } from '../comments/dto/update.comments.dto';
+import {
+  UpdateCommentInputModel,
+  UpdateCommentLikeInputModel,
+} from '../comments/dto/update.comments.dto';
 import { LikeValueComment } from '../comments/entities/likes.comments.entity';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
@@ -112,7 +118,9 @@ export class PostsController {
       inputModel.blogId,
     );
     if (!resultFound) {
-      throw new BadRequestException('invalid blog');
+      throw new BadRequestException([
+        { message: 'Incorecct blogId', field: 'blogId' },
+      ]);
     }
     return this.postsService.createPosts(inputModel);
   }
@@ -121,7 +129,7 @@ export class PostsController {
   async createCommentOnPostId(
     @Param('postId') postId: string,
     @Query() query,
-    @Body() inputmodel,
+    @Body() inputmodel: UpdateCommentInputModel,
     @Request() req,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
@@ -160,7 +168,7 @@ export class PostsController {
   @HttpCode(204)
   async updateLike(
     @Param('postId') postId: string,
-    @Body() updateModel: UpdateLikeInputModel,
+    @Body() updateModel: UpdatePostLikeInputModel,
     @Request() req,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
@@ -170,6 +178,11 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     const like = updateModel.likeStatus;
+    // if (like !== typeof LikeValuePost) {
+    //   throw new BadRequestException([
+    //     { message: 'LikesStatus invalid', field: 'likeStatus' },
+    //   ]);
+    // }
     const user = await this.usersQueryRepository.findUsersById(req.user.id);
     if (!user) {
       throw new HttpException('invalid blog', 404);

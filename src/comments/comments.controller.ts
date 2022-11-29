@@ -18,13 +18,14 @@ import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
 import {
   UpdateCommentInputModel,
-  UpdateLikeInputModel,
+  UpdateCommentLikeInputModel,
 } from './dto/update.comments.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
 import { OptionalBearerAuthGuard } from '../auth/strategy/optional.bearer.auth.guard';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
+import { LikeValuePost } from '../posts/entities/likes.posts.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -68,13 +69,6 @@ export class CommentsController {
     @Body() updateModel: UpdateCommentInputModel,
     @Request() req,
   ) {
-    const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
-      req.user.id,
-      commentId,
-    );
-    if (!found) {
-      throw new HttpException('invalid blog', 403);
-    }
     const isUpdate = await this.commentsService.updateComment(
       commentId,
       updateModel.content,
@@ -82,6 +76,14 @@ export class CommentsController {
     if (!isUpdate) {
       throw new HttpException('invalid blog', 404);
     }
+    const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
+      req.user.id,
+      commentId,
+    );
+    if (!found) {
+      throw new HttpException('invalid blog', 403);
+    }
+
     return isUpdate;
   }
   @UseGuards(JwtAuthGuard)
@@ -89,7 +91,7 @@ export class CommentsController {
   @HttpCode(204)
   async updateLike(
     @Param('commentId') commentId: string,
-    @Body() updateModel: UpdateLikeInputModel,
+    @Body() updateModel: UpdateCommentLikeInputModel,
     @Request() req,
   ) {
     const resultFound =
@@ -110,6 +112,12 @@ export class CommentsController {
   @Delete(':commentId')
   @HttpCode(204)
   async deleteComment(@Param('commentId') commentId: string, @Request() req) {
+    const isDelete = await this.commentsService.deleteComment(
+      req.params.commentId,
+    );
+    if (!isDelete) {
+      throw new HttpException('invalid blog', 404);
+    }
     const found = await this.commentsQueryRepository.findCommentByIdAndLogin(
       req.user.id,
       commentId,
@@ -117,12 +125,7 @@ export class CommentsController {
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
-    const isDelete = await this.commentsService.deleteComment(
-      req.params.commentId,
-    );
-    if (!isDelete) {
-      throw new HttpException('invalid blog', 404);
-    }
+
     return isDelete;
   }
 }

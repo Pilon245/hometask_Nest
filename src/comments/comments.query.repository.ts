@@ -108,7 +108,7 @@ export class CommentsQueryRepository {
   ) {
     const comments = await this.commentModel
       .find({ postId })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -152,7 +152,7 @@ export class CommentsQueryRepository {
   ) {
     const comments = await this.commentModel
       .find({ postId: postId })
-      .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+      .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
