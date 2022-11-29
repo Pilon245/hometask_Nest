@@ -98,6 +98,13 @@ export class BlogsController {
       );
       return res.status(200).send(posts);
     }
+    if (!req.user) {
+      const posts = await this.postsQueryRepository.findPostByBlogIdNoAuth(
+        blogId,
+        pagination(query),
+      );
+      return res.status(200).send(posts);
+    }
     return res.status(200).send(result);
   }
 

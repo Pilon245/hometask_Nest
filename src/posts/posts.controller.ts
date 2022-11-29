@@ -139,12 +139,13 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     const user = await this.usersQueryRepository.findUsersForDTO(req.user.id);
-    return this.commentsService.createComment(
+    const comment = await this.commentsService.createComment(
       postId,
       inputmodel.content,
       user.id,
       user.accountData.login,
     );
+    return this.commentsQueryRepository.findCommentByIdNoAuth(comment.id);
   }
   @UseGuards(BasicAuthGuard)
   @Put(':id')

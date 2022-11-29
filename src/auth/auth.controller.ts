@@ -71,18 +71,18 @@ export class AuthController {
     //   agent: req.headers['user-agent'],
     // };
     // const tokens = await this.authService.login(req);
-    const session = await this.sessionService.createSession(
+    const tokens = await this.sessionService.createSession(
       req.user,
       req.ip,
       req.headers['user-agent'],
     );
     return res
-      .cookie('refreshToken', session.refreshToken, {
+      .cookie('refreshToken', tokens.refreshToken, {
         expires: new Date(Date.now() + 6000000),
         httpOnly: true,
         secure: true,
       })
-      .send({ accessToken: session.accessToken });
+      .send({ accessToken: tokens.accessToken });
   }
   // @UseGuards(CustomThrottlerGuard)
   @UseGuards(RefreshTokenGuard)
