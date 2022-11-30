@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Schema } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
-import {
-  PostOutputModelType,
-  UpdatePostInputModelType,
-} from './posts.controller';
+import { PostOutputModelType } from './posts.controller';
 import { CreateLikeInputDTO, CreatePostInputDTO } from './dto/postsFactory';
 import {
   LikePost,
@@ -13,6 +10,10 @@ import {
   LikeValuePost,
 } from './entities/likes.posts.entity';
 import { LikeCommentDocument } from '../comments/entities/likes.comments.entity';
+import {
+  UpdatePostDTO,
+  UpdatePostInputModelType,
+} from './dto/update.posts.dto';
 
 @Injectable()
 export class PostsRepository {
@@ -58,7 +59,7 @@ export class PostsRepository {
     );
     return result.matchedCount === 1;
   }
-  async updatePosts(post: UpdatePostInputModelType) {
+  async updatePosts(post: UpdatePostDTO) {
     const result = await this.postModel.updateOne(
       { id: post.id },
       {

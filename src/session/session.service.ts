@@ -27,14 +27,14 @@ export class SessionService {
     const userId = user.id;
     const deviceId = String(randomUUID());
     const tokens = await this.jwtGenerate.generateTokens(user, deviceId);
-    const refreshToken = await this.jwtGenerate.verifyTokens(
+    const payload = await this.jwtGenerate.verifyTokens(
       tokens.refreshToken.split(' ')[0],
     );
     const session = new SessionFactory(
       ip,
       deviceName,
-      new Date(refreshToken.iat * 1000).toISOString(),
-      new Date(refreshToken.iat * 1000).toDateString(),
+      new Date(payload.iat * 1000).toISOString(),
+      new Date(payload.iat * 1000).toDateString(),
       deviceId,
       userId,
     );

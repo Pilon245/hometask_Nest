@@ -36,6 +36,7 @@ import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.gu
 import { JwtGenerate } from './auth/helper/generate.token';
 import { AuthGuard } from './auth/strategy/forbiten.giard';
 import { EmailManager } from './managers/email.manager';
+import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -93,6 +94,7 @@ const schemas = [
     JwtGenerate,
     AuthGuard,
     EmailManager,
+    BlogExistsRule,
   ],
 })
 export class AppModule {}

@@ -36,6 +36,7 @@ import {
 import { LikeValueComment } from '../comments/entities/likes.comments.entity';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
+import { UpdatePostInputModelType } from './dto/update.posts.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -114,14 +115,6 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   async createPosts(@Body() inputModel: CreatePostInputDTO) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(
-      inputModel.blogId,
-    );
-    if (!resultFound) {
-      throw new BadRequestException([
-        { message: 'Incorecct blogId', field: 'blogId' },
-      ]);
-    }
     return this.postsService.createPosts(inputModel);
   }
   @UseGuards(JwtAuthGuard)
@@ -152,7 +145,7 @@ export class PostsController {
   @HttpCode(204)
   async updatePosts(
     @Param('id') postId: string,
-    @Body() model: CreatePostInputDTO,
+    @Body() model: UpdatePostInputModelType, //UpdatePostInputModelType
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
@@ -219,12 +212,4 @@ export type PostOutputModelType = {
   blogName: string;
   createdAt: string;
   extendedLikesInfo?: extendedLikesInfoType;
-};
-
-export type UpdatePostInputModelType = {
-  id: string;
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
 };

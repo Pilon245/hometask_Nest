@@ -54,7 +54,4 @@ export class BlogsQueryRepository {
   async findBlogById(id: string): Promise<Blog> {
     return await this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
-  async deleteAllBlogs() {
-    return await this.blogModel.deleteMany();
-  }
 }

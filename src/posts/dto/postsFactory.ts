@@ -1,9 +1,21 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsUrl, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  NotContains,
+  Validate,
+} from 'class-validator';
 import { Prop } from '@nestjs/mongoose';
 import { extendedLikesInfoType } from '../posts.service';
 import { LikeValuePost } from '../entities/likes.posts.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { LikeValueComment } from '../../comments/entities/likes.comments.entity';
+import { UseGuards } from '@nestjs/common';
+import { BlogExistsRule } from '../guards/blog-id-validation.service';
 
 export class PostsFactory {
   constructor(
@@ -27,8 +39,7 @@ export class CreatePostInputDTO {
   @Length(1, 1000)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
-  @Length(1)
-  @Transform(({ value }: TransformFnParams) => value?.trim())
+  @Validate(BlogExistsRule)
   blogId: string;
 }
 export class CreatePostByBlogIdInputDTO {

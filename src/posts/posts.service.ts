@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UpdatePostInputModelType } from './posts.controller';
 import { PostsRepository } from './posts.repository';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 import { LikeValuePost } from './entities/likes.posts.entity';
@@ -9,6 +8,7 @@ import {
   LikesPostFactory,
   PostsFactory,
 } from './dto/postsFactory';
+import { UpdatePostDTO } from './dto/update.posts.dto';
 
 @Injectable()
 export class PostsService {
@@ -49,7 +49,7 @@ export class PostsService {
     // };
   }
   updatePosts(id: string, model: CreatePostInputDTO) {
-    const updatePost: UpdatePostInputModelType = {
+    const updatePost: UpdatePostDTO = {
       id: id,
       title: model.title,
       shortDescription: model.shortDescription,
