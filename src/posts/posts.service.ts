@@ -20,7 +20,6 @@ export class PostsService {
     const blog = await this.blogsQueryRepository.findBlogById(
       inputModel.blogId,
     );
-    if (!blog) return false;
     const newPost = new PostsFactory(
       String(+new Date()),
       inputModel.title,

@@ -22,18 +22,15 @@ export class BlogsFactory {
 export class CreateBlogInputDTO {
   // для валидации
   @Length(1, 15, { message: 'incorrect name' })
-  @NotContains(' ')
   // @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
   @Length(1, 500)
-  @NotContains(' ')
   @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
   @Length(1, 100)
   @IsUrl()
-  @NotContains(' ')
   @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
