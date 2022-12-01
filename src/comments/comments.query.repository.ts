@@ -37,7 +37,7 @@ export class CommentsQueryRepository {
       $and: [{ id: commentId }, { userId: userId }],
     });
   }
-  async findCommentByIdNoAuth(id: string): Promise<Comment | null> {
+  async findCommentByIdNoAuth(id: string) {
     const comments = await this.commentModel.findOne(
       { id },
       { _id: false, __v: 0 },
@@ -49,7 +49,7 @@ export class CommentsQueryRepository {
     const totalDislike = await this.likeCommentModel.countDocuments({
       $and: [{ commentId: id }, { dislikesStatus: 1 }],
     });
-
+    console.log('comments', comments);
     if (comments) {
       const outComment = {
         id: comments.id,
@@ -67,7 +67,7 @@ export class CommentsQueryRepository {
     }
     return comments;
   }
-  async findCommentById(id: string, userId: string): Promise<Comment | null> {
+  async findCommentById(id: string, userId: string) {
     const comments = await this.commentModel.findOne(
       { id },
       { _id: false, __v: 0 },

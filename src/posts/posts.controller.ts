@@ -93,6 +93,7 @@ export class PostsController {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
+    console.log('resultFound', resultFound);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -128,6 +129,7 @@ export class PostsController {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
+    console.log('resultFound', resultFound);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }

@@ -26,6 +26,9 @@ export class Comment {
   userLogin: string;
 
   @Prop({ require: true })
+  postId: string;
+
+  @Prop({ require: true })
   createdAt: string;
 
   @Prop({ type: likesInfoSchema })
