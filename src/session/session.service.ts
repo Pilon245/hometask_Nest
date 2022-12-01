@@ -32,6 +32,7 @@ export class SessionService {
   }
   async updateSession(user: UserAccountDBType, payload: any) {
     const userId = user.id;
+    // const payload = await this.jwtGenerate.verifyTokens(tokens.refreshToken);
     const lastActiveDate = new Date(payload.iat * 1000).toISOString();
     await this.sessionRepository.updateSecurityDevices(
       userId,
