@@ -35,7 +35,6 @@ export class UsersQueryRepository {
     return {
       login: users.accountData.login,
       email: users.accountData.email,
-      createdAt: users.accountData.createdAt,
     };
   }
   async findUsers({

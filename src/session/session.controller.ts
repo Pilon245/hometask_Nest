@@ -34,7 +34,7 @@ export class SessionController {
     console.log('req.user.id,', req.user.id);
     console.log('req.user.deviceId', req.user.deviceId);
     await this.sessionsService.deleteDevices(req.user.id, req.user.deviceId);
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
   @UseGuards(RefreshTokenGuard)
   @Delete('devices/:deviceId')
@@ -55,6 +55,6 @@ export class SessionController {
     console.log('foundUser', foundUser);
     if (!foundUser) return res.sendStatus(403);
     await this.sessionsService.deleteDevicesById(deviceId);
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
 }

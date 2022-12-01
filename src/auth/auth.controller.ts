@@ -55,7 +55,7 @@ export class AuthController {
     protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
     protected emailManager: EmailManager,
   ) {}
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
@@ -78,13 +78,13 @@ export class AuthController {
     );
     return res
       .cookie('refreshToken', tokens.refreshToken, {
-        expires: new Date(Date.now() + 6000000),
+        expires: new Date(Date.now() + 20000),
         httpOnly: true,
         secure: true,
       })
       .send({ accessToken: tokens.accessToken });
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
   async updateResfreshToken(@Req() req, @Res() res: Response) {
@@ -95,13 +95,13 @@ export class AuthController {
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
-        expires: new Date(Date.now() + 6000000),
+        expires: new Date(Date.now() + 20000),
         httpOnly: true,
         secure: true,
       })
       .send({ accessToken: tokens.accessToken });
   }
-  // @Throttle() //todo это откдючить гвард?
+  @Throttle() //todo это откдючить гвард?
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
@@ -110,7 +110,7 @@ export class AuthController {
     );
     return res.status(200).send(Account);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration')
   @HttpCode(204)
   async createRegistrationUser(
@@ -144,7 +144,7 @@ export class AuthController {
     console.log('code!!!!', newUsers.emailConfirmation.confirmationCode);
     return res.sendStatus(204);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(
@@ -159,7 +159,7 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
   @HttpCode(204)
   async resendingEmail(
@@ -177,7 +177,7 @@ export class AuthController {
     const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @Post('password-recovery')
   @HttpCode(204)
   async recoveryPassword(
@@ -203,7 +203,7 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @Post('new-password')
   @HttpCode(204)
   async confirmationRecoveryPassword(
@@ -222,7 +222,7 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  // @UseGuards(CustomThrottlerGuard)
+  @UseGuards(CustomThrottlerGuard)
   @UseGuards(RefreshTokenGuard)
   @Post('logout')
   @HttpCode(204)
