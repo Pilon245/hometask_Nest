@@ -71,7 +71,7 @@ export class AuthService {
       user,
       payload.deviceId,
     );
-    await this.sessionService.updateSession(user, tokens.refreshToken);
+    await this.sessionService.updateSession(user, payload);
     return {
       refreshToken: tokens.refreshToken,
       accessToken: tokens.accessToken,
