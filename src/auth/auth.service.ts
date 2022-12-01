@@ -65,12 +65,10 @@ export class AuthService {
     await this.usersRepository.createUsers(newUser);
     return newUser;
   }
-  async refreshToken(user: any, token: string) {
-    const payload = await this.jwtGenerate.verifyTokens(token);
-    const tokens = await this.jwtGenerate.generateTokens(
-      user,
-      payload.deviceId,
-    );
+  async refreshToken(user: any) {
+    const tokens = await this.jwtGenerate.generateTokens(user, user.deviceId);
+    const payload = await this.jwtGenerate.verifyTokens(tokens.refreshToken);
+
     await this.sessionService.updateSession(user, payload);
     return {
       refreshToken: tokens.refreshToken,

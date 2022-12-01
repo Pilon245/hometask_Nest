@@ -12,12 +12,6 @@ export class SessionService {
     protected sessionRepository: SessionRepository,
     protected jwtGenerate: JwtGenerate,
   ) {}
-  async findDevices(id: string) {
-    return this.sessionRepository.findDevices(id);
-  }
-  async findDevicesByDeviceId(deviceId: string) {
-    return this.sessionRepository.findDevices(deviceId);
-  }
   async createSession(user: UserOutputModel, ip: string, deviceName: string) {
     const userId = user.id;
     const deviceId = String(randomUUID());

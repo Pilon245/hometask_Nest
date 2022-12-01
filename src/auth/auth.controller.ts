@@ -11,7 +11,6 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
 import { LoginInputModel } from './dto/create-auth.dto';
 import { SessionService } from '../session/session.service';
 import { LocalAuthGuard } from './strategy/local-auth.guard';
@@ -28,7 +27,6 @@ import {
 } from './dto/registration.dto';
 import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
-import { JwtGenerate } from './helper/generate.token';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 
 @UseGuards(CustomThrottlerGuard)
@@ -36,8 +34,6 @@ import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    protected usersService: UsersService,
-    protected jwtGenerate: JwtGenerate,
     protected usersRepository: UsersRepository,
     protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository,
@@ -65,7 +61,6 @@ export class AuthController {
     );
     return res
       .cookie('refreshToken', tokens.refreshToken, {
-        expires: new Date(Date.now() + 20000),
         httpOnly: true,
         secure: true,
       })
@@ -74,10 +69,7 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
   async updateRefreshToken(@Req() req, @Res() res: Response) {
-    const tokens = await this.authService.refreshToken(
-      req.user,
-      req.cookies.refreshToken,
-    );
+    const tokens = await this.authService.refreshToken(req.user);
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
