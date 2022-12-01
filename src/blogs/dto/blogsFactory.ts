@@ -21,9 +21,17 @@ export class BlogsFactory {
 }
 export class CreateBlogInputDTO {
   // для валидации
+  // @IsNotEmpty({
+  //   message:
+  //     {
+  //       message: 'Email already exists',
+  //       field: 'email',
+  //     },
+  //   ,
+  // })
   @Length(1, 15, { message: 'incorrect name' })
   // @IsString()
-  @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
+  // @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
   @Length(1, 500)
