@@ -29,7 +29,7 @@ import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 
-@UseGuards(CustomThrottlerGuard)
+// @UseGuards(CustomThrottlerGuard)
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -73,7 +73,7 @@ export class AuthController {
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
-        expires: new Date(Date.now() + 20000),
+        expires: new Date(Date.now() + 2000000),
         httpOnly: true,
         secure: true,
       })

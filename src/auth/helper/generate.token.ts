@@ -12,12 +12,12 @@ export class JwtGenerate {
     this.configService.get<string>('REFRESH_JWT_SECRET');
   async generateTokens(user: UserOutputModel, deviceId: string) {
     const accessToken = jwt.sign({ id: user.id }, this.accessTokenJwtSecret, {
-      expiresIn: '10sec',
+      expiresIn: '7m',
     });
     const refreshToken = jwt.sign(
       { id: user.id, deviceId: deviceId },
       this.refreshTokenJwtSecret,
-      { expiresIn: '20sec' },
+      { expiresIn: '7m' },
     );
     return {
       accessToken: accessToken,
