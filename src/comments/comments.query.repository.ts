@@ -170,7 +170,7 @@ export class CommentsQueryRepository {
         $and: [{ commentId: c.id }, { dislikesStatus: 1 }],
       });
       const likeStatus = await this.likeCommentModel.findOne({
-        $and: [{ commentId: c.id }, { authUserId: userId }],
+        $and: [{ commentId: c.id }, { userId: userId }],
       });
       return {
         id: c.id,
