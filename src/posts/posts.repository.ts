@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema } from 'mongoose';
+import { Model } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
-import { PostOutputModelType } from './posts.controller';
 import { CreateLikeInputDTO, CreatePostInputDTO } from './dto/postsFactory';
 import {
   LikePost,
   LikePostDocument,
   LikeValuePost,
 } from './entities/likes.posts.entity';
-import { LikeCommentDocument } from '../comments/entities/likes.comments.entity';
-import {
-  UpdatePostDTO,
-  UpdatePostInputModelType,
-} from './dto/update.posts.dto';
+import { UpdatePostDTO } from './dto/update.posts.dto';
 
 @Injectable()
 export class PostsRepository {
@@ -23,13 +18,13 @@ export class PostsRepository {
     private likePostModel: Model<LikePostDocument>,
   ) {}
   async findLikeByIdAndPostId(id: string, postId: string) {
-    return await this.likePostModel.findOne({
+    return this.likePostModel.findOne({
       $and: [{ userId: id }, { postId: postId }],
     });
   }
   async createPosts(post: CreatePostInputDTO) {
     const posts = await new this.postModel(post);
-    posts.save();
+    await posts.save();
     return post;
   }
   async createLike(like: CreateLikeInputDTO) {

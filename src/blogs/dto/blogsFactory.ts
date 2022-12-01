@@ -31,7 +31,7 @@ export class CreateBlogInputDTO {
   // })
   @Length(1, 15, { message: 'incorrect name' })
   // @IsString()
-  // @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
+  @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
   @Length(1, 500)
