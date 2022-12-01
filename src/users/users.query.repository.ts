@@ -33,6 +33,7 @@ export class UsersQueryRepository {
     const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
     if (!users) return false;
     return {
+      userId: users.id,
       login: users.accountData.login,
       email: users.accountData.email,
     };
