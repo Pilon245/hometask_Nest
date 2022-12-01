@@ -22,16 +22,12 @@ export class RefreshTokenGuard implements CanActivate {
     if (!refToken) {
       throw new UnauthorizedException();
     }
-    const token = refToken.split(' ')[0];
-    const user = await this.jwtGenerate.verifyTokens(token);
+    const user = await this.jwtGenerate.verifyTokens(refToken);
     if (!user) {
       throw new UnauthorizedException();
     }
-    console.log('user', user);
     const foundLastDate =
       await this.sessionQueryRepository.findDevicesByDeviceId(user.deviceId);
-    console.log('foundLastDate', foundLastDate);
-
     if (
       !foundLastDate ||
       foundLastDate.lastActiveDate !== new Date(user.iat * 1000).toISOString()
@@ -39,8 +35,6 @@ export class RefreshTokenGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     req.user = user;
-    console.log('user', user);
-
     return true;
   }
 }

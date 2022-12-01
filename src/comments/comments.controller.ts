@@ -13,7 +13,6 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { PostsService } from '../posts/posts.service';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
 import {
@@ -22,10 +21,8 @@ import {
 } from './dto/update.comments.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
-import { OptionalBearerAuthGuard } from '../auth/strategy/optional.bearer.auth.guard';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
-import { LikeValuePost } from '../posts/entities/likes.posts.entity';
 
 @Controller('comments')
 export class CommentsController {
@@ -46,7 +43,6 @@ export class CommentsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-
     if (req.user) {
       const comments = await this.commentsQueryRepository.findCommentById(
         id,
@@ -105,7 +101,6 @@ export class CommentsController {
       commentId,
       like as LikeValueComment,
     );
-    console.log('isUpdate', isUpdate);
     return;
   }
   @UseGuards(JwtAuthGuard)
@@ -125,9 +120,6 @@ export class CommentsController {
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
-    const isDelete = await this.commentsService.deleteComment(
-      req.params.commentId,
-    );
-    return isDelete;
+    return this.commentsService.deleteComment(req.params.commentId);
   }
 }

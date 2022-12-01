@@ -8,7 +8,6 @@ import {
   LikeCommentDocument,
   LikeValueComment,
 } from './entities/likes.comments.entity';
-import { UpdateBlogInputModelType } from '../blogs/dto/update.blogs.dto';
 
 @Injectable()
 export class CommentsRepository {
@@ -22,19 +21,8 @@ export class CommentsRepository {
     await comment.save();
     return model;
   }
-  async updateComments(blog: UpdateBlogInputModelType) {
-    const result = await this.commentModel.updateOne(
-      { id: blog.id },
-      {
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-      },
-    );
-    return;
-  }
   async findLikeByIdAndCommentId(id: string, commentId: string) {
-    return await this.likeCommentModel.findOne({
+    return this.likeCommentModel.findOne({
       $and: [{ userId: id }, { commentId: commentId }],
     });
   }

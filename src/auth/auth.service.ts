@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { randomUUID } from 'crypto';
-import {
-  _generatePasswordForDb,
-  payloadRefreshToken,
-} from '../helper/auth.function';
+import { _generatePasswordForDb } from '../helper/auth.function';
 import * as bcrypt from 'bcrypt';
 import { SessionService } from '../session/session.service';
 import { JwtGenerate } from './helper/generate.token';
@@ -64,65 +61,34 @@ export class AuthService {
         banReason: 'string',
       },
     );
-    console.log('code!!!!', newUser.emailConfirmation.confirmationCode);
     await this.emailManager.sendPasswordRecoveryMessage(newUser);
     await this.usersRepository.createUsers(newUser);
     return newUser;
   }
   async refreshToken(user: any, token: string) {
-    // if (!user) {
-    //   return false;
-    // }
-    // if (user) {
     const payload = await this.jwtGenerate.verifyTokens(token);
     const tokens = await this.jwtGenerate.generateTokens(
       user,
       payload.deviceId,
     );
-    const refreshToken = await this.jwtGenerate.verifyTokens(
-      tokens.refreshToken.split(' ')[0],
-    );
-    await this.sessionService.updateSession(user, refreshToken);
+    await this.sessionService.updateSession(user, tokens.refreshToken);
     return {
       refreshToken: tokens.refreshToken,
       accessToken: tokens.accessToken,
     };
-    // } else {
-    //   return false;
-    // }
-    // const deviceId = String(randomUUID());
-    // const payload = { id: user.id, deviceId: deviceId };
-    // console.log('user', deviceId);
-    // return {
-    //   access_token: await this.jwtService.sign(payload),
-    // };
   }
   async confirmationEmail(code: string) {
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
       code,
     );
-    // console.log(
-    //   'user.emailConfirmation.isConfirmed',
-    //   user.emailConfirmation.isConfirmed,
-    // );
     if (!user) return false;
-    // console.log('user', user);
-    const result = await this.usersRepository.updateEmailConfirmation(user.id);
-    return result;
-  }
-  async confirmationPassword(code: string) {
-    const user = await this.usersRepository.findUserByConfirmationEmailCode(
-      code,
-    );
-    const result = await this.usersRepository.updateEmailConfirmation(user!.id);
-    return result;
+    return this.usersRepository.updateEmailConfirmation(user.id);
   }
   async updateEmailCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
     if (!user || user.emailConfirmation.isConfirmed) return false;
     const newCode = randomUUID();
-    const result = await this.usersRepository.updateEmailCode(user.id, newCode);
-    return result;
+    return this.usersRepository.updateEmailCode(user.id, newCode);
   }
   async updatePasswordCode(email: string) {
     const user = await this.usersRepository.findLoginOrEmail(email);
@@ -130,13 +96,8 @@ export class AuthService {
       return false;
     }
     const newCode = randomUUID();
-    console.log('newCode', newCode);
     if (user) {
-      const result = await this.usersRepository.updatePasswordCode(
-        user.id,
-        newCode,
-      );
-      return result;
+      return this.usersRepository.updatePasswordCode(user.id, newCode);
     }
     return true;
   }
@@ -146,11 +107,7 @@ export class AuthService {
     );
     if (!user) return false;
     const passwordHash = await _generatePasswordForDb(password);
-    await this.usersRepository.updatePasswordConfirmation(user!.id);
-    const update = await this.usersRepository.updatePasswordUsers(
-      user.id,
-      passwordHash,
-    );
-    return update;
+    await this.usersRepository.updatePasswordConfirmation(user.id);
+    return this.usersRepository.updatePasswordUsers(user.id, passwordHash);
   }
 }

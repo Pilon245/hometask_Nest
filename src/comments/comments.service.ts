@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
-import { CommentsQueryRepository } from './comments.query.repository';
 import { CommentsFactory, LikesFactory } from './dto/commentsFactory';
 import { LikeValueComment } from './entities/likes.comments.entity';
 @Injectable()
 export class CommentsService {
-  constructor(
-    protected commentsRepository: CommentsRepository,
-    protected commentsQueryRepository: CommentsQueryRepository,
-  ) {}
+  constructor(protected commentsRepository: CommentsRepository) {}
   async createComment(
     postId: string,
     content: string,
@@ -28,22 +24,7 @@ export class CommentsService {
         myStatus: LikeValueComment.none,
       },
     );
-    const createdComment = await this.commentsRepository.createComments(
-      newComment,
-    );
-    // const outCreateComment = {
-    //   id: createdComment.id,
-    //   content: createdComment.content,
-    //   userId: createdComment.userId,
-    //   userLogin: createdComment.userLogin,
-    //   createdAt: createdComment.createdAt,
-    //   likesInfo: {
-    //     dislikesCount: 0,
-    //     likesCount: 0,
-    //     myStatus: LikeValue.none,
-    //   },
-    // };
-    return createdComment;
+    return this.commentsRepository.createComments(newComment);
   }
   async updateComment(id: string, content: string) {
     return await this.commentsRepository.updateComment(id, content);
@@ -67,7 +48,7 @@ export class CommentsService {
         return await this.commentsRepository.createLike(newLike);
       }
     }
-    if (value === LikeValueComment.like && user!.likesStatus === 0) {
+    if (value === LikeValueComment.like && user.likesStatus === 0) {
       const likesStatus = 1;
       const dislikesStatus = 0;
       const myStatus = value;
@@ -81,7 +62,7 @@ export class CommentsService {
         myStatus,
       );
     }
-    if (value === LikeValueComment.dislike && user!.dislikesStatus === 0) {
+    if (value === LikeValueComment.dislike && user.dislikesStatus === 0) {
       const likesStatus = 0;
       const dislikesStatus = 1;
       const myStatus = value;

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { UserOutputModel } from '../../users/dto/entity.dto';
-import { ConfigService } from '@nestjs/config'; //todo  тут сделать через env?
+import { ConfigService } from '@nestjs/config';
 
-@Injectable() //todo тут нужно экжентить?
+@Injectable()
 export class JwtGenerate {
   constructor(private configService: ConfigService) {}
   private accessTokenJwtSecret =

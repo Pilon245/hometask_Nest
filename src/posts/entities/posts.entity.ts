@@ -1,6 +1,5 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UsersAccountData } from '../../users/users.entity';
 import { LikeValuePost } from './likes.posts.entity';
 
 export type PostDocument = HydratedDocument<Post>;
@@ -14,7 +13,6 @@ export class newestLikesType {
   @Prop()
   login: string;
 }
-const newestLikesSchema = SchemaFactory.createForClass(newestLikesType);
 @Schema()
 export class extendedLikesInfoType {
   @Prop()

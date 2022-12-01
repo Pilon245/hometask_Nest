@@ -3,9 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UseGuards,
   Res,
   Req,
@@ -16,21 +13,14 @@ import {
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { LoginInputModel } from './dto/create-auth.dto';
-// import { AuthGuard } from '@nestjs/passport';
-import { randomUUID } from 'crypto';
 import { SessionService } from '../session/session.service';
-import { response } from 'express';
 import { LocalAuthGuard } from './strategy/local-auth.guard';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { Response, Request } from 'express';
-import { payloadRefreshToken } from '../helper/auth.function';
+import { Response } from 'express';
 import { UsersQueryRepository } from '../users/users.query.repository';
-import { CreateUserInputModel, UsersFactory } from '../users/dto/usersFactory';
+import { CreateUserInputModel } from '../users/dto/usersFactory';
 import { EmailManager } from '../managers/email.manager';
 import { JwtAuthGuard } from './strategy/jwt-auth.guard';
 import { UsersRepository } from '../users/users.repository';
-import { SessionRepository } from '../session/session.repository';
-import { SessionQueryRepository } from '../session/session.query.repository';
 import {
   ConfirmationInputModel,
   NewPasswordInputModel,
@@ -39,23 +29,20 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { JwtGenerate } from './helper/generate.token';
-import { User } from '../users/users.entity';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 
+@UseGuards(CustomThrottlerGuard)
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     protected usersService: UsersService,
-    protected jwtService: JwtService,
     protected jwtGenerate: JwtGenerate,
     protected usersRepository: UsersRepository,
     protected sessionService: SessionService,
-    protected sessionQueryRepository: SessionQueryRepository,
-    protected usersQueryRepository: UsersQueryRepository, // protected sessionService: SessionService,
+    protected usersQueryRepository: UsersQueryRepository,
     protected emailManager: EmailManager,
   ) {}
-  @UseGuards(CustomThrottlerGuard)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
@@ -73,7 +60,7 @@ export class AuthController {
     // const tokens = await this.authService.login(req);
     const tokens = await this.sessionService.createSession(
       req.user,
-      req.ip,
+      ip,
       req.headers['user-agent'],
     );
     return res
@@ -84,10 +71,9 @@ export class AuthController {
       })
       .send({ accessToken: tokens.accessToken });
   }
-  @UseGuards(CustomThrottlerGuard)
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
-  async updateResfreshToken(@Req() req, @Res() res: Response) {
+  async updateRefreshToken(@Req() req, @Res() res: Response) {
     const tokens = await this.authService.refreshToken(
       req.user,
       req.cookies.refreshToken,
@@ -101,7 +87,7 @@ export class AuthController {
       })
       .send({ accessToken: tokens.accessToken });
   }
-  @Throttle() //todo это откдючить гвард?
+  @Throttle()
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@Req() req, @Res() res: Response) {
@@ -110,7 +96,6 @@ export class AuthController {
     );
     return res.status(200).send(Account);
   }
-  @UseGuards(CustomThrottlerGuard)
   @Post('registration')
   @HttpCode(204)
   async createRegistrationUser(
@@ -140,11 +125,9 @@ export class AuthController {
         },
       ]);
     }
-    const newUsers = await this.authService.registrationUsers(inputModel);
-    console.log('code!!!!', newUsers.emailConfirmation.confirmationCode);
+    await this.authService.registrationUsers(inputModel);
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
   @Post('registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(
@@ -159,7 +142,6 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
   @Post('registration-email-resending')
   @HttpCode(204)
   async resendingEmail(
@@ -174,10 +156,9 @@ export class AuthController {
       ]);
     }
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
-    const emailSend = await this.emailManager.sendPasswordRecoveryMessage(user);
+    await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
   @Post('password-recovery')
   @HttpCode(204)
   async recoveryPassword(
@@ -185,25 +166,17 @@ export class AuthController {
     @Body() inputModel: RegistrationEmailInputModel,
     @Res() res: Response,
   ) {
-    const updateCode = await this.authService.updatePasswordCode(
-      req.body.email,
-    );
     const user = await this.usersRepository.findLoginOrEmail(req.body.email);
     if (!user) {
       throw new BadRequestException([
         { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    if (user) {
-      // const update = this.usersRepository.updatePasswordUsers(
-      //   user.id,
-      //   'password', //todo тут можно отправить поле null,
-      // );
-      const passwordEmail = this.emailManager.sendNewPasswordMessage(user);
-    }
+    await this.authService.updatePasswordCode(req.body.email);
+
+    await this.emailManager.sendNewPasswordMessage(user);
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
   @Post('new-password')
   @HttpCode(204)
   async confirmationRecoveryPassword(
@@ -222,12 +195,10 @@ export class AuthController {
     }
     return res.sendStatus(204);
   }
-  @UseGuards(CustomThrottlerGuard)
   @UseGuards(RefreshTokenGuard)
   @Post('logout')
   @HttpCode(204)
   async logOutAccount(@Req() req, @Res() res: Response) {
-    console.log('req.user', req.user);
     await this.sessionService.deleteDevicesById(req.user.deviceId);
     return res.sendStatus(204);
   }

@@ -3,7 +3,7 @@ import { BlogsController } from './blogs/blogs.controller';
 import { BlogsService } from './blogs/blogs.service';
 import { BlogsRepository } from './blogs/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Blog, BlogSchema } from './blogs/blog.entity';
+import { Blog, BlogSchema } from './blogs/entities/blog.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostsController } from './posts/posts.controller';
 import { PostsService } from './posts/posts.service';
@@ -32,9 +32,7 @@ import { PasswordEmailAdapter } from './adapters/password-email-adapter.service'
 import { EmailAdapter } from './adapters/emailAdapter';
 import { Session, SessionSchema } from './session/entities/session.entity';
 import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.service';
-import { OptionalBearerAuthGuard } from './auth/strategy/optional.bearer.auth.guard';
 import { JwtGenerate } from './auth/helper/generate.token';
-import { AuthGuard } from './auth/strategy/forbiten.giard';
 import { EmailManager } from './managers/email.manager';
 import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
 
@@ -68,7 +66,6 @@ const schemas = [
   controllers: [
     BlogsController,
     PostsController,
-    // UsersController,
     CommentsController,
     RemoveController,
   ],
@@ -77,22 +74,16 @@ const schemas = [
     BlogsRepository,
     PostsService,
     PostsRepository,
-    // UsersService,
-    // UsersRepository,
     CommentsService,
     CommentsRepository,
     BlogsQueryRepository,
     PostsQueryRepository,
-    // UsersQueryRepository,
     CommentsQueryRepository,
-    // LocalStrategy,
     BasicStrategy,
     PasswordEmailAdapter,
     EmailAdapter,
     BearerAuthGuardOnGet,
-    OptionalBearerAuthGuard,
     JwtGenerate,
-    AuthGuard,
     EmailManager,
     BlogExistsRule,
   ],

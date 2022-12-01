@@ -1,4 +1,4 @@
-import { validate, validateOrReject } from 'class-validator';
+import { validateOrReject } from 'class-validator';
 
 export const getSkipNumber = (pageNumber: number, pageSize: number) => {
   return (pageNumber - 1) * pageSize;

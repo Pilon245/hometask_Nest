@@ -3,12 +3,19 @@ import { Model } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
 import { Injectable } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
-import { FindBlogsPayload } from '../blogs/blogs.query.repository';
 import {
   LikePost,
   LikePostDocument,
   LikeValuePost,
 } from './entities/likes.posts.entity';
+import { SortDirection } from '../validation/query.validation';
+
+export type FindPostsPayload = {
+  pageSize: number;
+  pageNumber: number;
+  sortBy: string;
+  sortDirection: SortDirection;
+};
 
 @Injectable()
 export class PostsQueryRepository {
@@ -16,9 +23,12 @@ export class PostsQueryRepository {
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(LikePost.name) private likePostModel: Model<LikePostDocument>,
   ) {}
-  async findPostsNoAuth(
-    { sortDirection, sortBy, pageSize, pageNumber }: FindBlogsPayload, //todo тут исправить тип
-  ) {
+  async findPostsNoAuth({
+    sortDirection,
+    sortBy,
+    pageSize,
+    pageNumber,
+  }: FindPostsPayload) {
     const posts = await this.postModel
       .find({}, { _id: false, __v: 0 })
       .sort([[sortBy, sortDirection]])
@@ -27,6 +37,7 @@ export class PostsQueryRepository {
       .lean();
 
     const Promises = posts.map(async (p) => {
+      // todo тут надо await?
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }],
       });
@@ -70,7 +81,7 @@ export class PostsQueryRepository {
   }
   async findPosts(
     userId: string,
-    { sortDirection, sortBy, pageSize, pageNumber }: FindBlogsPayload,
+    { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
       .find({}, { _id: false, __v: 0 })
@@ -217,7 +228,7 @@ export class PostsQueryRepository {
   }
   async findPostByBlogIdNoAuth(
     blogId: string,
-    { sortDirection, sortBy, pageSize, pageNumber }: FindBlogsPayload,
+    { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })
@@ -258,10 +269,6 @@ export class PostsQueryRepository {
         },
       };
     });
-    // if (posts.length === 0) {
-    //   console.log('posts2', posts);
-    //   return null;
-    // }
     const items = await Promise.all(Promises);
 
     const totalCount = await this.postModel.countDocuments({ blogId });
@@ -274,7 +281,7 @@ export class PostsQueryRepository {
   async findPostByBlogId(
     blogId: string,
     userId: string,
-    { sortDirection, sortBy, pageSize, pageNumber }: FindBlogsPayload,
+    { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
       .find({ blogId }, { _id: false, __v: 0 })

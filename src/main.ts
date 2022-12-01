@@ -13,7 +13,6 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors();
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  // app.select(AppModule), { fallbackOnErrors: true };
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,

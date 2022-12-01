@@ -7,7 +7,6 @@ import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 export class BlogsService {
   constructor(protected blogsRepository: BlogsRepository) {}
   async createBlogs(inputModel: CreateBlogInputDTO) {
-    // await validateOrRejectModel(inputModel, CreateBlogInputModel); // Валидиация на принятые данные
     const newBlog = new BlogsFactory(
       String(+new Date()),
       inputModel.name,
@@ -15,12 +14,11 @@ export class BlogsService {
       inputModel.websiteUrl,
       new Date().toISOString(),
     );
-
     return this.blogsRepository.createBlogs(newBlog);
   }
   updateBlogs(id: string, model: UpdateBlogInputModelType) {
     const updateBlog: UpdateBlogInputModelType = {
-      // перенсти на фактори
+      //todo перенсти на фактори и для чего это нужно
       id: id,
       name: model.name,
       description: model.description,

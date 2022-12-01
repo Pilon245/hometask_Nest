@@ -1,12 +1,4 @@
-import {
-  IsEmpty,
-  IsNotEmpty,
-  IsString,
-  IsUrl,
-  Length,
-  NotContains,
-} from 'class-validator';
-import { Trim } from 'class-sanitizer';
+import { IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class BlogsFactory {
@@ -21,22 +13,14 @@ export class BlogsFactory {
 }
 export class CreateBlogInputDTO {
   // для валидации
-  // @IsNotEmpty({
-  //   message:
-  //     {
-  //       message: 'Email already exists',
-  //       field: 'email',
-  //     },
-  //   ,
-  // })
   @Length(1, 15, { message: 'incorrect name' })
-  // @IsString()
   @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
   @Length(1, 500)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
+
   @Length(1, 100)
   @IsUrl()
   @Transform(({ value }: TransformFnParams) => value?.trim())

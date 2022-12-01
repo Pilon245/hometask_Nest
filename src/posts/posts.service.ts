@@ -36,16 +36,6 @@ export class PostsService {
       },
     );
     return this.postsRepository.createPosts(newPost);
-    // const found = await this.postsRepository.createPosts(newPost);
-    // return {
-    //   ...found,
-    //   extendedLikesInfo: {
-    //     likesCount: 0,
-    //     dislikesCount: 0,
-    //     myStatus: LikeValuePost.none,
-    //     newestLikes: [],
-    //   },
-    // };
   }
   updatePosts(id: string, model: CreatePostInputDTO) {
     const updatePost: UpdatePostDTO = {
@@ -179,11 +169,4 @@ export class extendedLikesInfoType {
   dislikesCount: number;
   myStatus: LikeValuePost;
   newestLikes: Array<newestLikesType>;
-  // newestLikes: [
-  //   {
-  //     addedAt: "2022-11-07T11:31:23.905Z",
-  //     userId: "string",
-  //     login: "string"
-  //   }
-  // ]
 }

@@ -12,9 +12,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersQueryRepository } from './users.query.repository';
-import { pagination } from '../middlewares/query.validation';
-import { CreateUserInputModel, UsersFactory } from './dto/usersFactory';
-import { BasicAuthGuard } from '../guards/basic-auth.guard';
+import { pagination } from '../validation/query.validation';
+import { CreateUserInputModel } from './dto/usersFactory';
+import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -47,16 +47,3 @@ export class UsersController {
     return result;
   }
 }
-
-export type CreateUserInputModelType = {
-  login: string;
-  password: string;
-  email: string;
-};
-
-export type UserOutputModelType = {
-  id: string;
-  login: string;
-  email: string;
-  createdAt: string;
-};

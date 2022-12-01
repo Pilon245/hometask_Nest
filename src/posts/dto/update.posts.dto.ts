@@ -1,4 +1,4 @@
-import { IsOptional, IsUrl, Length, Validate } from 'class-validator';
+import { Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BlogExistsRule } from '../guards/blog-id-validation.service';
 
@@ -13,8 +13,6 @@ export class UpdatePostInputModelType {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
   @Validate(BlogExistsRule)
-  // @Length(1)
-  // @Transform(({ value }: TransformFnParams) => value?.trim())
   blogId: string;
 }
 

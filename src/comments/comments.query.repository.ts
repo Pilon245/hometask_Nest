@@ -7,21 +7,14 @@ import {
   LikeCommentDocument,
   LikeValueComment,
 } from './entities/likes.comments.entity';
-import { FindUsersPayload } from '../users/users.query.repository';
-import { SortDirection } from '../middlewares/query.validation';
-import {
-  getPagesCounts,
-  getSkipNumber,
-  outputModel,
-} from '../helper/helper.function';
+import { SortDirection } from '../validation/query.validation';
+import { getSkipNumber, outputModel } from '../helper/helper.function';
 
 export type FindCommentsPayload = {
   pageSize: number;
   pageNumber: number;
   sortBy: string;
   sortDirection: SortDirection;
-  searchLoginTerm?: string;
-  searchEmailTerm?: string;
 };
 
 @Injectable()
@@ -33,7 +26,7 @@ export class CommentsQueryRepository {
   ) {}
 
   async findCommentByIdAndLogin(userId: string, commentId: string) {
-    return await this.commentModel.findOne({
+    return this.commentModel.findOne({
       $and: [{ id: commentId }, { userId: userId }],
     });
   }

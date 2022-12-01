@@ -1,10 +1,3 @@
-import { Prop } from '@nestjs/mongoose';
-import {
-  EmailConfirmationType,
-  PasswordConfirmationType,
-  UsersAccountDataType,
-} from '../../users/dto/entity.dto';
-
 export class CreateSessionInputModel {
   ip: string;
   title: string;

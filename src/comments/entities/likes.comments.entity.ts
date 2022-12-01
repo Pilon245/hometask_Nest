@@ -5,7 +5,6 @@ export type LikeCommentDocument = HydratedDocument<LikeComment>;
 
 @Schema()
 export class LikeComment {
-  //todo обЪеденить лайки комметты и посты
   @Prop()
   likesStatus: number;
   @Prop()

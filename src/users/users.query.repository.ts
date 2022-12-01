@@ -3,7 +3,7 @@ import { User, UserDocument } from './users.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
-import { SortDirection } from '../middlewares/query.validation';
+import { SortDirection } from '../validation/query.validation';
 
 export type FindUsersPayload = {
   pageSize: number;
@@ -16,9 +16,7 @@ export type FindUsersPayload = {
 
 @Injectable()
 export class UsersQueryRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>, // private cfgSer: ConfigService,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async findUsersById(id: string) {
     const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
     if (!users) return false;
@@ -46,9 +44,6 @@ export class UsersQueryRepository {
     pageSize,
     pageNumber,
   }: FindUsersPayload) {
-    // TODO: запомнить этот нюанс
-    // const port = this.cfgSer.get('PORT');
-    // return await this.userModel.find({}, { _id: false, __v: 0 }).exec();
     const filter = {
       $or: [
         {
@@ -68,7 +63,6 @@ export class UsersQueryRepository {
     const users = await this.userModel
       .find(filter, { _id: false, __v: 0 })
       .sort([[`accountData.${sortBy}`, sortDirection]])
-      // .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
@@ -85,15 +79,14 @@ export class UsersQueryRepository {
     };
   }
   async findUsersForDTO(id: string): Promise<User> {
-    return await this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
+    return this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
   }
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
-    const user = await this.userModel.findOne({
+    return this.userModel.findOne({
       $or: [
         { 'accountData.login': LoginOrEmailL },
         { 'accountData.email': LoginOrEmailL },
       ],
     });
-    return user;
   }
 }

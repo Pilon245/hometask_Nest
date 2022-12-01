@@ -14,7 +14,7 @@
 //   return user;
 // };
 
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'; //todo ауфгард исрпавиьть
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { Observable } from 'rxjs';
 import { _generatePasswordForDb } from './auth.function';

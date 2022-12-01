@@ -1,4 +1,4 @@
-import { isEmail, Length, Matches, MATCHES } from 'class-validator';
+import { Length, Matches } from 'class-validator';
 
 export class RegistrationInputModel {
   @Matches(/^[a-zA-Z0-9_-]*$/)

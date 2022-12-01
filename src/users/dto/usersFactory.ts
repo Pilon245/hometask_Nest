@@ -1,4 +1,3 @@
-import { Prop } from '@nestjs/mongoose';
 import {
   BanInfoType,
   EmailConfirmationType,

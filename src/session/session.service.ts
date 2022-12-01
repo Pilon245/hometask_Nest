@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SessionFactory } from './dto/create-session.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Session, SessionDocument } from './entities/session.entity';
-import { Model } from 'mongoose';
-import { UsersRepository } from '../users/users.repository';
+
 import { SessionRepository } from './session.repository';
 import { UserAccountDBType, UserOutputModel } from '../users/dto/entity.dto';
 import { randomUUID } from 'crypto';
@@ -16,12 +13,10 @@ export class SessionService {
     protected jwtGenerate: JwtGenerate,
   ) {}
   async findDevices(id: string) {
-    const devices = await this.sessionRepository.findDevices(id);
-    return devices;
+    return this.sessionRepository.findDevices(id);
   }
   async findDevicesByDeviceId(deviceId: string) {
-    const devices = await this.sessionRepository.findDevices(deviceId);
-    return devices;
+    return this.sessionRepository.findDevices(deviceId);
   }
   async createSession(user: UserOutputModel, ip: string, deviceName: string) {
     const userId = user.id;
@@ -43,9 +38,6 @@ export class SessionService {
   }
   async updateSession(user: UserAccountDBType, payload: any) {
     const userId = user.id;
-    // const payload = await jwtService.getUserIdByRefreshToken(
-    //   token.split(' ')[0],
-    // );
     const lastActiveDate = new Date(payload.iat * 1000).toISOString();
     await this.sessionRepository.updateSecurityDevices(
       userId,

@@ -13,27 +13,22 @@ import {
   Request,
   Req,
   Res,
-  BadRequestException,
 } from '@nestjs/common';
-import { extendedLikesInfoType, PostsService } from './posts.service';
+import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 import { PostsQueryRepository } from './posts.query.repository';
 import { CommentsQueryRepository } from '../comments/comments.query.repository';
-import { pagination } from '../middlewares/query.validation';
+import { pagination } from '../validation/query.validation';
 import { LikeValuePost } from './entities/likes.posts.entity';
 import {
   CreatePostInputDTO,
   UpdatePostLikeInputModel,
 } from './dto/postsFactory';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
-import { BasicAuthGuard } from '../guards/basic-auth.guard';
+import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { UsersQueryRepository } from '../users/users.query.repository';
-import {
-  UpdateCommentInputModel,
-  UpdateCommentLikeInputModel,
-} from '../comments/dto/update.comments.dto';
-import { LikeValueComment } from '../comments/entities/likes.comments.entity';
+import { UpdateCommentInputModel } from '../comments/dto/update.comments.dto';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { UpdatePostInputModelType } from './dto/update.posts.dto';
@@ -93,7 +88,6 @@ export class PostsController {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
-    console.log('resultFound', resultFound);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -129,7 +123,6 @@ export class PostsController {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
-    console.log('resultFound', resultFound);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -147,7 +140,7 @@ export class PostsController {
   @HttpCode(204)
   async updatePosts(
     @Param('id') postId: string,
-    @Body() model: UpdatePostInputModelType, //UpdatePostInputModelType
+    @Body() model: UpdatePostInputModelType,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
@@ -172,11 +165,6 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     const like = updateModel.likeStatus;
-    // if (like !== typeof LikeValuePost) {
-    //   throw new BadRequestException([
-    //     { message: 'LikesStatus invalid', field: 'likeStatus' },
-    //   ]);
-    // }
     const user = await this.usersQueryRepository.findUsersById(req.user.id);
     if (!user) {
       throw new HttpException('invalid blog', 404);
@@ -187,7 +175,6 @@ export class PostsController {
       like as LikeValuePost,
       user.login,
     );
-    console.log('isUpdate', isUpdate);
     return;
   }
   @UseGuards(BasicAuthGuard)
@@ -200,18 +187,6 @@ export class PostsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    const result = this.postsService.deletePosts(postId);
-    return result;
+    return this.postsService.deletePosts(postId);
   }
 }
-
-export type PostOutputModelType = {
-  id: string;
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-  blogName: string;
-  createdAt: string;
-  extendedLikesInfo?: extendedLikesInfoType;
-};

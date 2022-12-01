@@ -1,14 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from './blog.entity';
+import { Blog, BlogDocument } from './entities/blog.entity';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import {
-  getPagesCounts,
-  getSkipNumber,
-  outputModel,
-} from '../helper/helper.function';
-import { filter } from 'rxjs';
-import { SortDirection } from '../middlewares/query.validation';
+import { getSkipNumber, outputModel } from '../helper/helper.function';
+import { SortDirection } from '../validation/query.validation';
 
 export type FindBlogsPayload = {
   pageSize: number;
@@ -52,6 +47,6 @@ export class BlogsQueryRepository {
     };
   }
   async findBlogById(id: string): Promise<Blog> {
-    return await this.blogModel.findOne({ id }, { _id: false, __v: 0 });
+    return this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
 }

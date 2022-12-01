@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -20,41 +19,12 @@ import { PostsService } from '../posts/posts.service';
 import { Response } from 'express';
 import { BlogsQueryRepository } from './blogs.query.repository';
 import { PostsQueryRepository } from '../posts/posts.query.repository';
-import { isEmpty, isString, IsUrl, Length } from 'class-validator';
-import { pagination } from '../middlewares/query.validation';
-import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
-import {
-  CreatePostByBlogIdInputDTO,
-  CreatePostInputDTO,
-} from '../posts/dto/postsFactory';
-import { LocalAuthGuard } from '../auth/strategy/local-auth.guard';
-import { BasicAuthGuard } from '../guards/basic-auth.guard';
-import { BasicStrategy } from '../auth/strategy/basic-strategy.service';
-import { LocalStrategy } from '../auth/strategy/local.strategy';
+import { pagination } from '../validation/query.validation';
+import { CreateBlogInputDTO } from './dto/blogsFactory';
+import { CreatePostByBlogIdInputDTO } from '../posts/dto/postsFactory';
+import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
-import { AuthGuard } from '../auth/strategy/forbiten.giard';
-
-// export class CreateBlogInputDTO {
-//   @Length(0, 100, { message: 'incorrect name' })
-//   name: string;
-//   @Length(0, 100)
-//   @IsUrl()
-//   youtubeUrl: string;
-// }
-
-// export class CreateBlogInputModelType {
-//   constructor(public name: string, public youtubeUrl: string) {}
-// }
-// export class CreateBlogInputModelType2 {
-//   public name: string;
-//   public youtubeUrl: string;
-//   constructor(name: string, youtubeUrl: string) {
-//     this.name = name;
-//     this.youtubeUrl = youtubeUrl;
-//   }
-// }
-// const someBlog = new CreateBlogInputModelType2('Vasya', 'url');
 
 @Controller('blogs')
 export class BlogsController {
@@ -109,8 +79,6 @@ export class BlogsController {
   }
 
   @UseGuards(BasicAuthGuard)
-  // @UseGuards(AuthGuard('basic'), AuthGuard('local'))
-  // @UseGuards(AuthGuard('local'))
   @Post()
   createBlogs(@Body() inputModel: CreateBlogInputDTO) {
     return this.blogsService.createBlogs(inputModel);
@@ -131,8 +99,7 @@ export class BlogsController {
       content: inputModel.content,
       blogId: blogId,
     };
-    const result = this.postsService.createPosts(newPost);
-    return result;
+    return this.postsService.createPosts(newPost);
   }
   @UseGuards(BasicAuthGuard)
   @Put(':id')
@@ -141,12 +108,11 @@ export class BlogsController {
     @Param('id') blogId: string,
     @Body() model: UpdateBlogInputModelType,
   ) {
-    const result = this.blogsService.updateBlogs(blogId, model);
     const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    return result;
+    return this.blogsService.updateBlogs(blogId, model);
   }
   @UseGuards(BasicAuthGuard)
   @Delete(':id')
@@ -156,7 +122,6 @@ export class BlogsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    const result = this.blogsService.deleteBlogs(blogId);
-    return result;
+    return this.blogsService.deleteBlogs(blogId);
   }
 }

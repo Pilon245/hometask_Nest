@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { Injectable } from '@nestjs/common';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';

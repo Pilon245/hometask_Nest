@@ -1,29 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { Blog } from '../blogs/blog.entity';
-import { InjectModel, Prop } from '@nestjs/mongoose';
-import { Post, PostDocument } from '../posts/entities/posts.entity';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './users.entity';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>, // private cfgSer: ConfigService,
-  ) {}
-  async findUserById(id: string) {
-    const result = await this.userModel.findOne({ id: id });
-    return result;
-  }
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
-    //todo где это надо писать , если используется в сервисе
-    const user = await this.userModel.findOne({
+    return this.userModel.findOne({
       $or: [
         { 'accountData.login': LoginOrEmailL },
         { 'accountData.email': LoginOrEmailL },
       ],
     });
-    return user;
   }
   async findLoginAndEmail(Login: string, Email: string): Promise<User> {
     const user = await this.userModel.findOne({
@@ -31,19 +20,6 @@ export class UsersRepository {
     });
     return user;
   }
-  async findLogin(Login: string): Promise<User> {
-    const user = await this.userModel.findOne({ 'accountData.login': Login });
-    return user;
-  }
-  async findEmail(Email: string): Promise<User> {
-    const user = await this.userModel.findOne({ 'accountData.email': Email });
-    return user;
-  }
-  // async findTokenByUserIdAndDeviceId(userId: string, deviceId: string) {
-  //   const result = await TokenModelClass.findOne({
-  //     $and: [{ userId: userId }, { deviceId: deviceId }],
-  //   });
-  //   return result;
   async updateEmailConfirmation(id: string) {
     const result = await this.userModel.updateOne(
       { id: id },
@@ -80,16 +56,14 @@ export class UsersRepository {
     return result.modifiedCount === 1;
   }
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
-    const user = await this.userModel.findOne({
+    return this.userModel.findOne({
       'emailConfirmation.confirmationCode': emailConfirmationCode,
     });
-    return user;
   }
   async findUserByConfirmationPasswordCode(passwordConfirmation: string) {
-    const user = await this.userModel.findOne({
+    return this.userModel.findOne({
       'passwordConfirmation.confirmationCode': passwordConfirmation,
     });
-    return user;
   }
   async createUsers(user: any) {
     const users = await new this.userModel(user);
@@ -100,7 +74,6 @@ export class UsersRepository {
     return result.deletedCount === 1;
   }
   async deleteAllUsers() {
-    const result = await this.userModel.deleteMany();
-    return result;
+    return this.userModel.deleteMany();
   }
 }

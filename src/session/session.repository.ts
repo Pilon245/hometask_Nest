@@ -1,10 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Post, PostDocument } from '../posts/entities/posts.entity';
 import { Model } from 'mongoose';
-import {
-  LikePost,
-  LikePostDocument,
-} from '../posts/entities/likes.posts.entity';
 import { Session, SessionDocument } from './entities/session.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateSessionInputModel } from './dto/create-session.dto';
@@ -28,20 +23,18 @@ export class SessionRepository {
     }));
   }
   async findDevicesByDeviceIdAndUserId(userId: string, deviceId: string) {
-    const result = await this.sessionModel
+    return this.sessionModel
       .findOne({
         $and: [{ userId: userId }, { deviceId: deviceId }],
       })
       .lean();
-    return result;
   }
   async findDevicesByDeviceId(deviceId: string) {
-    const result = await this.sessionModel
+    return this.sessionModel
       .findOne({
         deviceId: deviceId,
       })
       .lean();
-    return result;
   }
   async createSecurityDevices(device: CreateSessionInputModel) {
     const sessionInstance = await new this.sessionModel();
@@ -55,7 +48,6 @@ export class SessionRepository {
 
     await sessionInstance.save();
 
-    // return await SessionModelClass.insertMany(device)
     return device;
   }
   async updateSecurityDevices(
