@@ -42,7 +42,6 @@ export class CommentsQueryRepository {
     const totalDislike = await this.likeCommentModel.countDocuments({
       $and: [{ commentId: id }, { dislikesStatus: 1 }],
     });
-    console.log('comments', comments);
     if (comments) {
       const outComment = {
         id: comments.id,

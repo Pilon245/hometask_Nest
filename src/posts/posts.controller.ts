@@ -32,6 +32,7 @@ import { UpdateCommentInputModel } from '../comments/dto/update.comments.dto';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { UpdatePostInputModelType } from './dto/update.posts.dto';
+import { CurrentUserId } from '../auth/current-user.param.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -117,8 +118,8 @@ export class PostsController {
   async createCommentOnPostId(
     @Param('postId') postId: string,
     @Query() query,
-    @Body() inputmodel: UpdateCommentInputModel,
-    @Request() req,
+    @Body() inputModel: UpdateCommentInputModel,
+    @CurrentUserId() currentUserId,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
@@ -126,10 +127,10 @@ export class PostsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    const user = await this.usersQueryRepository.findUsersForDTO(req.user.id);
+    const user = await this.usersQueryRepository.findUsersForDTO(currentUserId);
     const comment = await this.commentsService.createComment(
       postId,
-      inputmodel.content,
+      inputModel.content,
       user.id,
       user.accountData.login,
     );
@@ -156,7 +157,7 @@ export class PostsController {
   async updateLike(
     @Param('postId') postId: string,
     @Body() updateModel: UpdatePostLikeInputModel,
-    @Request() req,
+    @CurrentUserId() currentUserId,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
@@ -165,7 +166,7 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     const like = updateModel.likeStatus;
-    const user = await this.usersQueryRepository.findUsersById(req.user.id);
+    const user = await this.usersQueryRepository.findUsersById(currentUserId);
     if (!user) {
       throw new HttpException('invalid blog', 404);
     }

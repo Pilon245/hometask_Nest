@@ -28,6 +28,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
+import { CurrentUserId } from './current-user.param.decorator';
 
 // @UseGuards(CustomThrottlerGuard)
 @Controller('auth')
@@ -62,7 +63,7 @@ export class AuthController {
     return res
       .cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .send({ accessToken: tokens.accessToken });
   }
@@ -75,18 +76,15 @@ export class AuthController {
       .cookie('refreshToken', tokens.refreshToken, {
         expires: new Date(Date.now() + 2000000),
         httpOnly: true,
-        secure: true,
+        secure: false,
       })
       .send({ accessToken: tokens.accessToken });
   }
   @Throttle()
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async myAccount(@Req() req, @Res() res: Response) {
-    const Account = await this.usersQueryRepository.findUsersByIdOnMyAccount(
-      req.user.id,
-    );
-    return res.status(200).send(Account);
+  async myAccount(@CurrentUserId() currentUserId) {
+    return this.usersQueryRepository.findUsersByIdOnMyAccount(currentUserId);
   }
   @Post('registration')
   @HttpCode(204)

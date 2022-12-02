@@ -35,6 +35,7 @@ import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.s
 import { JwtGenerate } from './auth/helper/generate.token';
 import { EmailManager } from './managers/email.manager';
 import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
+import { CurrentUserId } from './auth/current-user.param.decorator';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
