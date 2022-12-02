@@ -19,6 +19,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
+import { BasicAdminGuard } from './guards/basic-admin.guard';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 
 @Module({
@@ -49,6 +50,7 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
     BearerAuthGuardOnGet,
     JwtGenerate,
     RefreshTokenGuard,
+    BasicAdminGuard,
   ],
   exports: [
     AuthService,

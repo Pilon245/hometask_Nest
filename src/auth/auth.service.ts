@@ -109,3 +109,4 @@ export class AuthService {
     return this.usersRepository.updatePasswordUsers(user.id, passwordHash);
   }
 }
+//todo как нужно сервис к чужому репозиторию или к другому сервису

@@ -17,7 +17,7 @@ export class EmailManager {
   async sendNewPasswordMessage(user: any) {
     await this.passwordEmailAdapter.sendPasswordOnEmail(
       user.accountData.email,
-      user.emailConfirmation.confirmationCode,
+      user.passwordConfirmation.confirmationCode,
     );
   }
 }

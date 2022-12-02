@@ -29,6 +29,8 @@ import { Throttle } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 import { CurrentUserId } from './current-user.param.decorator';
+import { BasicStrategy } from './strategy/basic-strategy.service';
+import { BasicAdminGuard } from './guards/basic-admin.guard';
 
 // @UseGuards(CustomThrottlerGuard)
 @Controller('auth')
@@ -40,6 +42,11 @@ export class AuthController {
     protected usersQueryRepository: UsersQueryRepository,
     protected emailManager: EmailManager,
   ) {}
+  @UseGuards(BasicAdminGuard)
+  @Get('sa')
+  async superAdmin() {
+    return { ok: true };
+  }
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
@@ -152,17 +159,16 @@ export class AuthController {
   @Post('password-recovery')
   @HttpCode(204)
   async recoveryPassword(
-    @Req() req,
     @Body() inputModel: RegistrationEmailInputModel,
     @Res() res: Response,
   ) {
-    const user = await this.usersRepository.findLoginOrEmail(req.body.email);
+    const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     if (!user) {
       throw new BadRequestException([
         { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    await this.authService.updatePasswordCode(req.body.email);
+    await this.authService.updatePasswordCode(inputModel.email);
 
     await this.emailManager.sendNewPasswordMessage(user);
     return res.sendStatus(204);
