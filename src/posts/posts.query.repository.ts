@@ -37,7 +37,6 @@ export class PostsQueryRepository {
       .lean();
 
     const Promises = posts.map(async (p) => {
-      // todo тут надо await?
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }],
       });
@@ -49,6 +48,7 @@ export class PostsQueryRepository {
           $and: [{ postId: p.id }, { likesStatus: 1 }],
         })
         .sort({ addedAt: 'desc' })
+        // .limit(3)
         .lean();
       return {
         id: p.id,

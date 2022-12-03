@@ -1,5 +1,6 @@
 import { IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { Injectable } from '@nestjs/common';
 
 export class BlogsFactory {
   // для созадния обЪекта

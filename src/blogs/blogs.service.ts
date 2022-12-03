@@ -18,7 +18,6 @@ export class BlogsService {
   }
   updateBlogs(id: string, model: UpdateBlogInputModelType) {
     const updateBlog: UpdateBlogInputModelType = {
-      //todo перенсти на фактори и для чего это нужно
       id: id,
       name: model.name,
       description: model.description,
