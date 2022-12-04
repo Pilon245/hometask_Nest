@@ -152,6 +152,7 @@ export class AuthController {
         { message: 'Incorrect email', field: 'email' },
       ]);
     }
+
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     await this.emailManager.sendPasswordRecoveryMessage(user);
     return res.sendStatus(204);
