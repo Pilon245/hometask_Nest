@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { PostsRepository } from './posts.repository';
 import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
 import { LikeValuePost } from './entities/likes.posts.entity';
@@ -10,7 +10,7 @@ import {
 } from './dto/postsFactory';
 import { UpdatePostDTO } from './dto/update.posts.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class PostsService {
   constructor(
     protected postsRepository: PostsRepository,

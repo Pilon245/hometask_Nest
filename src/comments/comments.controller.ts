@@ -12,6 +12,7 @@ import {
   Delete,
   Req,
   Res,
+  Scope,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CommentsQueryRepository } from './comments.query.repository';
@@ -25,7 +26,10 @@ import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../auth/current-user.param.decorator';
 
-@Controller('comments')
+@Controller({
+  path: 'comments',
+  scope: Scope.DEFAULT,
+})
 export class CommentsController {
   constructor(
     protected commentsService: CommentsService,

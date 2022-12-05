@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { CommentsFactory, LikesFactory } from './dto/commentsFactory';
 import { LikeValueComment } from './entities/likes.comments.entity';
-@Injectable()
+
+@Injectable({ scope: Scope.DEFAULT })
 export class CommentsService {
   constructor(protected commentsRepository: CommentsRepository) {}
   async createComment(

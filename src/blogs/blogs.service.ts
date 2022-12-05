@@ -1,9 +1,9 @@
 import { BlogsRepository } from './blogs.repository';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class BlogsService {
   constructor(protected blogsRepository: BlogsRepository) {}
   async createBlogs(inputModel: CreateBlogInputDTO) {

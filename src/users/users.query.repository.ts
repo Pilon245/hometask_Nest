@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.entity';
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
 import { SortDirection } from '../validation/query.validation';
 
@@ -14,7 +14,7 @@ export type FindUsersPayload = {
   searchEmailTerm?: string;
 };
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
   async findUsersById(id: string) {

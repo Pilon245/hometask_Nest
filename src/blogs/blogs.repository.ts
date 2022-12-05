@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { Blog, BlogDocument } from './entities/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBlogDTO } from './dto/blogsFactory';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
 

@@ -9,6 +9,7 @@ import {
   Ip,
   HttpCode,
   BadRequestException,
+  Scope,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginInputModel } from './dto/create-auth.dto';
@@ -33,7 +34,10 @@ import { BasicStrategy } from './strategy/basic-strategy.service';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
 
 // @UseGuards(CustomThrottlerGuard)
-@Controller('auth')
+@Controller({
+  path: 'auth',
+  scope: Scope.DEFAULT,
+})
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

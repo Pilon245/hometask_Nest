@@ -13,6 +13,7 @@ import {
   Request,
   Req,
   Res,
+  Scope,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
@@ -34,7 +35,10 @@ import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.
 import { UpdatePostInputModelType } from './dto/update.posts.dto';
 import { CurrentUserId } from '../auth/current-user.param.decorator';
 
-@Controller('posts')
+@Controller({
+  path: 'posts',
+  scope: Scope.DEFAULT,
+})
 export class PostsController {
   constructor(
     protected postsService: PostsService,

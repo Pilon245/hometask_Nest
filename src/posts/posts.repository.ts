@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
@@ -10,7 +10,7 @@ import {
 } from './entities/likes.posts.entity';
 import { UpdatePostDTO } from './dto/update.posts.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,

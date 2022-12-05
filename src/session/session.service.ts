@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { SessionFactory } from './dto/create-session.dto';
 
 import { SessionRepository } from './session.repository';
@@ -6,7 +6,7 @@ import { UserAccountDBType, UserOutputModel } from '../users/dto/entity.dto';
 import { randomUUID } from 'crypto';
 import { JwtGenerate } from '../auth/helper/generate.token';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class SessionService {
   constructor(
     protected sessionRepository: SessionRepository,

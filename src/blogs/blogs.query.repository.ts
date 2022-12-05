@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument } from './entities/blog.entity';
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
 import { SortDirection } from '../validation/query.validation';
 
@@ -13,7 +13,7 @@ export type FindBlogsPayload = {
   searchNameTerm?: string;
 };
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
   async findBlogs({

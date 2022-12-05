@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
 import {
   LikePost,
@@ -17,7 +17,7 @@ export type FindPostsPayload = {
   sortDirection: SortDirection;
 };
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class PostsQueryRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,

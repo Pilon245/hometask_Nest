@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUserInputModel, UsersFactory } from './dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../helper/auth.function';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
   async createUsers(inputModel: CreateUserInputModel) {

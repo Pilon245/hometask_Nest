@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Query,
+  Scope,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -16,7 +17,10 @@ import { pagination } from '../validation/query.validation';
 import { CreateUserInputModel } from './dto/usersFactory';
 import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 
-@Controller('users')
+@Controller({
+  path: 'users',
+  scope: Scope.DEFAULT,
+})
 export class UsersController {
   constructor(
     protected usersService: UsersService,

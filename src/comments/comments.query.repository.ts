@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment, CommentDocument } from './entities/comments.entity';
@@ -17,7 +17,7 @@ export type FindCommentsPayload = {
   sortDirection: SortDirection;
 };
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class CommentsQueryRepository {
   constructor(
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,

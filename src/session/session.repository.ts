@@ -1,10 +1,10 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Session, SessionDocument } from './entities/session.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { CreateSessionInputModel } from './dto/create-session.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class SessionRepository {
   constructor(
     @InjectModel(Session.name) private sessionModel: Model<SessionDocument>,

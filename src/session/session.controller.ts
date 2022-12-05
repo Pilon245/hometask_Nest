@@ -6,6 +6,7 @@ import {
   Param,
   Req,
   Res,
+  Scope,
   UseGuards,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
@@ -13,7 +14,10 @@ import { Response } from 'express';
 import { SessionQueryRepository } from './session.query.repository';
 import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
 
-@Controller('security')
+@Controller({
+  path: 'security',
+  scope: Scope.DEFAULT,
+})
 export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,

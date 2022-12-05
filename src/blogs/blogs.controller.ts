@@ -12,6 +12,7 @@ import {
   Query,
   Req,
   Res,
+  Scope,
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
@@ -26,7 +27,10 @@ import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 
-@Controller('blogs')
+@Controller({
+  path: 'blogs',
+  scope: Scope.DEFAULT,
+})
 export class BlogsController {
   constructor(
     protected blogsService: BlogsService,

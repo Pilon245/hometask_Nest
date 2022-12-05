@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { randomUUID } from 'crypto';
 import { _generatePasswordForDb } from '../helper/auth.function';
@@ -9,7 +9,7 @@ import { EmailManager } from '../managers/email.manager';
 import { CreateUserInputModel, UsersFactory } from '../users/dto/usersFactory';
 import { add } from 'date-fns';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class AuthService {
   constructor(
     protected usersRepository: UsersRepository,
