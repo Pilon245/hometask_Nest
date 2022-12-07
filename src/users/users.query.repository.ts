@@ -1,4 +1,4 @@
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel, Prop } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
@@ -25,6 +25,11 @@ export class UsersQueryRepository {
       login: users.accountData.login,
       email: users.accountData.email,
       createdAt: users.accountData.createdAt,
+      banInfo: {
+        isBanned: users.banInfo.isBanned,
+        banDate: users.banInfo.banDate,
+        banReason: users.banInfo.banReason,
+      },
     };
   }
   async findUsersByIdOnMyAccount(id: string) {
@@ -75,6 +80,11 @@ export class UsersQueryRepository {
         login: u.accountData.login,
         email: u.accountData.email,
         createdAt: u.accountData.createdAt,
+        banInfo: {
+          isBanned: u.banInfo.isBanned,
+          banDate: u.banInfo.banDate,
+          banReason: u.banInfo.banReason,
+        },
       })),
     };
   }

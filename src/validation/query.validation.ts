@@ -6,6 +6,7 @@ class QueryValidationResult {
   searchNameTerm: string;
   searchLoginTerm: string;
   searchEmailTerm: string;
+  banStatus: banStatusEnum;
 }
 
 const defaultPageSize = 10;
@@ -14,6 +15,12 @@ const defaultPageNumber = 1;
 export enum SortDirection {
   asc = 'asc',
   desc = 'desc',
+}
+
+export enum banStatusEnum {
+  all = '',
+  banned = 'true',
+  notBanned = 'false',
 }
 
 export const pagination = (query: any): QueryValidationResult => {
@@ -29,6 +36,7 @@ export const pagination = (query: any): QueryValidationResult => {
     pageSize = defaultPageSize;
   pageSize = parseInt(pageSize, 10);
 
+  const banStatus = typeof query.banStatus === 'string' ? query.banStatus : '';
   const sortBy = typeof query.sortBy === 'string' ? query.sortBy : 'createdAt';
   const sortDirection =
     typeof query.sortDirection === 'string' ? query.sortDirection : 'desc';
@@ -52,5 +60,6 @@ export const pagination = (query: any): QueryValidationResult => {
     searchNameTerm,
     searchLoginTerm,
     searchEmailTerm,
+    banStatus,
   };
 };
