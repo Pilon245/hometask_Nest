@@ -5,7 +5,6 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../helper/auth.function';
 
-console.log('www');
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
   constructor(protected userRepository: UsersRepository) {}
