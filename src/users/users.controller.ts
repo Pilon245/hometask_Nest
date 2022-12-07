@@ -18,7 +18,7 @@ import { CreateUserInputModel } from './dto/usersFactory';
 import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
 
 @Controller({
-  path: 'users',
+  path: 'sa/users',
   scope: Scope.DEFAULT,
 })
 export class UsersController {
