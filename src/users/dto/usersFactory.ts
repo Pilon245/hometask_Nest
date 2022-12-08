@@ -21,7 +21,7 @@ export class CreateUserInputModel {
 }
 
 export class BanUserInputModel {
-  @Length(1)
+  @Length(0)
   isBanned: boolean;
   @Length(20)
   banReason: string;
