@@ -59,12 +59,7 @@ export class UsersService {
       await this.userRepository.updateUsers(newUser);
       return newUser;
     } else {
-      const newUser = new BanUsersFactory(
-        id,
-        null,
-        new Date().toISOString(),
-        null,
-      );
+      const newUser = new BanUsersFactory(id, false, null, null);
       console.log('newUser', newUser);
       await this.userRepository.updateUsers(newUser);
       return newUser;
