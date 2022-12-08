@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -41,18 +42,23 @@ export class UsersSaController {
     return this.usersQueryRepository.findUsersById(created.id);
   }
   @Put(':id/ban')
+  @HttpCode(204)
   async updateUsers(
     @Param('id') id: string,
     @Body() inputModel: BanUserInputModel,
   ) {
+    console.log('inputModel', inputModel);
     const user = await this.usersService.updateUsers(id, inputModel);
+    if (user) return;
   }
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
     const result = await this.usersService.deleteUsers(id);
     if (!result) {
-      throw new HttpException('invalid blog', 404);
+      throw new BadRequestException([
+        { message: 'Incorect Not Found', filed: 'filed' },
+      ]);
     }
     return result;
   }

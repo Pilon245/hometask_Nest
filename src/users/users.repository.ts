@@ -81,8 +81,7 @@ export class UsersRepository {
         'banInfo.banReason': model.banReason,
       },
     );
-    const users = await new this.userModel(result);
-    return users.save();
+    return result.matchedCount === 1;
   }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });

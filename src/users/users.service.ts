@@ -49,6 +49,7 @@ export class UsersService {
       new Date().toISOString(),
       inputModel.banReason,
     );
+    console.log('newUser', newUser);
     await this.userRepository.updateUsers(newUser);
     return newUser;
   }
