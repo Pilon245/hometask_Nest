@@ -51,6 +51,7 @@ export class UsersSaController {
     const user = await this.usersService.updateUsers(id, inputModel);
     if (user) return;
   }
+
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
