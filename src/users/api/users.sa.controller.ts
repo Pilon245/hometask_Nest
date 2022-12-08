@@ -57,9 +57,7 @@ export class UsersSaController {
   async deleteUsers(@Param('id') id: string) {
     const result = await this.usersService.deleteUsers(id);
     if (!result) {
-      throw new BadRequestException([
-        { message: 'Incorect Not Found', filed: 'filed' },
-      ]);
+      throw new HttpException('Incorect Not Found', 404);
     }
     return result;
   }
