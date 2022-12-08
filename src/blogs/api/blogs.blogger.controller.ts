@@ -34,7 +34,7 @@ import { LikeValuePost } from '../../posts/entities/likes.posts.entity';
   path: 'blogger/blogs',
   scope: Scope.DEFAULT,
 })
-export class BlogsController {
+export class BlogsBloggerController {
   constructor(
     protected blogsService: BlogsService,
     protected postsService: PostsService,

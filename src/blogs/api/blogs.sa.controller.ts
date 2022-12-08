@@ -37,7 +37,7 @@ import { UsersQueryRepository } from '../../users/users.query.repository';
   path: 'sa/blogs',
   scope: Scope.DEFAULT,
 })
-export class BlogsController {
+export class BlogsSaController {
   constructor(
     protected blogsService: BlogsService,
     protected postsService: PostsService,

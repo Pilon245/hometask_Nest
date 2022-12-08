@@ -36,6 +36,8 @@ import { JwtGenerate } from './auth/helper/generate.token';
 import { EmailManager } from './managers/email.manager';
 import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
 import { CurrentUserId } from './auth/current-user.param.decorator';
+import { BlogsSaController } from './blogs/api/blogs.sa.controller';
+import { BlogsBloggerController } from './blogs/api/blogs.blogger.controller';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -69,6 +71,8 @@ const schemas = [
     PostsController,
     CommentsController,
     RemoveController,
+    BlogsSaController,
+    BlogsBloggerController,
   ],
   providers: [
     BlogsService,
