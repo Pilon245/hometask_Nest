@@ -59,13 +59,13 @@ const UsersPasswordConfirmationDataSchema = SchemaFactory.createForClass(
 
 @Schema({ id: false })
 export class UsersBanInfoTypeData {
-  @Prop({ required: true })
+  @Prop()
   isBanned: boolean;
 
-  @Prop({ required: true })
+  @Prop()
   banDate: string;
 
-  @Prop({ required: true })
+  @Prop()
   banReason: string;
 }
 
