@@ -4,7 +4,7 @@ import {
   PasswordConfirmationType,
   UsersAccountDataType,
 } from './entity.dto';
-import { Length, Matches } from 'class-validator';
+import { IsBoolean, Length, Matches } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateUserInputModel {
@@ -21,7 +21,7 @@ export class CreateUserInputModel {
 }
 
 export class BanUserInputModel {
-  @Length(0)
+  @IsBoolean()
   isBanned: boolean;
   @Length(20)
   banReason: string;
