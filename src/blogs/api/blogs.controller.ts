@@ -82,11 +82,11 @@ export class BlogsController {
     return res.status(200).send(result);
   }
 
-  @UseGuards(BasicAuthGuard)
-  @Post()
-  createBlogs(@Body() inputModel: CreateBlogInputDTO) {
-    return this.blogsService.createBlogs(inputModel);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Post()
+  // createBlogs(@Body() inputModel: CreateBlogInputDTO) {
+  //   return this.blogsService.createBlogs(inputModel);
+  // }
   @UseGuards(BasicAuthGuard)
   @Post(':blogId/posts')
   async CreatePostsOnBlogId(

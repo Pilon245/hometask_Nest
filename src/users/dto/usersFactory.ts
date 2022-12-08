@@ -20,6 +20,13 @@ export class CreateUserInputModel {
   email: string;
 }
 
+export class BanUserInputModel {
+  @Length(1)
+  isBanned: boolean;
+  @Length(20)
+  banReason: string;
+}
+
 export class UsersFactory {
   constructor(
     public id: string,
@@ -27,5 +34,13 @@ export class UsersFactory {
     public emailConfirmation: EmailConfirmationType,
     public passwordConfirmation: PasswordConfirmationType,
     public banInfo: BanInfoType,
+  ) {}
+}
+export class BanUsersFactory {
+  constructor(
+    public id: string,
+    public isBanned: boolean,
+    public banDate: string,
+    public banReason: string,
   ) {}
 }

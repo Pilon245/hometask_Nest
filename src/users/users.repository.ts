@@ -72,6 +72,18 @@ export class UsersRepository {
     const users = await new this.userModel(user);
     return users.save();
   }
+  async updateUsers(model: any) {
+    const result = await this.userModel.updateOne(
+      { id: model.id },
+      {
+        'banInfo.isBanned': model.isBanned,
+        'banInfo.banDate': model.banDate,
+        'banInfo.banReason': model.banReason,
+      },
+    );
+    const users = await new this.userModel(result);
+    return users.save();
+  }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;

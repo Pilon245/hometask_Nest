@@ -7,6 +7,7 @@ import {
   HttpException,
   Param,
   Post,
+  Put,
   Query,
   Scope,
   UseGuards,
@@ -14,7 +15,7 @@ import {
 import { UsersService } from '../users.service';
 import { UsersQueryRepository } from '../users.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreateUserInputModel } from '../dto/usersFactory';
+import { BanUserInputModel, CreateUserInputModel } from '../dto/usersFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 
 @UseGuards(BasicAuthGuard)
@@ -38,6 +39,13 @@ export class UsersSaController {
       throw new HttpException('invalid blog', 404);
     }
     return this.usersQueryRepository.findUsersById(created.id);
+  }
+  @Put(':id/ban')
+  async updateUsers(
+    @Param('id') id: string,
+    @Body() inputModel: BanUserInputModel,
+  ) {
+    const user = await this.usersService.updateUsers(id, inputModel);
   }
   @Delete(':id')
   @HttpCode(204)

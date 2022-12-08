@@ -1,7 +1,11 @@
 import { BlogsRepository } from './blogs.repository';
 import { Injectable, Scope } from '@nestjs/common';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
-import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
+import {
+  UpdateBlogInputModelType,
+  UpdateBlogOnNewUser,
+  UpdateBlogOnNewUserRepo,
+} from './dto/update.blogs.dto';
 import { UsersRepository } from '../users/users.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
@@ -26,6 +30,7 @@ export class BlogsService {
     );
     return this.blogsRepository.createBlogs(newBlog);
   }
+
   updateBlogs(id: string, model: UpdateBlogInputModelType) {
     const updateBlog: UpdateBlogInputModelType = {
       id: id,
@@ -34,6 +39,14 @@ export class BlogsService {
       websiteUrl: model.websiteUrl,
     };
     return this.blogsRepository.updateBlogs(updateBlog);
+  }
+  updatePostsOnNewUser(login: string, model: UpdateBlogOnNewUser) {
+    const updateBlog: UpdateBlogOnNewUserRepo = {
+      id: model.id,
+      userId: model.userId,
+      userLogin: login,
+    };
+    return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
   }
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);

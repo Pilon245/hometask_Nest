@@ -1,7 +1,9 @@
-import { IsUrl, Length } from 'class-validator';
+import { IsUrl, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { BlogOwnerInfoType } from './blogs.entity.dto';
+import { BlogExistsRule } from '../../posts/guards/blog-id-validation.service';
+import { UserExistsRule } from '../guards/blog-id-validation.service';
 
 export class BlogsFactory {
   // для созадния обЪекта
@@ -36,4 +38,10 @@ export class CreateBlogDTO {
   websiteUrl: string;
   createdAt: string;
   blogOwnerInfo: BlogOwnerInfoType;
+}
+export class IdModelType {
+  @Validate(BlogExistsRule)
+  id: string;
+  @Validate(UserExistsRule)
+  userId: string;
 }

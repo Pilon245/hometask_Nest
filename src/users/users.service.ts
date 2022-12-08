@@ -1,6 +1,11 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { CreateUserInputModel, UsersFactory } from './dto/usersFactory';
+import {
+  BanUserInputModel,
+  BanUsersFactory,
+  CreateUserInputModel,
+  UsersFactory,
+} from './dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../helper/auth.function';
@@ -30,14 +35,23 @@ export class UsersService {
       },
       {
         isBanned: false,
-        banDate: new Date().toISOString(),
-        banReason: 'string',
+        banDate: null,
+        banReason: null,
       },
     );
     await this.userRepository.createUsers(newUser);
     return newUser;
   }
-
+  async updateUsers(id: string, inputModel: BanUserInputModel) {
+    const newUser = new BanUsersFactory(
+      id,
+      inputModel.isBanned,
+      new Date().toISOString(),
+      inputModel.banReason,
+    );
+    await this.userRepository.updateUsers(newUser);
+    return newUser;
+  }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
   }

@@ -18,3 +18,13 @@ export class UpdateBlogInputModelType {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
+export class UpdateBlogOnNewUser {
+  id: string;
+  userId: string;
+}
+
+export class UpdateBlogOnNewUserRepo {
+  id: string;
+  userId: string;
+  userLogin: string;
+}

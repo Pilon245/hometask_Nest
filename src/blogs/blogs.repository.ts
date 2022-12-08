@@ -3,7 +3,11 @@ import { Blog, BlogDocument } from './entities/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBlogDTO } from './dto/blogsFactory';
-import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
+import {
+  UpdateBlogInputModelType,
+  UpdateBlogOnNewUser,
+  UpdateBlogOnNewUserRepo,
+} from './dto/update.blogs.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsRepository {
@@ -21,6 +25,18 @@ export class BlogsRepository {
         name: blog.name,
         description: blog.description,
         websiteUrl: blog.websiteUrl,
+      },
+    );
+    return;
+  }
+  async updateBlogsOnNewUser(model: UpdateBlogOnNewUserRepo) {
+    const result = await this.blogModel.updateOne(
+      { id: model.id },
+      {
+        blogOwnerInfo: {
+          userId: model.userId,
+          userLogin: model.userLogin,
+        },
       },
     );
     return;
