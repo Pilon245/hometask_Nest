@@ -80,6 +80,12 @@ export class SessionRepository {
     });
     return result.deletedCount === 1;
   }
+  async deleteUserDevices(userId: string) {
+    const result = await this.sessionModel.deleteMany({
+      userId: userId,
+    });
+    return result.deletedCount === 1;
+  }
   async deleteDeviceById(deviceId: string) {
     const sessionInstance = await this.sessionModel.findOne({
       deviceId: deviceId,

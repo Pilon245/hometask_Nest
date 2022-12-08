@@ -43,6 +43,9 @@ export class SessionService {
   async deleteDevices(id: string, deviceId: string) {
     return await this.sessionRepository.deleteDevices(id, deviceId);
   }
+  async deleteUserDevices(id: string) {
+    return await this.sessionRepository.deleteUserDevices(id);
+  }
   async deleteDevicesById(deviceId: string) {
     return await this.sessionRepository.deleteDeviceById(deviceId);
   }

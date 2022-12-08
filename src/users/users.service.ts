@@ -9,10 +9,14 @@ import {
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../helper/auth.function';
+import { SessionService } from '../session/session.service';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
-  constructor(protected userRepository: UsersRepository) {}
+  constructor(
+    protected userRepository: UsersRepository,
+    protected sessionService: SessionService,
+  ) {}
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
     const newUser = new UsersFactory(
@@ -43,15 +47,28 @@ export class UsersService {
     return newUser;
   }
   async updateUsers(id: string, inputModel: BanUserInputModel) {
-    const newUser = new BanUsersFactory(
-      id,
-      inputModel.isBanned,
-      new Date().toISOString(),
-      inputModel.banReason,
-    );
-    console.log('newUser', newUser);
-    await this.userRepository.updateUsers(newUser);
-    return newUser;
+    if (inputModel.isBanned) {
+      const newUser = new BanUsersFactory(
+        id,
+        inputModel.isBanned,
+        new Date().toISOString(),
+        inputModel.banReason,
+      );
+      console.log('newUser', newUser);
+      await this.sessionService.deleteUserDevices(id);
+      await this.userRepository.updateUsers(newUser);
+      return newUser;
+    } else {
+      const newUser = new BanUsersFactory(
+        id,
+        null,
+        new Date().toISOString(),
+        null,
+      );
+      console.log('newUser', newUser);
+      await this.userRepository.updateUsers(newUser);
+      return newUser;
+    }
   }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);

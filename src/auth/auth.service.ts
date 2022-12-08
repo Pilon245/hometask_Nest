@@ -20,7 +20,7 @@ export class AuthService {
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
     const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
-    if (!user) return false;
+    if (!user || user.banInfo.isBanned) return false;
     const isValid = await bcrypt.compare(
       password,
       user.accountData.passwordHash,
