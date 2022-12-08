@@ -2,17 +2,27 @@ import { BlogsRepository } from './blogs.repository';
 import { Injectable, Scope } from '@nestjs/common';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
 import { UpdateBlogInputModelType } from './dto/update.blogs.dto';
+import { UsersRepository } from '../users/users.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsService {
-  constructor(protected blogsRepository: BlogsRepository) {}
-  async createBlogs(inputModel: CreateBlogInputDTO) {
+  constructor(
+    protected blogsRepository: BlogsRepository,
+    protected usersRepository: UsersRepository,
+  ) {}
+  async createBlogs(userId: string, inputModel: CreateBlogInputDTO) {
+    //todo что лучше зашить логин в  jwt или сделать запросу в базу
+    const user = await this.usersRepository.findUsersById(userId);
     const newBlog = new BlogsFactory(
       String(+new Date()),
       inputModel.name,
       inputModel.description,
       inputModel.websiteUrl,
       new Date().toISOString(),
+      {
+        userId: user.id,
+        userLogin: user.accountData.login,
+      },
     );
     return this.blogsRepository.createBlogs(newBlog);
   }

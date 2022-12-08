@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BlogsController } from './blogs/blogs.controller';
+import { BlogsController } from './blogs/api/blogs.controller';
 import { BlogsService } from './blogs/blogs.service';
 import { BlogsRepository } from './blogs/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -10,7 +10,7 @@ import { PostsService } from './posts/posts.service';
 import { PostsRepository } from './posts/posts.repository';
 import { Post, PostSchema } from './posts/entities/posts.entity';
 import { RemoveController } from './remove.controller';
-import { User, UserSchema } from './users/users.entity';
+import { User, UserSchema } from './users/entities/users.entity';
 import { Comment, CommentSchema } from './comments/entities/comments.entity';
 import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/comments.repository';

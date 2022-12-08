@@ -49,4 +49,77 @@ export class BlogsQueryRepository {
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne({ id }, { _id: false, __v: 0 });
   }
+  async findBlogsOnSuperAdmin({
+    searchNameTerm,
+    sortDirection,
+    sortBy,
+    pageSize,
+    pageNumber,
+  }: FindBlogsPayload) {
+    const filter = {} as any;
+    if (searchNameTerm) {
+      filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
+    }
+    const blogs = await this.blogModel
+      .find(filter, { _id: false, __v: 0 }, {})
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    const totalCount = await this.blogModel.countDocuments(filter);
+
+    return {
+      ...outputModel(totalCount, pageSize, pageNumber),
+      items: blogs.map((b) => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
+        createdAt: b.createdAt,
+        blogOwnerInfo: {
+          userId: b.blogOwnerInfo.userId,
+          userLogin: b.blogOwnerInfo.userLogin,
+        },
+      })),
+    };
+  }
+  async findBlogsOnBlogger(
+    userId: string,
+    {
+      searchNameTerm,
+      sortDirection,
+      sortBy,
+      pageSize,
+      pageNumber,
+    }: FindBlogsPayload,
+  ) {
+    const filter = {
+      $or: [
+        {
+          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+        },
+        {
+          'blogOwnerInfo.userId': userId,
+        },
+      ],
+    };
+    const blogs = await this.blogModel
+      .find(filter, { _id: false, __v: 0 }, {})
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    const totalCount = await this.blogModel.countDocuments(filter);
+
+    return {
+      ...outputModel(totalCount, pageSize, pageNumber),
+      items: blogs.map((b) => ({
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        websiteUrl: b.websiteUrl,
+        createdAt: b.createdAt,
+      })),
+    };
+  }
 }

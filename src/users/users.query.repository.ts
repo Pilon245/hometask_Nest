@@ -1,5 +1,5 @@
 import { InjectModel, Prop } from '@nestjs/mongoose';
-import { User, UserDocument } from './users.entity';
+import { User, UserDocument } from './entities/users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';

@@ -1,11 +1,14 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from './users.entity';
+import { User, UserDocument } from './entities/users.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  async findUsersById(id: string): Promise<User> {
+    return this.userModel.findOne({ id }, { _id: false, __v: 0 });
+  }
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
     return this.userModel.findOne({
       $or: [

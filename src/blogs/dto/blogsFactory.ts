@@ -1,6 +1,7 @@
 import { IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
+import { BlogOwnerInfoType } from './blogs.entity.dto';
 
 export class BlogsFactory {
   // для созадния обЪекта
@@ -10,6 +11,7 @@ export class BlogsFactory {
     public description: string,
     public websiteUrl: string,
     public createdAt: string,
+    public blogOwnerInfo: BlogOwnerInfoType,
   ) {}
 }
 export class CreateBlogInputDTO {
@@ -33,4 +35,5 @@ export class CreateBlogDTO {
   description: string;
   websiteUrl: string;
   createdAt: string;
+  blogOwnerInfo: BlogOwnerInfoType;
 }

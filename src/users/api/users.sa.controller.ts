@@ -11,27 +11,26 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersQueryRepository } from './users.query.repository';
-import { pagination } from '../validation/query.validation';
-import { CreateUserInputModel } from './dto/usersFactory';
-import { BasicAuthGuard } from '../auth/strategy/basic-auth.guard';
+import { UsersService } from '../users.service';
+import { UsersQueryRepository } from '../users.query.repository';
+import { pagination } from '../../validation/query.validation';
+import { CreateUserInputModel } from '../dto/usersFactory';
+import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 
+@UseGuards(BasicAuthGuard)
 @Controller({
   path: 'sa/users',
   scope: Scope.DEFAULT,
 })
-export class UsersController {
+export class UsersSaController {
   constructor(
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
-  @UseGuards(BasicAuthGuard)
   @Get()
   getUsers(@Query() query) {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
-  @UseGuards(BasicAuthGuard)
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
     const created = await this.usersService.createUsers(inputModel);
@@ -40,7 +39,6 @@ export class UsersController {
     }
     return this.usersQueryRepository.findUsersById(created.id);
   }
-  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {

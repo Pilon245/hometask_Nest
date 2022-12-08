@@ -7,7 +7,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../users/users.entity';
+import { User, UserSchema } from '../users/entities/users.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
