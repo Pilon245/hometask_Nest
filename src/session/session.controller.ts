@@ -15,7 +15,6 @@ import { SessionQueryRepository } from './session.query.repository';
 import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
 import { ApiTags } from '@nestjs/swagger';
 
-console.log('dd');
 @ApiTags('security')
 @Controller({
   path: 'security',

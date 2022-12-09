@@ -91,7 +91,7 @@ export class BlogsBloggerController {
     @Body() model: UpdateBlogInputModelType,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    const resultFound = await this.blogsQueryRepository.findBlogBD(blogId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -106,7 +106,7 @@ export class BlogsBloggerController {
     @Param('id') blogId: string,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    const resultFound = await this.blogsQueryRepository.findBlogBD(blogId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -128,7 +128,7 @@ export class BlogsBloggerController {
     if (!resultFound) {
       throw new HttpException('Invalid id', 404);
     }
-    const blog = await this.blogsQueryRepository.findBlogById(blogId);
+    const blog = await this.blogsQueryRepository.findBlogBD(blogId);
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
@@ -147,7 +147,7 @@ export class BlogsBloggerController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    const blog = await this.blogsQueryRepository.findBlogById(blogId);
+    const blog = await this.blogsQueryRepository.findBlogBD(blogId);
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
