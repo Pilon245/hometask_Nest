@@ -25,7 +25,9 @@ import { LikeValueComment } from './entities/likes.comments.entity';
 import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../auth/current-user.param.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('comments')
 @Controller({
   path: 'comments',
   scope: Scope.DEFAULT,

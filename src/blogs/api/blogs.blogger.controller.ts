@@ -28,7 +28,9 @@ import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { UpdatePostInputModelType } from '../../posts/dto/update.posts.dto';
 import { LikeValuePost } from '../../posts/entities/likes.posts.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('blogger/blogs')
 @UseGuards(JwtAuthGuard)
 @Controller({
   path: 'blogger/blogs',
@@ -65,10 +67,12 @@ export class BlogsBloggerController {
     @Body() inputModel: CreatePostByBlogIdInputDTO,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+    const resultFound = await this.blogsQueryRepository.findBlogBD(blogId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
+    console.log('resultFound', resultFound);
+    console.log('resultFound.blogOwnerInfo.userId', resultFound.blogOwnerInfo);
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }

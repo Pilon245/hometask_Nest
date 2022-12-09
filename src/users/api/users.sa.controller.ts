@@ -18,7 +18,9 @@ import { UsersQueryRepository } from '../users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import { BanUserInputModel, CreateUserInputModel } from '../dto/usersFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('sa/users')
 @UseGuards(BasicAuthGuard)
 @Controller({
   path: 'sa/users',

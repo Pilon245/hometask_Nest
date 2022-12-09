@@ -52,6 +52,9 @@ export class BlogsQueryRepository {
       { _id: false, __v: 0, blogOwnerInfo: false },
     );
   }
+  async findBlogBD(id: string): Promise<Blog> {
+    return this.blogModel.findOne({ id }, { _id: false, __v: 0 });
+  }
   async findBlogsOnSuperAdmin({
     searchNameTerm,
     sortDirection,

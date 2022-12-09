@@ -31,7 +31,9 @@ import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 import { UpdatePostInputModelType } from '../../posts/dto/update.posts.dto';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UsersQueryRepository } from '../../users/users.query.repository';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('sa/blogs')
 @UseGuards(BasicAdminGuard)
 @Controller({
   path: 'sa/blogs',

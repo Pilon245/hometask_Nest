@@ -13,7 +13,9 @@ import { SessionService } from './session.service';
 import { Response } from 'express';
 import { SessionQueryRepository } from './session.query.repository';
 import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('security')
 @Controller({
   path: 'security',
   scope: Scope.DEFAULT,

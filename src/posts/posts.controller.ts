@@ -34,7 +34,9 @@ import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { UpdatePostInputModelType } from './dto/update.posts.dto';
 import { CurrentUserId } from '../auth/current-user.param.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('posts')
 @Controller({
   path: 'posts',
   scope: Scope.DEFAULT,
