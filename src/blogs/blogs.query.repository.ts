@@ -47,7 +47,10 @@ export class BlogsQueryRepository {
     };
   }
   async findBlogById(id: string): Promise<Blog> {
-    return this.blogModel.findOne({ id }, { _id: false, __v: 0 });
+    return this.blogModel.findOne(
+      { id },
+      { _id: false, __v: 0, blogOwnerInfo: false },
+    );
   }
   async findBlogsOnSuperAdmin({
     searchNameTerm,

@@ -133,9 +133,10 @@ export class BlogsBloggerController {
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)
   async deletePosts(
-    @Param() { postId, blogId },
+    @Param() { blogId, postId },
     @CurrentUserId() currentUserId,
   ) {
+    console.log(' { postId, blogId }', { blogId, postId });
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
       postId,
     );
