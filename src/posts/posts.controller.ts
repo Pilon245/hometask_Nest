@@ -155,7 +155,7 @@ export class PostsController {
     if (!resultFound) {
       throw new HttpException('Invalid id', 404);
     }
-    return this.postsService.updatePosts(postId, model);
+    return this.postsService.updatePosts(postId, 'blogId', model);
   }
   @UseGuards(JwtAuthGuard)
   @Put(':postId/like-status')

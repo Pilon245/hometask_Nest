@@ -26,7 +26,10 @@ import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
-import { UpdatePostInputModelType } from '../../posts/dto/update.posts.dto';
+import {
+  UpdatePostBloggerInputModelType,
+  UpdatePostInputModelType,
+} from '../../posts/dto/update.posts.dto';
 import { LikeValuePost } from '../../posts/entities/likes.posts.entity';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -121,7 +124,7 @@ export class BlogsBloggerController {
   @HttpCode(204)
   async updatePosts(
     @Param() { postId, blogId },
-    @Body() model: UpdatePostInputModelType,
+    @Body() model: UpdatePostBloggerInputModelType,
     @CurrentUserId() currentUserId,
   ) {
     const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
@@ -134,7 +137,7 @@ export class BlogsBloggerController {
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.postsService.updatePosts(postId, model);
+    return this.postsService.updatePosts(postId, blogId, model);
   }
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)

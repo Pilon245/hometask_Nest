@@ -8,7 +8,10 @@ import {
   LikesPostFactory,
   PostsFactory,
 } from './dto/postsFactory';
-import { UpdatePostDTO } from './dto/update.posts.dto';
+import {
+  UpdatePostBloggerInputModelType,
+  UpdatePostDTO,
+} from './dto/update.posts.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class PostsService {
@@ -62,13 +65,17 @@ export class PostsService {
     );
     return this.postsRepository.createPosts(newPost);
   }
-  updatePosts(id: string, model: CreatePostInputDTO) {
+  updatePosts(
+    postId: string,
+    blogId: string,
+    model: UpdatePostBloggerInputModelType,
+  ) {
     const updatePost: UpdatePostDTO = {
-      id: id,
+      id: postId,
       title: model.title,
       shortDescription: model.shortDescription,
       content: model.content,
-      blogId: model.blogId,
+      blogId: blogId,
     };
     return this.postsRepository.updatePosts(updatePost);
   }
