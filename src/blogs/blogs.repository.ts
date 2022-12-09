@@ -48,11 +48,11 @@ export class BlogsRepository {
     );
     return;
   }
-  async banUsers(id: string) {
+  async banUsers(userId: string, value: boolean) {
     const result = await this.blogModel.updateMany(
-      { id: id },
+      { 'blogOwnerInfo.userId': userId },
       {
-        isBan: true,
+        isBan: value,
       },
     );
     return;

@@ -67,17 +67,17 @@ export class PostsRepository {
     );
     return;
   }
-  async banUsers(blogId: string, userId: string) {
+  async banUsers(userId: string, value: boolean) {
     await this.postModel.updateMany(
-      { blogId: blogId },
+      { userId: userId },
       {
-        isBan: true,
+        isBan: value,
       },
     );
     await this.likePostModel.updateMany(
       { userId: userId },
       {
-        isBan: true,
+        isBan: value,
       },
     );
     return;

@@ -27,7 +27,8 @@ export class PostsFactory {
     public blogName: string,
     public createdAt: string,
     public isBan: boolean,
-    public extendedLikesInfo?: extendedLikesInfoType,
+    public extendedLikesInfo: extendedLikesInfoType,
+    public userId: string,
   ) {}
 }
 export class CreatePostInputDTO {

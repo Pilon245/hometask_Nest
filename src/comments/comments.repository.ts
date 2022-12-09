@@ -61,17 +61,17 @@ export class CommentsRepository {
     );
     return result.matchedCount === 1;
   }
-  async banUsers(userId: string) {
+  async banUsers(userId: string, value: boolean) {
     await this.commentModel.updateMany(
       { userId },
       {
-        isBan: true,
+        isBan: value,
       },
     );
     await this.likeCommentModel.updateMany(
       { userId },
       {
-        isBan: true,
+        isBan: value,
       },
     );
     return;

@@ -65,9 +65,9 @@ export class UsersService {
       const blogId = blog.id;
       await this.sessionService.deleteUserDevices(id);
       await this.userRepository.updateUsers(newUser);
-      await this.blogsRepository.banUsers(blog.id);
-      await this.postsRepository.banUsers(blog.id, newUser.id);
-      await this.commentsRepository.banUsers(newUser.id);
+      await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
 
       return newUser;
     } else {

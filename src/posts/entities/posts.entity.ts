@@ -55,6 +55,8 @@ export class Post {
   extendedLikesInfo: extendedLikesInfoType;
   @Prop()
   isBan: boolean;
+  @Prop({ require: true })
+  userId: string;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

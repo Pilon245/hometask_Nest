@@ -16,7 +16,7 @@ export class PostsService {
     protected postsRepository: PostsRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
-  async createPosts(inputModel: CreatePostInputDTO) {
+  async createPosts(inputModel: CreatePostInputDTO, userId: string) {
     const blog = await this.blogsQueryRepository.findBlogById(
       inputModel.blogId,
     );
@@ -35,6 +35,30 @@ export class PostsService {
         myStatus: LikeValuePost.none,
         newestLikes: [],
       },
+      userId,
+    );
+    return this.postsRepository.createPosts(newPost);
+  }
+  async createPostsDeprecated(inputModel: CreatePostInputDTO) {
+    const blog = await this.blogsQueryRepository.findBlogById(
+      inputModel.blogId,
+    );
+    const newPost = new PostsFactory(
+      String(+new Date()),
+      inputModel.title,
+      inputModel.shortDescription,
+      inputModel.content,
+      inputModel.blogId,
+      blog.name,
+      new Date().toISOString(),
+      false,
+      {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeValuePost.none,
+        newestLikes: [],
+      },
+      'userId',
     );
     return this.postsRepository.createPosts(newPost);
   }

@@ -105,7 +105,7 @@ export class BlogsController {
       content: inputModel.content,
       blogId: blogId,
     };
-    return this.postsService.createPosts(newPost);
+    return this.postsService.createPosts(newPost, 'userId');
   }
   @UseGuards(BasicAuthGuard)
   @Put(':id')

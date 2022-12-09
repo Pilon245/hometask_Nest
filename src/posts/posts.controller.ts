@@ -117,7 +117,7 @@ export class PostsController {
   @UseGuards(BasicAuthGuard)
   @Post()
   async createPosts(@Body() inputModel: CreatePostInputDTO) {
-    return this.postsService.createPosts(inputModel);
+    return this.postsService.createPostsDeprecated(inputModel);
   }
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')

@@ -82,7 +82,7 @@ export class BlogsBloggerController {
       content: inputModel.content,
       blogId: blogId,
     };
-    return this.postsService.createPosts(newPost);
+    return this.postsService.createPosts(newPost, currentUserId);
   }
   @Put(':id')
   @HttpCode(204)
