@@ -32,6 +32,7 @@ import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 import { CurrentUserId } from './current-user.param.decorator';
 import { BasicStrategy } from './strategy/basic-strategy.service';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
+import { CurrentPayload } from './current-payload.param.decorator';
 
 // @UseGuards(CustomThrottlerGuard)
 @Controller({
@@ -74,20 +75,25 @@ export class AuthController {
     return res
       .cookie('refreshToken', tokens.refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
       })
       .send({ accessToken: tokens.accessToken });
   }
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
-  async updateRefreshToken(@Req() req, @Res() res: Response) {
-    const tokens = await this.authService.refreshToken(req.user);
+  async updateRefreshToken(
+    @Req() req,
+    @Res() res: Response,
+    @CurrentUserId() currentUserId,
+    @CurrentPayload() currentPayload,
+  ) {
+    const tokens = await this.authService.refreshToken(currentPayload);
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
         expires: new Date(Date.now() + 2000000),
         httpOnly: true,
-        secure: false,
+        secure: true,
       })
       .send({ accessToken: tokens.accessToken });
   }

@@ -14,6 +14,7 @@ export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
 
   async createBlogs(blog: CreateBlogDTO) {
+    //todo сделать свагер
     const blogs = await new this.blogModel(blog);
     await blogs.save();
     return blog;

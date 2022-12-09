@@ -122,4 +122,17 @@ export class BlogsQueryRepository {
       })),
     };
   }
+  async findBlogByIdOnBlogger(id: string) {
+    const blog = await this.blogModel
+      .findOne({ id }, { _id: false, __v: 0 }, {})
+      .lean();
+
+    return {
+      id: blog.id,
+      name: blog.name,
+      description: blog.description,
+      websiteUrl: blog.websiteUrl,
+      createdAt: blog.createdAt,
+    };
+  }
 }

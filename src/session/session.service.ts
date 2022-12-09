@@ -15,7 +15,7 @@ export class SessionService {
   async createSession(user: UserOutputModel, ip: string, deviceName: string) {
     const userId = user.id;
     const deviceId = String(randomUUID());
-    const tokens = await this.jwtGenerate.generateTokens(user, deviceId);
+    const tokens = await this.jwtGenerate.generateTokens(userId, deviceId);
     const payload = await this.jwtGenerate.verifyTokens(
       tokens.refreshToken.split(' ')[0],
     );
@@ -30,8 +30,8 @@ export class SessionService {
     await this.sessionRepository.createSecurityDevices(session);
     return tokens;
   }
-  async updateSession(user: UserAccountDBType, payload: any) {
-    const userId = user.id;
+  async updateSession(userId: string, payload: any) {
+    // const userId = user.id;
     // const payload = await this.jwtGenerate.verifyTokens(tokens.refreshToken);
     const lastActiveDate = new Date(payload.iat * 1000).toISOString();
     await this.sessionRepository.updateSecurityDevices(

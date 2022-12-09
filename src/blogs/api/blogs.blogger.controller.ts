@@ -49,11 +49,15 @@ export class BlogsBloggerController {
     );
   }
   @Post()
-  createBlogs(
+  async createBlogs(
     @Body() inputModel: CreateBlogInputDTO,
     @CurrentUserId() currentUserId,
   ) {
-    return this.blogsService.createBlogs(currentUserId, inputModel);
+    const newBlog = await this.blogsService.createBlogs(
+      currentUserId,
+      inputModel,
+    );
+    return this.blogsQueryRepository.findBlogByIdOnBlogger(newBlog.id);
   }
   @Post(':blogId/posts')
   async CreatePostsOnBlogId(
