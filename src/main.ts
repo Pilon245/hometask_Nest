@@ -39,10 +39,13 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
-    .setVersion('1.0')
-    .addTag('cats')
+    .setTitle('Network example')
+    .setDescription('The Network API description')
+    .setVersion('v1.0')
+    .addBearerAuth()
+    .addBasicAuth()
+    .addCookieAuth()
+    .addTag('Network')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

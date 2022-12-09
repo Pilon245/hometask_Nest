@@ -33,8 +33,10 @@ import { CurrentUserId } from './current-user.param.decorator';
 import { BasicStrategy } from './strategy/basic-strategy.service';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
 import { CurrentPayload } from './current-payload.param.decorator';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // @UseGuards(CustomThrottlerGuard)
+@ApiTags('Auth')
 @Controller({
   path: 'auth',
   scope: Scope.DEFAULT,
@@ -52,6 +54,7 @@ export class AuthController {
   async superAdmin() {
     return { ok: true };
   }
+  @ApiOperation({ summary: 'Login Request' })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
