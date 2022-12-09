@@ -61,9 +61,9 @@ export class UsersService {
         inputModel.banReason,
       );
       console.log('newUser', newUser);
-      const blog = await this.blogsRepository.findBlogByUserId(newUser.id);
-      const blogId = blog.id;
-      await this.sessionService.deleteUserDevices(id);
+      console.log('id Service', id);
+
+      await this.sessionService.deleteUserDevices(newUser.id);
       await this.userRepository.updateUsers(newUser);
       await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
       await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);

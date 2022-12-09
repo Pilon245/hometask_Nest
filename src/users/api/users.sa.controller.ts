@@ -49,6 +49,7 @@ export class UsersSaController {
     @Param('id') id: string,
     @Body() inputModel: BanUserInputModel,
   ) {
+    console.log('id Controller', id);
     console.log('inputModel', inputModel);
     const user = await this.usersService.updateUsers(id, inputModel);
     if (user) return;
