@@ -23,10 +23,20 @@ export class BlogsQueryRepository {
     pageSize,
     pageNumber,
   }: FindBlogsPayload) {
-    const filter = {} as any;
-    if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
-    }
+    // const filter = {} as any;
+    // if (searchNameTerm) {
+    //   filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
+    // }
+    const filter = {
+      $and: [
+        {
+          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+        },
+        {
+          isBan: false,
+        },
+      ],
+    };
     const blogs = await this.blogModel
       .find(filter, { _id: false, __v: 0 }, {})
       .sort([[sortBy, sortDirection]])
@@ -48,12 +58,12 @@ export class BlogsQueryRepository {
   }
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { id },
+      { id, isBan: false },
       { _id: false, __v: 0, blogOwnerInfo: false },
     );
   }
   async findBlogBD(id: string): Promise<Blog> {
-    return this.blogModel.findOne({ id }, { _id: false, __v: 0 });
+    return this.blogModel.findOne({ id, isBan: false }, { _id: false, __v: 0 });
   }
   async findBlogsOnSuperAdmin({
     searchNameTerm,
@@ -62,10 +72,16 @@ export class BlogsQueryRepository {
     pageSize,
     pageNumber,
   }: FindBlogsPayload) {
-    const filter = {} as any;
-    if (searchNameTerm) {
-      filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
-    }
+    const filter = {
+      $and: [
+        {
+          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
+        },
+        {
+          isBan: false,
+        },
+      ],
+    };
     const blogs = await this.blogModel
       .find(filter, { _id: false, __v: 0 }, {})
       .sort([[sortBy, sortDirection]])
@@ -100,12 +116,15 @@ export class BlogsQueryRepository {
     }: FindBlogsPayload,
   ) {
     const filter = {
-      $or: [
+      $and: [
         {
           name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
         },
         {
           'blogOwnerInfo.userId': userId,
+        },
+        {
+          isBan: false,
         },
       ],
     };
@@ -130,7 +149,7 @@ export class BlogsQueryRepository {
   }
   async findBlogByIdOnBlogger(id: string) {
     const blog = await this.blogModel
-      .findOne({ id }, { _id: false, __v: 0 }, {})
+      .findOne({ id, isBan: false }, { _id: false, __v: 0 }, {})
       .lean();
 
     return {

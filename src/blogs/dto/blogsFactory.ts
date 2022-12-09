@@ -14,6 +14,7 @@ export class BlogsFactory {
     public websiteUrl: string,
     public createdAt: string,
     public blogOwnerInfo: BlogOwnerInfoType,
+    public isBan: boolean,
   ) {}
 }
 export class CreateBlogInputDTO {
@@ -38,6 +39,7 @@ export class CreateBlogDTO {
   websiteUrl: string;
   createdAt: string;
   blogOwnerInfo: BlogOwnerInfoType;
+  isBan: boolean;
 }
 export class IdModelType {
   @Validate(BlogExistsRule)

@@ -24,6 +24,7 @@ export class CommentsService {
         dislikesCount: 0,
         myStatus: LikeValueComment.none,
       },
+      false,
     );
     return this.commentsRepository.createComments(newComment);
   }
@@ -37,15 +38,15 @@ export class CommentsService {
     );
     if (!user) {
       if (value === LikeValueComment.like) {
-        const newLike = new LikesFactory(1, 0, value, userId, commentId);
+        const newLike = new LikesFactory(1, 0, value, userId, commentId, false);
         return await this.commentsRepository.createLike(newLike);
       }
       if (value === LikeValueComment.dislike) {
-        const newLike = new LikesFactory(0, 1, value, userId, commentId);
+        const newLike = new LikesFactory(0, 1, value, userId, commentId, false);
         return await this.commentsRepository.createLike(newLike);
       }
       if (value === LikeValueComment.none) {
-        const newLike = new LikesFactory(0, 0, value, userId, commentId);
+        const newLike = new LikesFactory(0, 0, value, userId, commentId, false);
         return await this.commentsRepository.createLike(newLike);
       }
     }

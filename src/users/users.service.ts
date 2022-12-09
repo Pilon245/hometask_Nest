@@ -10,12 +10,18 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../helper/auth.function';
 import { SessionService } from '../session/session.service';
+import { BlogsRepository } from '../blogs/blogs.repository';
+import { CommentsRepository } from '../comments/comments.repository';
+import { PostsRepository } from '../posts/posts.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersService {
   constructor(
     protected userRepository: UsersRepository,
     protected sessionService: SessionService,
+    protected blogsRepository: BlogsRepository,
+    protected postsRepository: PostsRepository,
+    protected commentsRepository: CommentsRepository,
   ) {}
   async createUsers(inputModel: CreateUserInputModel) {
     const passwordHash = await _generatePasswordForDb(inputModel.password);
@@ -55,8 +61,14 @@ export class UsersService {
         inputModel.banReason,
       );
       console.log('newUser', newUser);
+      const blog = await this.blogsRepository.findBlogByUserId(newUser.id);
+      const blogId = blog.id;
       await this.sessionService.deleteUserDevices(id);
       await this.userRepository.updateUsers(newUser);
+      await this.blogsRepository.banUsers(blog.id);
+      await this.postsRepository.banUsers(blog.id, newUser.id);
+      await this.commentsRepository.banUsers(newUser.id);
+
       return newUser;
     } else {
       const newUser = new BanUsersFactory(id, false, null, null);

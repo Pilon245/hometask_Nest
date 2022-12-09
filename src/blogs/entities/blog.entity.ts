@@ -33,6 +33,8 @@ export class Blog {
 
   @Prop({ type: BlogOwnerInfoSchema })
   blogOwnerInfo: BlogOwnerInfoType;
+  @Prop()
+  isBan: boolean;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

@@ -61,6 +61,21 @@ export class CommentsRepository {
     );
     return result.matchedCount === 1;
   }
+  async banUsers(userId: string) {
+    await this.commentModel.updateMany(
+      { userId },
+      {
+        isBan: true,
+      },
+    );
+    await this.likeCommentModel.updateMany(
+      { userId },
+      {
+        isBan: true,
+      },
+    );
+    return;
+  }
   async deleteComment(id: string): Promise<boolean> {
     const result = await this.commentModel.deleteOne({ id: id });
     return result.deletedCount === 1;

@@ -26,6 +26,7 @@ export class PostsFactory {
     public blogId: string,
     public blogName: string,
     public createdAt: string,
+    public isBan: boolean,
     public extendedLikesInfo?: extendedLikesInfoType,
   ) {}
 }
@@ -71,6 +72,7 @@ export class LikesPostFactory {
     public postId: string,
     public login: string,
     public addedAt: string,
+    public isBan: boolean,
   ) {}
 }
 

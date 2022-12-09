@@ -28,6 +28,7 @@ export class PostsService {
       inputModel.blogId,
       blog.name,
       new Date().toISOString(),
+      false,
       {
         likesCount: 0,
         dislikesCount: 0,
@@ -67,6 +68,7 @@ export class PostsService {
           postId,
           login,
           new Date().toISOString(),
+          false,
         );
         return await this.postsRepository.createLike(newLike);
       }
@@ -79,6 +81,7 @@ export class PostsService {
           postId,
           login,
           new Date().toISOString(),
+          false,
         );
         return await this.postsRepository.createLike(newLike);
       }
@@ -91,6 +94,7 @@ export class PostsService {
           postId,
           login,
           new Date().toISOString(),
+          false,
         );
         return await this.postsRepository.createLike(newLike);
       }

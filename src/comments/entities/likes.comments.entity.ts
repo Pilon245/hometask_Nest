@@ -15,6 +15,8 @@ export class LikeComment {
   userId: string;
   @Prop()
   commentId: string;
+  @Prop()
+  isBan: boolean;
 }
 
 export const LikeCommentSchema = SchemaFactory.createForClass(LikeComment);

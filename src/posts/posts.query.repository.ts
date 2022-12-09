@@ -30,7 +30,7 @@ export class PostsQueryRepository {
     pageNumber,
   }: FindPostsPayload) {
     const posts = await this.postModel
-      .find({}, { _id: false, __v: 0 })
+      .find({ isBan: false }, { _id: false, __v: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -38,14 +38,14 @@ export class PostsQueryRepository {
 
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }],
+        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
       });
       const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }],
+        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const lastLikes = await this.likePostModel
         .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }],
+          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
         })
         .sort({ addedAt: 'desc' })
         // .limit(3)
@@ -72,7 +72,7 @@ export class PostsQueryRepository {
     });
     const items = await Promise.all(Promises);
 
-    const totalCount = await this.postModel.countDocuments();
+    const totalCount = await this.postModel.countDocuments({ isBan: false });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
@@ -84,7 +84,7 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({}, { _id: false, __v: 0 })
+      .find({ isBan: false }, { _id: false, __v: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -92,17 +92,17 @@ export class PostsQueryRepository {
 
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }],
+        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
       });
       const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }],
+        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const likeStatus = await this.likePostModel.findOne({
-        $and: [{ postId: p.id }, { userId: userId }],
+        $and: [{ postId: p.id }, { userId: userId }, { isBan: false }],
       });
       const lastLikes = await this.likePostModel
         .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }],
+          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
         })
         .sort({ addedAt: 'desc' })
         .lean();
@@ -130,33 +130,33 @@ export class PostsQueryRepository {
     });
     const items = await Promise.all(Promises);
 
-    const totalCount = await this.postModel.countDocuments();
+    const totalCount = await this.postModel.countDocuments({ isBan: false });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: items,
     };
   }
-  async findPostByIdNoAuth(id: string): Promise<Post> {
+  async findPostByIdNoAuth(id: string) {
     const post = await this.postModel
-      .findOne({ id }, { _id: false, __v: 0 })
+      .findOne({ id, isBan: false }, { _id: false, __v: 0 })
       .exec();
 
     const totalLike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { likesStatus: 1 }],
+      $and: [{ postId: id }, { likesStatus: 1 }, { isBan: false }],
     });
     const totalDislike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { dislikesStatus: 1 }],
+      $and: [{ postId: id }, { dislikesStatus: 1 }, { isBan: false }],
     });
     const lastLikes = await this.likePostModel
       .find({
-        $and: [{ postId: id }, { likesStatus: 1 }],
+        $and: [{ postId: id }, { likesStatus: 1 }, { isBan: false }],
       })
       .sort({ addedAt: 'desc' })
       .lean();
 
     if (post) {
-      const outPost: Post = {
+      const outPost = {
         id: post.id,
         title: post.title,
         shortDescription: post.shortDescription,
@@ -179,29 +179,29 @@ export class PostsQueryRepository {
     }
     return post;
   }
-  async findPostById(id: string, userId: string): Promise<Post> {
+  async findPostById(id: string, userId: string) {
     const post = await this.postModel
-      .findOne({ id }, { _id: false, __v: 0 })
+      .findOne({ id, isBan: false }, { _id: false, __v: 0 })
       .exec();
 
     const totalLike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { likesStatus: 1 }],
+      $and: [{ postId: id }, { likesStatus: 1 }, { isBan: false }],
     });
     const totalDislike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { dislikesStatus: 1 }],
+      $and: [{ postId: id }, { dislikesStatus: 1 }, { isBan: false }],
     });
     const likeStatus = await this.likePostModel.findOne({
-      $and: [{ postId: id }, { userId: userId }],
+      $and: [{ postId: id }, { userId: userId }, { isBan: false }],
     });
     const lastLikes = await this.likePostModel
       .find({
-        $and: [{ postId: id }, { likesStatus: 1 }],
+        $and: [{ postId: id }, { likesStatus: 1 }, { isBan: false }],
       })
       .sort({ addedAt: 'desc' })
       .lean();
 
     if (post) {
-      const outPost: Post = {
+      const outPost = {
         id: post.id,
         title: post.title,
         shortDescription: post.shortDescription,
@@ -231,21 +231,21 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({ blogId }, { _id: false, __v: 0 })
+      .find({ blogId, isBan: false }, { _id: false, __v: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }],
+        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
       });
       const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }],
+        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const lastLikes = await this.likePostModel
         .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }],
+          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
         })
         .sort({ addedAt: 'desc' })
         .lean();
@@ -271,7 +271,10 @@ export class PostsQueryRepository {
     });
     const items = await Promise.all(Promises);
 
-    const totalCount = await this.postModel.countDocuments({ blogId });
+    const totalCount = await this.postModel.countDocuments({
+      blogId,
+      isBan: false,
+    });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
@@ -284,24 +287,24 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({ blogId }, { _id: false, __v: 0 })
+      .find({ blogId, isBan: false }, { _id: false, __v: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }],
+        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
       });
       const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }],
+        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const likeStatus = await this.likePostModel.findOne({
-        $and: [{ postId: p.id }, { userId: userId }],
+        $and: [{ postId: p.id }, { userId: userId }, { isBan: false }],
       });
       const lastLikes = await this.likePostModel
         .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }],
+          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBan: false }],
         })
         .sort({ addedAt: 'desc' })
         .lean();
@@ -329,7 +332,10 @@ export class PostsQueryRepository {
     });
     const items = await Promise.all(Promises);
 
-    const totalCount = await this.postModel.countDocuments({ blogId });
+    const totalCount = await this.postModel.countDocuments({
+      blogId,
+      isBan: false,
+    });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),

@@ -27,20 +27,20 @@ export class CommentsQueryRepository {
 
   async findCommentByIdAndLogin(userId: string, commentId: string) {
     return this.commentModel.findOne({
-      $and: [{ id: commentId }, { userId: userId }],
+      $and: [{ id: commentId }, { userId: userId }, { isBan: false }],
     });
   }
   async findCommentByIdNoAuth(id: string) {
     const comments = await this.commentModel.findOne(
-      { id },
+      { id, isBan: false },
       { _id: false, __v: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { likesStatus: 1 }],
+      $and: [{ commentId: id }, { likesStatus: 1 }, { isBan: false }],
     });
     const totalDislike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { dislikesStatus: 1 }],
+      $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBan: false }],
     });
     if (comments) {
       const outComment = {
@@ -61,18 +61,18 @@ export class CommentsQueryRepository {
   }
   async findCommentById(id: string, userId: string) {
     const comments = await this.commentModel.findOne(
-      { id },
+      { id, isBan: false },
       { _id: false, __v: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { likesStatus: 1 }],
+      $and: [{ commentId: id }, { likesStatus: 1 }, { isBan: false }],
     });
     const totalDislike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { dislikesStatus: 1 }],
+      $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBan: false }],
     });
     const likeStatus = await this.likeCommentModel.findOne({
-      $and: [{ commentId: id }, { userId: userId }],
+      $and: [{ commentId: id }, { userId: userId }, { isBan: false }],
     });
 
     if (comments) {
@@ -99,7 +99,7 @@ export class CommentsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
   ) {
     const comments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -107,15 +107,17 @@ export class CommentsQueryRepository {
 
     const totalCount = await this.commentModel.countDocuments({
       postId: postId,
+      isBan: false,
     });
 
     const Promises = comments.map(async (c) => {
       const likeCount = await this.likeCommentModel.countDocuments({
         commentId: c.id,
         likesStatus: 1,
+        isBan: false,
       });
       const disLikeCount = await this.likeCommentModel.countDocuments({
-        $and: [{ commentId: c.id }, { dislikesStatus: 1 }],
+        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       return {
         id: c.id,
@@ -143,7 +145,7 @@ export class CommentsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
   ) {
     const comments = await this.commentModel
-      .find({ postId: postId })
+      .find({ postId: postId, isBan: false })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -151,18 +153,20 @@ export class CommentsQueryRepository {
 
     const totalCount = await this.commentModel.countDocuments({
       postId: postId,
+      isBan: false,
     });
 
     const Promises = comments.map(async (c) => {
       const likeCount = await this.likeCommentModel.countDocuments({
         commentId: c.id,
         likesStatus: 1,
+        isBan: false,
       });
       const disLikeCount = await this.likeCommentModel.countDocuments({
-        $and: [{ commentId: c.id }, { dislikesStatus: 1 }],
+        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const likeStatus = await this.likeCommentModel.findOne({
-        $and: [{ commentId: c.id }, { userId: userId }],
+        $and: [{ commentId: c.id }, { userId: userId }, { isBan: false }],
       });
       return {
         id: c.id,

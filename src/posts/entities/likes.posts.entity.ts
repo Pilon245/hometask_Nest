@@ -19,6 +19,8 @@ export class LikePost {
   login: string;
   @Prop()
   addedAt: string;
+  @Prop()
+  isBan: boolean;
 }
 
 export const LikePostSchema = SchemaFactory.createForClass(LikePost);

@@ -27,6 +27,7 @@ export class BlogsService {
         userId: user.id,
         userLogin: user.accountData.login,
       },
+      false,
     );
     return this.blogsRepository.createBlogs(newBlog);
   }

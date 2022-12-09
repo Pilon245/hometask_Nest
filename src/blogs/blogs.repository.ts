@@ -13,6 +13,12 @@ import {
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
 
+  async findBlogByUserId(userId: string): Promise<Blog> {
+    return this.blogModel.findOne(
+      { 'blogOwnerInfo.userId': userId, isBan: false },
+      { _id: false, __v: 0 },
+    );
+  }
   async createBlogs(blog: CreateBlogDTO) {
     //todo сделать свагер
     const blogs = await new this.blogModel(blog);
@@ -38,6 +44,15 @@ export class BlogsRepository {
           userId: model.userId,
           userLogin: model.userLogin,
         },
+      },
+    );
+    return;
+  }
+  async banUsers(id: string) {
+    const result = await this.blogModel.updateMany(
+      { id: id },
+      {
+        isBan: true,
       },
     );
     return;

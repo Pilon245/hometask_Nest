@@ -9,6 +9,7 @@ import {
   LikeValuePost,
 } from './entities/likes.posts.entity';
 import { UpdatePostDTO } from './dto/update.posts.dto';
+import { UpdateBlogOnNewUserRepo } from '../blogs/dto/update.blogs.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class PostsRepository {
@@ -19,7 +20,7 @@ export class PostsRepository {
   ) {}
   async findLikeByIdAndPostId(id: string, postId: string) {
     return this.likePostModel.findOne({
-      $and: [{ userId: id }, { postId: postId }],
+      $and: [{ userId: id }, { postId: postId }, { isBan: false }],
     });
   }
   async createPosts(post: CreatePostInputDTO) {
@@ -62,6 +63,21 @@ export class PostsRepository {
         shortDescription: post.shortDescription,
         content: post.content,
         blogId: post.blogId,
+      },
+    );
+    return;
+  }
+  async banUsers(blogId: string, userId: string) {
+    await this.postModel.updateMany(
+      { blogId: blogId },
+      {
+        isBan: true,
+      },
+    );
+    await this.likePostModel.updateMany(
+      { userId: userId },
+      {
+        isBan: true,
       },
     );
     return;

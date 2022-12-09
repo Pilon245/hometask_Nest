@@ -9,6 +9,7 @@ export class CommentsFactory {
     public userLogin: string,
     public createdAt: string,
     public likesInfo: LikeInfoType,
+    public isBan: boolean,
   ) {}
 }
 export class LikeInfoType {
@@ -22,6 +23,7 @@ export class CreateLikeInputDTO {
   myStatus: LikeValueComment;
   userId: string;
   commentId: string;
+  isBan: boolean;
 }
 
 export class LikesFactory {
@@ -31,5 +33,6 @@ export class LikesFactory {
     public myStatus: LikeValueComment,
     public userId: string,
     public commentId: string,
+    public isBan: boolean,
   ) {}
 }
