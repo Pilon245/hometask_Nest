@@ -82,7 +82,9 @@ export class BlogsBloggerController {
       content: inputModel.content,
       blogId: blogId,
     };
-    return this.postsService.createPosts(newPost, currentUserId);
+    const posts = await this.postsService.createPosts(newPost, currentUserId);
+    const result = await this.postsQueryRepository.findPostByIdNoAuth(posts.id);
+    return result;
   }
   @Put(':id')
   @HttpCode(204)

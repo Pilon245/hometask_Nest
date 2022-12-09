@@ -30,7 +30,7 @@ export class PostsQueryRepository {
     pageNumber,
   }: FindPostsPayload) {
     const posts = await this.postModel
-      .find({ isBan: false }, { _id: false, __v: 0 })
+      .find({ isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -84,7 +84,7 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({ isBan: false }, { _id: false, __v: 0 })
+      .find({ isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -139,7 +139,7 @@ export class PostsQueryRepository {
   }
   async findPostByIdNoAuth(id: string) {
     const post = await this.postModel
-      .findOne({ id, isBan: false }, { _id: false, __v: 0 })
+      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .exec();
 
     const totalLike = await this.likePostModel.countDocuments({
@@ -181,7 +181,7 @@ export class PostsQueryRepository {
   }
   async findPostById(id: string, userId: string) {
     const post = await this.postModel
-      .findOne({ id, isBan: false }, { _id: false, __v: 0 })
+      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .exec();
 
     const totalLike = await this.likePostModel.countDocuments({
@@ -231,7 +231,7 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({ blogId, isBan: false }, { _id: false, __v: 0 })
+      .find({ blogId, isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -287,7 +287,7 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
   ) {
     const posts = await this.postModel
-      .find({ blogId, isBan: false }, { _id: false, __v: 0 })
+      .find({ blogId, isBan: false }, { _id: false, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)

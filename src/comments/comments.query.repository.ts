@@ -26,14 +26,17 @@ export class CommentsQueryRepository {
   ) {}
 
   async findCommentByIdAndLogin(userId: string, commentId: string) {
-    return this.commentModel.findOne({
-      $and: [{ id: commentId }, { userId: userId }, { isBan: false }],
-    });
+    return this.commentModel.findOne(
+      {
+        $and: [{ id: commentId }, { userId: userId }, { isBan: false }],
+      },
+      { _id: false, __v: 0, isBan: 0 },
+    );
   }
   async findCommentByIdNoAuth(id: string) {
     const comments = await this.commentModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0 },
+      { _id: false, __v: 0, isBan: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -62,7 +65,7 @@ export class CommentsQueryRepository {
   async findCommentById(id: string, userId: string) {
     const comments = await this.commentModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0 },
+      { _id: false, __v: 0, isBan: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -99,7 +102,7 @@ export class CommentsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
   ) {
     const comments = await this.commentModel
-      .find({ postId: postId, isBan: false })
+      .find({ postId: postId, isBan: false }, { _id: 0, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -145,7 +148,7 @@ export class CommentsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
   ) {
     const comments = await this.commentModel
-      .find({ postId: postId, isBan: false })
+      .find({ postId: postId, isBan: false }, { _id: 0, __v: 0, isBan: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)

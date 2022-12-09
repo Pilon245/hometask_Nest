@@ -38,7 +38,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0 }, {})
+      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -59,11 +59,14 @@ export class BlogsQueryRepository {
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0, blogOwnerInfo: false },
+      { _id: false, __v: 0, blogOwnerInfo: false, isBan: 0 },
     );
   }
   async findBlogBD(id: string): Promise<Blog> {
-    return this.blogModel.findOne({ id, isBan: false }, { _id: false, __v: 0 });
+    return this.blogModel.findOne(
+      { id, isBan: false },
+      { _id: false, __v: 0, isBan: 0 },
+    );
   }
   async findBlogsOnSuperAdmin({
     searchNameTerm,
@@ -83,7 +86,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0 }, {})
+      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -129,7 +132,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0 }, {})
+      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -149,7 +152,7 @@ export class BlogsQueryRepository {
   }
   async findBlogByIdOnBlogger(id: string) {
     const blog = await this.blogModel
-      .findOne({ id, isBan: false }, { _id: false, __v: 0 }, {})
+      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 }, {})
       .lean();
 
     return {

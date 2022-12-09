@@ -2,7 +2,11 @@ import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from './entities/posts.entity';
-import { CreateLikeInputDTO, CreatePostInputDTO } from './dto/postsFactory';
+import {
+  CreateLikeInputDTO,
+  CreatePostInputDTO,
+  CreatePostRepo,
+} from './dto/postsFactory';
 import {
   LikePost,
   LikePostDocument,
@@ -23,7 +27,7 @@ export class PostsRepository {
       $and: [{ userId: id }, { postId: postId }, { isBan: false }],
     });
   }
-  async createPosts(post: CreatePostInputDTO) {
+  async createPosts(post: CreatePostRepo) {
     const posts = await new this.postModel(post);
     await posts.save();
     return post;

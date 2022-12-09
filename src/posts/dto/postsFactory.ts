@@ -31,6 +31,18 @@ export class PostsFactory {
     public userId: string,
   ) {}
 }
+export class CreatePostRepo {
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+  createdAt: string;
+  isBan: boolean;
+  extendedLikesInfo: extendedLikesInfoType;
+  userId: string;
+}
 export class CreatePostInputDTO {
   @Length(1, 30)
   @Transform(({ value }: TransformFnParams) => value?.trim())
