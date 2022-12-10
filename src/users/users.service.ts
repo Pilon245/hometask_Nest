@@ -61,6 +61,7 @@ export class UsersService {
       inputModel.banReason,
     );
     console.log('newUser', newUser);
+    console.log();
 
     await this.sessionService.deleteUserDevices(newUser.id);
     await this.userRepository.updateUsers(newUser);
