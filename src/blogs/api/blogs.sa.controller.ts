@@ -34,7 +34,6 @@ import { UsersQueryRepository } from '../../users/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('sa/blogs')
-@UseGuards(BasicAdminGuard)
 @Controller({
   path: 'sa/blogs',
   scope: Scope.DEFAULT,
@@ -51,6 +50,7 @@ export class BlogsSaController {
   getBlogs(@Query() query) {
     return this.blogsQueryRepository.findBlogsOnSuperAdmin(pagination(query));
   }
+  @UseGuards(BasicAdminGuard)
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(
