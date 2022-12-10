@@ -53,29 +53,31 @@ export class UsersService {
     return newUser;
   }
   async updateUsers(id: string, inputModel: BanUserInputModel) {
-    // if (inputModel.isBanned) {
-    const newUser = new BanUsersFactory(
-      id,
-      inputModel.isBanned,
-      new Date().toISOString(),
-      inputModel.banReason,
-    );
-    console.log('newUser', newUser);
-    console.log();
+    if (inputModel.isBanned) {
+      const newUser = new BanUsersFactory(
+        id,
+        inputModel.isBanned,
+        new Date().toISOString(),
+        inputModel.banReason,
+      );
 
-    await this.sessionService.deleteUserDevices(newUser.id);
-    await this.userRepository.updateUsers(newUser);
-    await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
-    await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
-    await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.sessionService.deleteUserDevices(newUser.id);
+      await this.userRepository.updateUsers(newUser);
+      await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
 
-    return newUser;
-    // } else {
-    //   const newUser = new BanUsersFactory(id, false, null, null);
-    //   console.log('newUser', newUser);
-    //   await this.userRepository.updateUsers(newUser);
-    //   return newUser;
-    // }
+      return newUser;
+    } else {
+      const newUser = new BanUsersFactory(id, inputModel.isBanned, null, null);
+
+      await this.userRepository.updateUsers(newUser);
+      await this.blogsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.postsRepository.banUsers(newUser.id, inputModel.isBanned);
+      await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
+
+      return newUser;
+    }
   }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);

@@ -134,6 +134,9 @@ export class BlogsBloggerController {
       throw new HttpException('Invalid id', 404);
     }
     const blog = await this.blogsQueryRepository.findBlogBD(blogId);
+    if (!blog) {
+      throw new HttpException('Invalid id', 404);
+    }
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
@@ -153,6 +156,9 @@ export class BlogsBloggerController {
       throw new HttpException('invalid blog', 404);
     }
     const blog = await this.blogsQueryRepository.findBlogBD(blogId);
+    if (!blog) {
+      throw new HttpException('Invalid id', 404);
+    }
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
