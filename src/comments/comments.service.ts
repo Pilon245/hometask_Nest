@@ -2,16 +2,21 @@ import { Injectable, Scope } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { CommentsFactory, LikesFactory } from './dto/commentsFactory';
 import { LikeValueComment } from './entities/likes.comments.entity';
+import { PostsRepository } from '../posts/posts.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class CommentsService {
-  constructor(protected commentsRepository: CommentsRepository) {}
+  constructor(
+    protected commentsRepository: CommentsRepository,
+    protected postsRepository: PostsRepository,
+  ) {}
   async createComment(
     postId: string,
     content: string,
     userId: string,
     userLogin: string, //todo нужно использовать DTO
   ) {
+    const post = await this.postsRepository.findPostById(postId);
     const newComment = new CommentsFactory(
       String(+new Date()),
       content,
@@ -23,6 +28,16 @@ export class CommentsService {
         likesCount: 0,
         dislikesCount: 0,
         myStatus: LikeValueComment.none,
+      },
+      {
+        userId: userId,
+        userLogin: userLogin,
+      },
+      {
+        id: postId,
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
       },
       false,
     );

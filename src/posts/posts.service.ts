@@ -150,7 +150,6 @@ export class PostsService {
       );
     }
     if (value === LikeValuePost.dislike && user.dislikesStatus === 0) {
-      console.log('value22', value);
       const likesStatus = 0;
       const dislikesStatus = 1;
       const myStatus = value;

@@ -9,6 +9,8 @@ export class CommentsFactory {
     public userLogin: string,
     public createdAt: string,
     public likesInfo: LikeInfoType,
+    public commentatorInfo: commentatorInfoType,
+    public postInfo: postInfoType,
     public isBan: boolean,
   ) {}
 }
@@ -16,6 +18,16 @@ export class LikeInfoType {
   likesCount: number;
   dislikesCount: number;
   myStatus: LikeValueComment;
+}
+export class commentatorInfoType {
+  userId: string;
+  userLogin: string;
+}
+export class postInfoType {
+  id: string;
+  title: string;
+  blogId: string;
+  blogName: string;
 }
 export class CreateLikeInputDTO {
   likesStatus: number;

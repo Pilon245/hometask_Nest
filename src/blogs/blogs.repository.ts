@@ -57,6 +57,15 @@ export class BlogsRepository {
     );
     return;
   }
+  async banBlogs(blogId: string, value: boolean) {
+    const result = await this.blogModel.updateOne(
+      { id: blogId },
+      {
+        isBan: value,
+      },
+    );
+    return;
+  }
   async deleteBlogs(id: string) {
     const result = await this.blogModel.deleteOne({ id });
     return result.deletedCount === 1;

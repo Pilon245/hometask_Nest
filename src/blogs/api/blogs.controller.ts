@@ -21,7 +21,6 @@ import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreateBlogInputDTO } from '../dto/blogsFactory';
 import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';

@@ -12,6 +12,23 @@ export class likesInfoType {
 export const likesInfoSchema = SchemaFactory.createForClass(likesInfoType);
 
 @Schema()
+export class commentatorInfoType {
+  userId: string;
+  userLogin: string;
+}
+export const commentatorInfoSchema =
+  SchemaFactory.createForClass(commentatorInfoType);
+
+@Schema()
+export class postInfoType {
+  id: string;
+  title: string;
+  blogId: string;
+  blogName: string;
+}
+export const postInfoSchema = SchemaFactory.createForClass(postInfoType);
+
+@Schema()
 export class Comment {
   @Prop({ require: true })
   id: string;
@@ -33,6 +50,13 @@ export class Comment {
 
   @Prop({ type: likesInfoSchema })
   likesInfo: likesInfoType;
+
+  @Prop({ type: commentatorInfoSchema })
+  commentatorInfo: commentatorInfoType;
+
+  @Prop({ type: postInfoSchema })
+  postInfo: postInfoType;
+
   @Prop()
   isBan: boolean;
 }

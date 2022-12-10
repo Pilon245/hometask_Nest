@@ -14,6 +14,8 @@ import {
 } from './entities/likes.posts.entity';
 import { UpdatePostDTO } from './dto/update.posts.dto';
 import { UpdateBlogOnNewUserRepo } from '../blogs/dto/update.blogs.dto';
+import { getSkipNumber, outputModel } from '../helper/helper.function';
+import { FindPostsPayload } from './posts.query.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class PostsRepository {
@@ -26,6 +28,11 @@ export class PostsRepository {
     return this.likePostModel.findOne({
       $and: [{ userId: id }, { postId: postId }, { isBan: false }],
     });
+  }
+  async findPostById(id: string) {
+    return this.postModel
+      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 })
+      .exec();
   }
   async createPosts(post: CreatePostRepo) {
     const posts = await new this.postModel(post);

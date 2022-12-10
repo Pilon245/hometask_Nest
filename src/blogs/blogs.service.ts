@@ -49,6 +49,9 @@ export class BlogsService {
     };
     return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
   }
+  banBlogs(id: string, isBanned: boolean) {
+    return this.blogsRepository.banBlogs(id, isBanned);
+  }
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);
   }

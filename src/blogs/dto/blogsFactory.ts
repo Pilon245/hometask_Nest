@@ -1,9 +1,10 @@
-import { IsUrl, Length, Validate } from 'class-validator';
+import { IsBoolean, IsUrl, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
 import { BlogOwnerInfoType } from './blogs.entity.dto';
 import { BlogExistsRule } from '../../posts/guards/blog-id-validation.service';
 import { UserExistsRule } from '../guards/blog-id-validation.service';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class BlogsFactory {
   // для созадния обЪекта
@@ -19,14 +20,17 @@ export class BlogsFactory {
 }
 export class CreateBlogInputDTO {
   // для валидации
+  @ApiProperty()
   @Length(1, 15, { message: 'incorrect name' })
   @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
+  @ApiProperty()
   @Length(1, 500)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
 
+  @ApiProperty()
   @Length(1, 100)
   @IsUrl()
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -46,4 +50,8 @@ export class IdModelType {
   id: string;
   @Validate(UserExistsRule)
   userId: string;
+}
+export class BanBlogsInputModel {
+  @IsBoolean()
+  isBanned: boolean;
 }

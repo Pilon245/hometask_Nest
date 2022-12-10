@@ -36,7 +36,7 @@ export class CommentsQueryRepository {
   async findCommentByIdNoAuth(id: string) {
     const comments = await this.commentModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0 },
+      { _id: false, __v: 0, isBan: 0, commentatorInfo: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -65,7 +65,7 @@ export class CommentsQueryRepository {
   async findCommentById(id: string, userId: string) {
     const comments = await this.commentModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0 },
+      { _id: false, __v: 0, isBan: 0, commentatorInfo: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -183,6 +183,78 @@ export class CommentsQueryRepository {
           myStatus: likeStatus?.myStatus
             ? likeStatus.myStatus
             : LikeValueComment.none,
+        },
+      };
+    });
+    const items = await Promise.all(Promises);
+
+    return {
+      ...outputModel(totalCount, pageSize, pageNumber),
+      items: items,
+    };
+  }
+  async findCommentByBlogger(
+    userId: string,
+    { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
+  ) {
+    const filter = {
+      $and: [
+        {
+          'commentatorInfo.userId': userId,
+        },
+        {
+          isBan: false,
+        },
+      ],
+    };
+    const comments = await this.commentModel
+      .find(filter, { _id: 0, __v: 0, isBan: 0, userId: 0, userLogin: 0 })
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+
+    const totalCount = await this.commentModel.countDocuments({
+      'commentatorInfo.userId': userId,
+      isBan: false,
+    });
+
+    const Promises = comments.map(async (c) => {
+      const likeCount = await this.likeCommentModel.countDocuments({
+        commentId: c.id,
+        likesStatus: 1,
+        isBan: false,
+      });
+      const disLikeCount = await this.likeCommentModel.countDocuments({
+        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
+      });
+      const likeStatus = await this.likeCommentModel.findOne({
+        $and: [
+          { commentId: c.id },
+          { 'commentatorInfo.userId': userId },
+          { isBan: false },
+        ],
+      });
+      return {
+        id: c.id,
+        content: c.content,
+        createdAt: c.createdAt,
+        likesInfo: {
+          likesCount: likeCount,
+          dislikesCount: disLikeCount,
+          myStatus: likeStatus?.myStatus
+            ? likeStatus.myStatus
+            : LikeValueComment.none,
+        },
+        commentatorInfo: {
+          userId: c.commentatorInfo.userId,
+          userLogin: c.commentatorInfo.userLogin,
+        },
+        postInfo: {
+          id: c.postInfo.id,
+          title: c.postInfo.title,
+          blogId: c.postInfo.blogId,
+          blogName: c.postInfo.blogName,
         },
       };
     });

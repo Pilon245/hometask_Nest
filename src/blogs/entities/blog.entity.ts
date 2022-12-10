@@ -1,6 +1,5 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UsersAccountData } from '../../users/entities/users.entity';
 import { BlogOwnerInfoType } from '../dto/blogs.entity.dto';
 
 export type BlogDocument = HydratedDocument<Blog>;

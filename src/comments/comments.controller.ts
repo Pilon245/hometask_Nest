@@ -42,26 +42,17 @@ export class CommentsController {
   async getCommentById(
     @Param('id') id: string,
     @Query() query,
-    @Req() req,
-    @Res() res: Response,
+    @CurrentUserId() currentUserId,
   ) {
     const resultFound =
       await this.commentsQueryRepository.findCommentByIdNoAuth(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    if (req.user) {
-      const comments = await this.commentsQueryRepository.findCommentById(
-        id,
-        req.user.id,
-      );
-      return res.status(200).send(comments);
-    } else {
-      const comments = await this.commentsQueryRepository.findCommentByIdNoAuth(
-        id,
-      );
-      return res.status(200).send(comments);
+    if (currentUserId) {
+      return this.commentsQueryRepository.findCommentById(id, currentUserId);
     }
+    return resultFound;
   }
 
   @UseGuards(JwtAuthGuard)

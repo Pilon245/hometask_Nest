@@ -1,5 +1,3 @@
-import { Prop } from '@nestjs/mongoose';
-
 export class BlogsDBType {
   constructor(
     public id: string,
