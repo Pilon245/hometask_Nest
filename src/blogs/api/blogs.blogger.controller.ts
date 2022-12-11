@@ -23,10 +23,11 @@ import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UpdatePostBloggerInputModelType } from '../../posts/dto/update.posts.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CommentsQueryRepository } from '../../comments/comments.query.repository';
 
 @ApiTags('blogger/blogs')
+@ApiSecurity('bearer')
 @UseGuards(JwtAuthGuard)
 @Controller({
   path: 'blogger/blogs',

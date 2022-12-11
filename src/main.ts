@@ -48,7 +48,7 @@ async function bootstrap() {
     .addTag('Network')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
   await app.listen(4000, () => {
     `Server start on port: ${4000}`;

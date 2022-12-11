@@ -20,6 +20,10 @@ import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenGuard } from './strategy/refresh.token.guard';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanSchema,
+} from '../users/entities/blogger.users.blogs.ban.entity';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 
 @Module({
@@ -27,7 +31,10 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
     PassportModule,
     UsersModule,
     SessionModule,
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
+    ]),
     JwtModule.register({
       secret: result,
       signOptions: { expiresIn: '7m' },

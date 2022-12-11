@@ -21,6 +21,11 @@ import {
   LikeComment,
   LikeCommentSchema,
 } from '../comments/entities/likes.comments.entity';
+import { UsersBloggerController } from './api/users.blogger.controller';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanSchema,
+} from './entities/blogger.users.blogs.ban.entity';
 
 @Module({
   imports: [
@@ -32,9 +37,10 @@ import {
       { name: Comment.name, schema: CommentSchema },
       { name: LikePost.name, schema: LikePostSchema },
       { name: LikeComment.name, schema: LikeCommentSchema },
+      { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
     ]),
   ],
-  controllers: [UsersSaController],
+  controllers: [UsersSaController, UsersBloggerController],
   providers: [
     UsersService,
     UsersRepository,

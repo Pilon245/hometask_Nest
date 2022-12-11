@@ -25,7 +25,7 @@ import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
 import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('blogs')
 @Controller({

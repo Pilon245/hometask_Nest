@@ -4,6 +4,10 @@ import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../helper/helper.function';
 import { SortDirection } from '../validation/query.validation';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanDocument,
+} from './entities/blogger.users.blogs.ban.entity';
 
 export type FindUsersPayload = {
   pageSize: number;
@@ -16,7 +20,11 @@ export type FindUsersPayload = {
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersQueryRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(BloggerUsersBan.name)
+    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
+  ) {}
   async findUsersById(id: string) {
     const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
     if (!users) return false;
@@ -98,5 +106,39 @@ export class UsersQueryRepository {
         { 'accountData.email': LoginOrEmailL },
       ],
     });
+  }
+  async findUsersOnBlogger({
+    searchLoginTerm,
+    sortDirection,
+    sortBy,
+    pageSize,
+    pageNumber,
+  }: FindUsersPayload) {
+    const filter = {
+      login: {
+        $regex: searchLoginTerm,
+        $options: '(?i)a(?-i)cme',
+      },
+    };
+    const users = await this.bloggerUsersBanModel
+      .find(filter, { _id: false, __v: 0 })
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+    const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
+
+    return {
+      ...outputModel(totalCount, pageSize, pageNumber),
+      items: users.map((u) => ({
+        id: u.id,
+        login: u.login,
+        banInfo: {
+          isBanned: u.banInfo.isBanned,
+          banDate: u.banInfo.banDate,
+          banReason: u.banInfo.banReason,
+        },
+      })),
+    };
   }
 }

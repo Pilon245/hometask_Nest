@@ -2,10 +2,18 @@ import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './entities/users.entity';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanDocument,
+} from './entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(BloggerUsersBan.name)
+    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
+  ) {}
   async findUsersById(id: string): Promise<User> {
     return this.userModel.findOne({ id }, { _id: false, __v: 0 });
   }
@@ -16,6 +24,12 @@ export class UsersRepository {
         { 'accountData.email': LoginOrEmailL },
       ],
     });
+  }
+  async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
+    return this.bloggerUsersBanModel.findOne(
+      { banUserId, blogId },
+      { _id: false, __v: 0 },
+    );
   }
   async findLoginAndEmail(Login: string, Email: string): Promise<User> {
     const user = await this.userModel.findOne({
@@ -72,6 +86,10 @@ export class UsersRepository {
     const users = await new this.userModel(user);
     return users.save();
   }
+  async banBloggerUsers(user: any) {
+    const banUsers = await new this.bloggerUsersBanModel(user);
+    return banUsers.save();
+  }
   async updateUsers(model: any) {
     const result = await this.userModel.updateOne(
       { id: model.id },
@@ -82,6 +100,13 @@ export class UsersRepository {
       },
     );
     return result.matchedCount === 1;
+  }
+  async unbanBloggerUsers(banUserId: string, bloggerId: string) {
+    const result = await this.bloggerUsersBanModel.deleteOne({
+      banUserId,
+      bloggerId,
+    });
+    return result.deletedCount === 1;
   }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });

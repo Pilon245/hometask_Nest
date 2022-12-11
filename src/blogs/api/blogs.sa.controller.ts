@@ -19,11 +19,12 @@ import { BanBlogsInputModel, IdModelType } from '../dto/blogsFactory';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UsersQueryRepository } from '../../users/users.query.repository';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { BanUserInputModel } from '../../users/dto/usersFactory';
 
 @UseGuards(BasicAdminGuard)
 @ApiTags('sa/blogs')
+@ApiSecurity('basic')
 @Controller({
   path: 'sa/blogs',
   scope: Scope.DEFAULT,

@@ -1,6 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import {
+  BanBloggerUsersFactory,
+  BanBLoggerUsersInputModel,
   BanUserInputModel,
   BanUsersFactory,
   CreateUserInputModel,
@@ -77,6 +79,42 @@ export class UsersService {
       await this.commentsRepository.banUsers(newUser.id, inputModel.isBanned);
 
       return newUser;
+    }
+  }
+  async banBloggerUsers(
+    banUserId: string,
+    bloggerId: string,
+    model: BanBLoggerUsersInputModel,
+  ) {
+    const user = await this.userRepository.findUsersById(banUserId);
+    if (model.isBanned) {
+      const newBanUser = new BanBloggerUsersFactory(
+        String(new Date()),
+        model.blogId,
+        bloggerId,
+        banUserId,
+        user.accountData.login,
+        {
+          isBanned: model.isBanned,
+          banDate: new Date().toISOString(),
+          banReason: model.banReason,
+        },
+      );
+
+      await this.userRepository.banBloggerUsers(newBanUser);
+
+      return newBanUser;
+    } else {
+      // const newBanUser = new BanUsersFactory(id, model.isBanned, null, null);
+
+      await this.userRepository.unbanBloggerUsers(banUserId, bloggerId);
+
+      // await this.userRepository.updateUsers(newBanUser);
+      // await this.blogsRepository.banUsers(newBanUser.id, model.isBanned);
+      // await this.postsRepository.banUsers(newBanUser.id, model.isBanned);
+      // await this.commentsRepository.banUsers(newBanUser.id, model.isBanned);
+
+      return;
     }
   }
   deleteUsers(id: string) {

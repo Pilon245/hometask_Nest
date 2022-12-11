@@ -4,9 +4,12 @@ import {
   PasswordConfirmationType,
   UsersAccountDataType,
 } from './entity.dto';
-import { IsBoolean, Length, Matches } from 'class-validator';
+import { IsBoolean, Length, Matches, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { UsersQueryRepository } from '../users.query.repository';
+import { BloggerExistsRule } from '../guards/blogger-ban-validation.service';
+import { Prop } from '@nestjs/mongoose';
+import { BloggerUsersBanInfoTypeData } from '../entities/blogger.users.blogs.ban.entity';
 
 export class CreateUserInputModel {
   @Matches(/^[a-zA-Z0-9_-]*$/)
@@ -28,6 +31,15 @@ export class BanUserInputModel {
   banReason: string;
 }
 
+export class BanBLoggerUsersInputModel {
+  @IsBoolean()
+  isBanned: boolean;
+  @Length(20)
+  banReason: string;
+  @Validate(BloggerExistsRule)
+  blogId: string;
+}
+
 export class UsersFactory {
   constructor(
     public id: string,
@@ -43,5 +55,15 @@ export class BanUsersFactory {
     public isBanned: boolean,
     public banDate: string,
     public banReason: string,
+  ) {}
+}
+export class BanBloggerUsersFactory {
+  constructor(
+    public id: string,
+    public blogId: string,
+    public bloggerId: string,
+    public banUserId: string,
+    public login: string,
+    public banInfo: BanInfoType,
   ) {}
 }

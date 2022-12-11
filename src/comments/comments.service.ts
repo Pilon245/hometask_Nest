@@ -3,12 +3,14 @@ import { CommentsRepository } from './comments.repository';
 import { CommentsFactory, LikesFactory } from './dto/commentsFactory';
 import { LikeValueComment } from './entities/likes.comments.entity';
 import { PostsRepository } from '../posts/posts.repository';
+import { UsersRepository } from '../users/users.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class CommentsService {
   constructor(
     protected commentsRepository: CommentsRepository,
     protected postsRepository: PostsRepository,
+    protected usersRepository: UsersRepository,
   ) {}
   async createComment(
     postId: string,
@@ -17,6 +19,11 @@ export class CommentsService {
     userLogin: string, //todo нужно использовать DTO
   ) {
     const post = await this.postsRepository.findPostById(postId);
+    const banUser = await this.usersRepository.findBanBloggerUsers(
+      userId,
+      post.blogId,
+    );
+    if (banUser) return false;
     const newComment = new CommentsFactory(
       String(+new Date()),
       content,

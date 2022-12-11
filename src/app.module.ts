@@ -38,6 +38,10 @@ import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
 import { CurrentUserId } from './auth/current-user.param.decorator';
 import { BlogsSaController } from './blogs/api/blogs.sa.controller';
 import { BlogsBloggerController } from './blogs/api/blogs.blogger.controller';
+import {
+  BloggerUsersBan,
+  BloggerUsersBanSchema,
+} from './users/entities/blogger.users.blogs.ban.entity';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -47,6 +51,7 @@ const schemas = [
   { name: LikePost.name, schema: LikePostSchema },
   { name: LikeComment.name, schema: LikeCommentSchema },
   { name: Session.name, schema: SessionSchema },
+  { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
 ];
 
 @Module({
