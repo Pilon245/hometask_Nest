@@ -21,7 +21,6 @@ import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('sa/users')
-@UseGuards(BasicAuthGuard)
 @Controller({
   path: 'sa/users',
   scope: Scope.DEFAULT,
@@ -31,10 +30,12 @@ export class UsersSaController {
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
+  @UseGuards(BasicAuthGuard)
   @Get()
   getUsers(@Query() query) {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
     const created = await this.usersService.createUsers(inputModel);
@@ -52,7 +53,7 @@ export class UsersSaController {
     const user = await this.usersService.updateUsers(id, inputModel);
     if (user) return;
   }
-
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
