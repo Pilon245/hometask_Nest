@@ -22,7 +22,6 @@ import { UsersQueryRepository } from '../../users/users.query.repository';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { BanUserInputModel } from '../../users/dto/usersFactory';
 
-@UseGuards(BasicAdminGuard)
 @ApiTags('sa/blogs')
 @ApiSecurity('basic')
 @Controller({
@@ -41,6 +40,7 @@ export class BlogsSaController {
   getBlogs(@Query() query) {
     return this.blogsQueryRepository.findBlogsOnSuperAdmin(pagination(query));
   }
+  @UseGuards(BasicAdminGuard)
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(
