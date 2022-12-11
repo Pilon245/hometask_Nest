@@ -107,18 +107,28 @@ export class UsersQueryRepository {
       ],
     });
   }
-  async findUsersOnBlogger({
-    searchLoginTerm,
-    sortDirection,
-    sortBy,
-    pageSize,
-    pageNumber,
-  }: FindUsersPayload) {
+  async findUsersOnBlogger(
+    id: string,
+    bloggerId: string,
+    {
+      searchLoginTerm,
+      sortDirection,
+      sortBy,
+      pageSize,
+      pageNumber,
+    }: FindUsersPayload,
+  ) {
     const filter = {
-      login: {
-        $regex: searchLoginTerm,
-        $options: '(?i)a(?-i)cme',
-      },
+      $and: [
+        {
+          login: {
+            $regex: searchLoginTerm,
+            $options: '(?i)a(?-i)cme',
+          },
+        },
+        { bloggerId: bloggerId },
+        { blogId: id },
+      ],
     };
     const users = await this.bloggerUsersBanModel
       .find(filter, { _id: false, __v: 0 })

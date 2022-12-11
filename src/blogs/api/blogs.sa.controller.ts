@@ -62,6 +62,7 @@ export class BlogsSaController {
     }
     return this.blogsService.updatePostsOnNewUser(user.login, model);
   }
+  @UseGuards(BasicAdminGuard)
   @Put(':id/ban')
   @HttpCode(204)
   async updateBanBlogs(
