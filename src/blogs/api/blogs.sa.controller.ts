@@ -63,11 +63,12 @@ export class BlogsSaController {
   }
   @Put(':id/ban')
   @HttpCode(204)
-  async updateUsers(
+  async updateBanBlogs(
     @Param('id') id: string,
     @Body() inputModel: BanBlogsInputModel,
   ) {
     const blog = await this.blogsService.banBlogs(id, inputModel.isBanned);
     // if (blog) return;
+    return;
   }
 }

@@ -6,6 +6,7 @@ import {
 } from './entity.dto';
 import { IsBoolean, Length, Matches } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { UsersQueryRepository } from '../users.query.repository';
 
 export class CreateUserInputModel {
   @Matches(/^[a-zA-Z0-9_-]*$/)
