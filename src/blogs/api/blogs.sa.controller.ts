@@ -73,6 +73,7 @@ export class BlogsSaController {
     return this.blogsService.updatePostsOnNewUser(user.login, model);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   @Put(':id/ban')
   @HttpCode(204)
@@ -85,4 +86,6 @@ export class BlogsSaController {
     return;
   }
 >>>>>>> parent of 4804d2d (Nest 16.01 ban)
+=======
+>>>>>>> origin/main
 }
