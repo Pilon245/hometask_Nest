@@ -86,7 +86,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
+      .find(filter, { _id: false, __v: 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -104,6 +104,10 @@ export class BlogsQueryRepository {
         blogOwnerInfo: {
           userId: b.blogOwnerInfo.userId,
           userLogin: b.blogOwnerInfo.userLogin,
+        },
+        banInfo: {
+          isBanned: false,
+          banDate: null,
         },
       })),
     };
