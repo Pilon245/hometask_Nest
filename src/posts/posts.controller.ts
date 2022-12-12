@@ -52,7 +52,12 @@ export class PostsController {
   ) {}
   @UseGuards(BearerAuthGuardOnGet)
   @Get()
-  async getPosts(@Query() query, @Req() req, @Res() res: Response) {
+  async getPosts(
+    @Query() query,
+    @Req() req,
+    @Res() res: Response,
+    @CurrentUserId() currentUserId,
+  ) {
     if (req.user) {
       const posts = await this.postsQueryRepository.findPosts(
         req.user.id,
@@ -114,11 +119,6 @@ export class PostsController {
       return res.status(200).send(comments);
     }
   }
-  @UseGuards(BasicAuthGuard)
-  @Post()
-  async createPosts(@Body() inputModel: CreatePostInputDTO) {
-    return this.postsService.createPostsDeprecated(inputModel);
-  }
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
   async createCommentOnPostId(
@@ -145,58 +145,64 @@ export class PostsController {
     }
     return this.commentsQueryRepository.findCommentByIdNoAuth(comment.id);
   }
-  @UseGuards(BasicAuthGuard)
-  @Put(':id')
-  @HttpCode(204)
-  async updatePosts(
-    @Param('id') postId: string,
-    @Body() model: UpdatePostInputModelType,
-  ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
-    if (!resultFound) {
-      throw new HttpException('Invalid id', 404);
-    }
-    return this.postsService.updatePosts(postId, 'blogId', model);
-  }
-  @UseGuards(JwtAuthGuard)
-  @Put(':postId/like-status')
-  @HttpCode(204)
-  async updateLike(
-    @Param('postId') postId: string,
-    @Body() updateModel: UpdatePostLikeInputModel,
-    @CurrentUserId() currentUserId,
-  ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
-    const like = updateModel.likeStatus;
-    const user = await this.usersQueryRepository.findUsersById(currentUserId);
-    if (!user) {
-      throw new HttpException('invalid blog', 404);
-    }
-    const isUpdate = await this.postsService.updateLike(
-      user.id,
-      postId,
-      like as LikeValuePost,
-      user.login,
-    );
-    return;
-  }
-  @UseGuards(BasicAuthGuard)
-  @Delete(':id')
-  @HttpCode(204)
-  async deletePosts(@Param('id') postId: string) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
-    return this.postsService.deletePosts(postId);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Post()
+  // async createPosts(@Body() inputModel: CreatePostInputDTO) {
+  //   return this.postsService.createPostsDeprecated(inputModel);
+  // }
+
+  // @UseGuards(BasicAuthGuard)
+  // @Put(':id')
+  // @HttpCode(204)
+  // async updatePosts(
+  //   @Param('id') postId: string,
+  //   @Body() model: UpdatePostInputModelType,
+  // ) {
+  //   const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+  //     postId,
+  //   );
+  //   if (!resultFound) {
+  //     throw new HttpException('Invalid id', 404);
+  //   }
+  //   return this.postsService.updatePosts(postId, 'blogId', model);
+  // }
+  // @UseGuards(JwtAuthGuard)
+  // @Put(':postId/like-status')
+  // @HttpCode(204)
+  // async updateLike(
+  //   @Param('postId') postId: string,
+  //   @Body() updateModel: UpdatePostLikeInputModel,
+  //   @CurrentUserId() currentUserId,
+  // ) {
+  //   const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+  //     postId,
+  //   );
+  //   if (!resultFound) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   const like = updateModel.likeStatus;
+  //   const user = await this.usersQueryRepository.findUsersById(currentUserId);
+  //   if (!user) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   const isUpdate = await this.postsService.updateLike(
+  //     user.id,
+  //     postId,
+  //     like as LikeValuePost,
+  //     user.login,
+  //   );
+  //   return;
+  // }
+  // @UseGuards(BasicAuthGuard)
+  // @Delete(':id')
+  // @HttpCode(204)
+  // async deletePosts(@Param('id') postId: string) {
+  //   const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
+  //     postId,
+  //   );
+  //   if (!resultFound) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   return this.postsService.deletePosts(postId);
+  // }
 }

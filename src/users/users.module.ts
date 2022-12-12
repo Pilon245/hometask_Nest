@@ -26,6 +26,8 @@ import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
 } from './entities/blogger.users.blogs.ban.entity';
+import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
+import { BloggerExistsRule } from './guards/blogger-ban-validation.service';
 
 @Module({
   imports: [
@@ -51,6 +53,8 @@ import {
     BlogsRepository,
     PostsRepository,
     CommentsRepository,
+    BlogsQueryRepository,
+    BloggerExistsRule,
   ],
   exports: [UsersService, UsersRepository, UsersQueryRepository],
 })

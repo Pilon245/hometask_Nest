@@ -88,45 +88,45 @@ export class BlogsController {
   // createBlogs(@Body() inputModel: CreateBlogInputDTO) {
   //   return this.blogsService.createBlogs(inputModel);
   // }
-  @UseGuards(BasicAuthGuard)
-  @Post(':blogId/posts')
-  async CreatePostsOnBlogId(
-    @Param('blogId') blogId: string,
-    @Body() inputModel: CreatePostByBlogIdInputDTO,
-  ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
-    const newPost: CreatePostByBlogIdInputDTO = {
-      title: inputModel.title,
-      shortDescription: inputModel.shortDescription,
-      content: inputModel.content,
-      blogId: blogId,
-    };
-    return this.postsService.createPosts(newPost, 'userId');
-  }
-  @UseGuards(BasicAuthGuard)
-  @Put(':id')
-  @HttpCode(204)
-  async updateBlogs(
-    @Param('id') blogId: string,
-    @Body() model: UpdateBlogInputModelType,
-  ) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
-    return this.blogsService.updateBlogs(blogId, model);
-  }
-  @UseGuards(BasicAuthGuard)
-  @Delete(':id')
-  @HttpCode(204)
-  async deleteBlogs(@Param('id') blogId: string) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-    if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
-    }
-    return this.blogsService.deleteBlogs(blogId);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Post(':blogId/posts')
+  // async CreatePostsOnBlogId(
+  //   @Param('blogId') blogId: string,
+  //   @Body() inputModel: CreatePostByBlogIdInputDTO,
+  // ) {
+  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+  //   if (!resultFound) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   const newPost: CreatePostByBlogIdInputDTO = {
+  //     title: inputModel.title,
+  //     shortDescription: inputModel.shortDescription,
+  //     content: inputModel.content,
+  //     blogId: blogId,
+  //   };
+  //   return this.postsService.createPosts(newPost, 'userId');
+  // }
+  // @UseGuards(BasicAuthGuard)
+  // @Put(':id')
+  // @HttpCode(204)
+  // async updateBlogs(
+  //   @Param('id') blogId: string,
+  //   @Body() model: UpdateBlogInputModelType,
+  // ) {
+  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+  //   if (!resultFound) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   return this.blogsService.updateBlogs(blogId, model);
+  // }
+  // @UseGuards(BasicAuthGuard)
+  // @Delete(':id')
+  // @HttpCode(204)
+  // async deleteBlogs(@Param('id') blogId: string) {
+  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
+  //   if (!resultFound) {
+  //     throw new HttpException('invalid blog', 404);
+  //   }
+  //   return this.blogsService.deleteBlogs(blogId);
+  // }
 }

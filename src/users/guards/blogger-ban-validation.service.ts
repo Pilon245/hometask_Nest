@@ -11,6 +11,7 @@ import {
 export class BloggerExistsRule implements ValidatorConstraintInterface {
   constructor(private blogsQueryRepository: BlogsQueryRepository) {}
   async validate(value: string) {
+    console.log('this.blogsQueryRepository', this);
     const result = await this.blogsQueryRepository.findBlogById(value);
     if (!result) return false;
     return true;

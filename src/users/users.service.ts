@@ -86,7 +86,10 @@ export class UsersService {
     bloggerId: string,
     model: BanBLoggerUsersInputModel,
   ) {
+    console.log('this.userRepository', this.userRepository);
+    console.log('banUserId', banUserId);
     const user = await this.userRepository.findUsersById(banUserId);
+    console.log('user', user);
     if (model.isBanned) {
       const newBanUser = new BanBloggerUsersFactory(
         String(new Date()),
