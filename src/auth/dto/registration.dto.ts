@@ -19,11 +19,13 @@ export class ConfirmationInputModel {
   @Length(0)
   code: string;
 }
+
 export class RegistrationEmailInputModel {
   @ApiProperty()
   @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
   email: string;
 }
+
 export class NewPasswordInputModel {
   @ApiProperty()
   @Length(6, 20)

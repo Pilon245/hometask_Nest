@@ -37,7 +37,6 @@ import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UsersQueryRepository } from '../../users/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
 
-@UseGuards(BasicAdminGuard)
 @ApiTags('sa/blogs')
 @Controller({
   path: 'sa/blogs',
@@ -55,6 +54,7 @@ export class BlogsSaController {
   getBlogs(@Query() query) {
     return this.blogsQueryRepository.findBlogsOnSuperAdmin(pagination(query));
   }
+  @UseGuards(BasicAdminGuard)
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(
