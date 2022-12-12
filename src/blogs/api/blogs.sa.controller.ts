@@ -22,7 +22,11 @@ import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreateBlogInputDTO, IdModelType } from '../dto/blogsFactory';
+import {
+  BanBlogsInputModel,
+  CreateBlogInputDTO,
+  IdModelType,
+} from '../dto/blogsFactory';
 import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
@@ -72,9 +76,6 @@ export class BlogsSaController {
     }
     return this.blogsService.updatePostsOnNewUser(user.login, model);
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
   @Put(':id/ban')
   @HttpCode(204)
   async updateBanBlogs(
@@ -85,7 +86,4 @@ export class BlogsSaController {
     // if (blog) return;
     return;
   }
->>>>>>> parent of 4804d2d (Nest 16.01 ban)
-=======
->>>>>>> origin/main
 }
