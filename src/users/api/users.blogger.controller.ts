@@ -37,17 +37,9 @@ export class UsersBloggerController {
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
-  @Get(':id')
-  getUsers(
-    @Query() query,
-    @Param('id') id: string,
-    @CurrentUserId() CurrentUserId,
-  ) {
-    return this.usersQueryRepository.findUsersOnBlogger(
-      id,
-      CurrentUserId,
-      pagination(query),
-    );
+  @Get()
+  getUsers(@Query() query) {
+    return this.usersQueryRepository.findUsersOnBlogger(pagination(query));
   }
   @Put(':id/ban')
   @HttpCode(204)
