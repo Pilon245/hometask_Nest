@@ -19,9 +19,10 @@ import { pagination } from '../../validation/query.validation';
 import { BanUserInputModel, CreateUserInputModel } from '../dto/usersFactory';
 import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 
 @ApiTags('sa/users')
-@UseGuards(BasicAuthGuard)
+@UseGuards(BasicAdminGuard)
 @Controller({
   path: 'sa/users',
   scope: Scope.DEFAULT,
