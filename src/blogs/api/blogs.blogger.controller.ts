@@ -59,7 +59,6 @@ export class BlogsBloggerController {
     }
     console.log('blog.id', blog.id);
     return this.commentsQueryRepository.findCommentByBlogger(
-      blog.id,
       currentUserId,
       pagination(query),
     );

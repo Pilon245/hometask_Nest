@@ -11,6 +11,7 @@ export class CommentsFactory {
     public likesInfo: LikeInfoType,
     public commentatorInfo: CommentatorInfoType,
     public postInfo: postInfoType,
+    public ownerUserId: string,
     public isBan: boolean,
   ) {}
 }

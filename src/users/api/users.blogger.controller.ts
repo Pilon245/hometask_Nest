@@ -39,11 +39,18 @@ export class UsersBloggerController {
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get('blog/:blogId')
-  getUsers(
+  async getUsers(
     @Query() query,
     @Param('blogId') blogId: string,
     @CurrentUserId() currentUserId,
   ) {
+    const blog = await this.blogsQueryRepository.findBlogById(blogId);
+    if (!blog) {
+      throw new HttpException('invalid blog', 404);
+    }
+    if (blog.blogOwnerInfo.userId !== currentUserId) {
+      throw new HttpException('Forbidden', 403);
+    }
     return this.usersQueryRepository.findUsersOnBlogger(
       currentUserId,
       blogId,

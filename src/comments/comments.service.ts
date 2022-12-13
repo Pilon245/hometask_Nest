@@ -46,6 +46,7 @@ export class CommentsService {
         blogId: post.blogId,
         blogName: post.blogName,
       },
+      banUser.id,
       false,
     );
     console.log('newComment', newComment);

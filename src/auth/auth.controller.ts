@@ -35,7 +35,7 @@ import { BasicAdminGuard } from './guards/basic-admin.guard';
 import { CurrentPayload } from './current-payload.param.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-// @UseGuards(CustomThrottlerGuard)
+// @UseGuards(CustomThrottlerGuard)//todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
 @Controller({
   path: 'auth',

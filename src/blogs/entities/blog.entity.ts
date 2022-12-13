@@ -32,6 +32,7 @@ export class Blog {
 
   @Prop({ type: BlogOwnerInfoSchema })
   blogOwnerInfo: BlogOwnerInfoType;
+
   @Prop()
   isBan: boolean;
 }

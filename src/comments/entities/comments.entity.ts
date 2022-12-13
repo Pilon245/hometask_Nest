@@ -64,6 +64,9 @@ export class Comment {
   @Prop({ type: postInfoSchema })
   postInfo: postInfoType;
 
+  @Prop({ require: true })
+  ownerUserId: string;
+
   @Prop()
   isBan: boolean;
 }
