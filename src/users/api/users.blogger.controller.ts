@@ -1,8 +1,10 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Put,
   Query,
@@ -44,6 +46,16 @@ export class UsersBloggerController {
     @Body() inputModel: BanBLoggerUsersInputModel,
     @CurrentUserId() CurrentUserId,
   ) {
-    return this.usersService.banBloggerUsers(id, CurrentUserId, inputModel);
+    const user = await this.usersService.banBloggerUsers(
+      id,
+      CurrentUserId,
+      inputModel,
+    );
+    if (!user) {
+      throw new BadRequestException([
+        { message: 'User Not Found', filed: 'userId' },
+      ]);
+    }
+    return;
   }
 }

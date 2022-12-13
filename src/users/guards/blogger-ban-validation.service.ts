@@ -11,10 +11,16 @@ import {
 export class BloggerExistsRule implements ValidatorConstraintInterface {
   constructor(private blogsQueryRepository: BlogsQueryRepository) {}
   async validate(value: string) {
-    console.log('this.blogsQueryRepository', this);
-    const result = await this.blogsQueryRepository.findBlogById(value);
-    if (!result) return false;
-    return true;
+    try {
+      console.log('value', value);
+      console.log('this.blogsQueryRepository', this.blogsQueryRepository);
+      const result = await this.blogsQueryRepository.findBlogById(value);
+      console.log(result);
+      if (!result) return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
   defaultMessage(args: ValidationArguments) {
     return `Blog doesn't exist`;

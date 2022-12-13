@@ -58,7 +58,7 @@ export class BlogsQueryRepository {
   }
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { id, isBan: false },
+      { id: id, isBan: false },
       { _id: false, __v: 0, blogOwnerInfo: false, isBan: 0 },
     );
   }

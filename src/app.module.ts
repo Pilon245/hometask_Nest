@@ -42,6 +42,7 @@ import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
 } from './users/entities/blogger.users.blogs.ban.entity';
+import { BloggerExistsRule } from './users/guards/blogger-ban-validation.service';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -96,6 +97,8 @@ const schemas = [
     JwtGenerate,
     EmailManager,
     BlogExistsRule,
+    BloggerExistsRule,
+    BlogsQueryRepository,
   ],
 })
 export class AppModule {}

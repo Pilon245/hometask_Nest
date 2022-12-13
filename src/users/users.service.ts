@@ -89,6 +89,7 @@ export class UsersService {
     console.log('this.userRepository', this.userRepository);
     console.log('banUserId', banUserId);
     const user = await this.userRepository.findUsersById(banUserId);
+    if (!user) return false;
     console.log('user', user);
     if (model.isBanned) {
       const newBanUser = new BanBloggerUsersFactory(
@@ -109,7 +110,7 @@ export class UsersService {
       return newBanUser;
     } else {
       // const newBanUser = new BanUsersFactory(id, model.isBanned, null, null);
-
+      console.log('wwwwwwwwwwwwwwwwwwwwww');
       await this.userRepository.unbanBloggerUsers(banUserId, bloggerId);
 
       // await this.userRepository.updateUsers(newBanUser);
@@ -117,7 +118,7 @@ export class UsersService {
       // await this.postsRepository.banUsers(newBanUser.id, model.isBanned);
       // await this.commentsRepository.banUsers(newBanUser.id, model.isBanned);
 
-      return;
+      return true;
     }
   }
   deleteUsers(id: string) {
