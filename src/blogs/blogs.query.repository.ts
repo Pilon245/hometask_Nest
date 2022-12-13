@@ -68,6 +68,12 @@ export class BlogsQueryRepository {
       { _id: false, __v: 0, isBan: 0 },
     );
   }
+  async findBlogByUserId(id: string): Promise<Blog> {
+    return this.blogModel.findOne(
+      { 'blogOwnerInfo.userId': id, isBan: false },
+      { _id: false, __v: 0, isBan: 0 },
+    );
+  }
   async findBlogsOnSuperAdmin({
     searchNameTerm,
     sortDirection,

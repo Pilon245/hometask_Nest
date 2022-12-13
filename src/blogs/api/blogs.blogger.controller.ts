@@ -50,8 +50,16 @@ export class BlogsBloggerController {
     );
   }
   @Get('comments')
-  getComments(@Query() query, @CurrentUserId() currentUserId) {
+  async getComments(@Query() query, @CurrentUserId() currentUserId) {
+    const blog = await this.blogsQueryRepository.findBlogByUserId(
+      currentUserId,
+    );
+    if (!blog) {
+      throw new HttpException('invalid blog', 404);
+    }
+    console.log('blog.id', blog.id);
     return this.commentsQueryRepository.findCommentByBlogger(
+      blog.id,
       currentUserId,
       pagination(query),
     );

@@ -194,13 +194,14 @@ export class CommentsQueryRepository {
     };
   }
   async findCommentByBlogger(
-    userId: string,
+    blogId: string,
+    commentatorUserId: string,
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
   ) {
     const filter = {
       $and: [
         {
-          'commentatorInfo.userId': userId,
+          'postInfo.blogId': blogId,
         },
         {
           isBan: false,
@@ -215,7 +216,7 @@ export class CommentsQueryRepository {
       .lean();
 
     const totalCount = await this.commentModel.countDocuments({
-      'commentatorInfo.userId': userId,
+      'postInfo.blogId': blogId,
       isBan: false,
     });
 
@@ -231,7 +232,7 @@ export class CommentsQueryRepository {
       const likeStatus = await this.likeCommentModel.findOne({
         $and: [
           { commentId: c.id },
-          { 'commentatorInfo.userId': userId },
+          { 'commentatorInfo.userId': commentatorUserId },
           { isBan: false },
         ],
       });

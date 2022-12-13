@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   NotFoundException,
   Param,
   Put,
@@ -23,6 +24,7 @@ import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
+import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
 
 @ApiTags('blogger/users')
 @UseGuards(JwtAuthGuard)
@@ -34,6 +36,7 @@ export class UsersBloggerController {
   constructor(
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get('blog/:blogId')
   getUsers(
@@ -60,9 +63,16 @@ export class UsersBloggerController {
       inputModel,
     );
     if (!user) {
-      throw new BadRequestException([
-        { message: 'User Not Found', filed: 'userId' },
-      ]);
+      throw new HttpException('invalid user', 404);
+    }
+    const resultFound = await this.blogsQueryRepository.findBlogBD(
+      inputModel.blogId,
+    );
+    if (!resultFound) {
+      throw new HttpException('invalid blog', 404);
+    }
+    if (resultFound.blogOwnerInfo.userId !== currentUserId) {
+      throw new HttpException('Forbidden', 403);
     }
     return;
   }
