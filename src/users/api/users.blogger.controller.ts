@@ -44,10 +44,11 @@ export class UsersBloggerController {
     @Param('blogId') blogId: string,
     @CurrentUserId() currentUserId,
   ) {
-    const blog = await this.blogsQueryRepository.findBlogById(blogId);
+    const blog = await this.blogsQueryRepository.findBlogBD(blogId); //todo наверное надо перести в сервис
     if (!blog) {
       throw new HttpException('invalid blog', 404);
     }
+    console.log('blog', blog);
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }

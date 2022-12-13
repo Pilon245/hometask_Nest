@@ -23,6 +23,7 @@ export class CommentsService {
       userId,
       post.blogId,
     );
+    console.log('banUser', banUser);
     if (banUser) return false;
     const newComment = new CommentsFactory(
       String(+new Date()),
@@ -46,7 +47,7 @@ export class CommentsService {
         blogId: post.blogId,
         blogName: post.blogName,
       },
-      banUser.id,
+      post.userId,
       false,
     );
     console.log('newComment', newComment);
