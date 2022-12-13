@@ -140,8 +140,9 @@ export class PostsController {
       user.id,
       user.accountData.login,
     );
+    console.log('comment', comment);
     if (!comment) {
-      throw new HttpException('Ban', 402);
+      throw new HttpException('Ban', 403);
     }
     return this.commentsQueryRepository.findCommentByIdNoAuth(comment.id);
   }

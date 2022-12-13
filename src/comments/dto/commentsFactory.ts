@@ -9,7 +9,7 @@ export class CommentsFactory {
     public userLogin: string,
     public createdAt: string,
     public likesInfo: LikeInfoType,
-    public commentatorInfo: commentatorInfoType,
+    public commentatorInfo: CommentatorInfoType,
     public postInfo: postInfoType,
     public isBan: boolean,
   ) {}
@@ -19,7 +19,7 @@ export class LikeInfoType {
   dislikesCount: number;
   myStatus: LikeValueComment;
 }
-export class commentatorInfoType {
+export class CommentatorInfoType {
   userId: string;
   userLogin: string;
 }

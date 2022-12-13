@@ -35,20 +35,28 @@ export class UsersBloggerController {
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
   ) {}
-  @Get()
-  getUsers(@Query() query) {
-    return this.usersQueryRepository.findUsersOnBlogger(pagination(query));
+  @Get('blog/:blogId')
+  getUsers(
+    @Query() query,
+    @Param('blogId') blogId: string,
+    @CurrentUserId() currentUserId,
+  ) {
+    return this.usersQueryRepository.findUsersOnBlogger(
+      currentUserId,
+      blogId,
+      pagination(query),
+    );
   }
   @Put(':id/ban')
   @HttpCode(204)
   async banBloggerUsers(
     @Param('id') id: string,
     @Body() inputModel: BanBLoggerUsersInputModel,
-    @CurrentUserId() CurrentUserId,
+    @CurrentUserId() currentUserId,
   ) {
     const user = await this.usersService.banBloggerUsers(
       id,
-      CurrentUserId,
+      currentUserId,
       inputModel,
     );
     if (!user) {

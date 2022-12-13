@@ -16,8 +16,10 @@ export class CommentsRepository {
     @InjectModel(LikeComment.name)
     private likeCommentModel: Model<LikeCommentDocument>,
   ) {}
-  async createComments(model: CommentsFactory) {
+  async createComments(model: any) {
+    console.log('model', model);
     const comment = await new this.commentModel(model);
+    console.log('comment REPo', comment);
     await comment.save();
     return model;
   }

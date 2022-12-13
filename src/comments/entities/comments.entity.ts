@@ -3,7 +3,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { LikeValueComment } from './likes.comments.entity';
 
 export type CommentDocument = HydratedDocument<Comment>;
-@Schema()
+
+@Schema({ id: false })
 export class likesInfoType {
   likesCount: number;
   dislikesCount: number;
@@ -11,19 +12,25 @@ export class likesInfoType {
 }
 export const likesInfoSchema = SchemaFactory.createForClass(likesInfoType);
 
-@Schema()
+@Schema({ id: false })
 export class commentatorInfoType {
+  @Prop({ required: true })
   userId: string;
+  @Prop({ required: true })
   userLogin: string;
 }
 export const commentatorInfoSchema =
   SchemaFactory.createForClass(commentatorInfoType);
 
-@Schema()
+@Schema({ id: false })
 export class postInfoType {
+  @Prop({ required: true })
   id: string;
+  @Prop({ required: true })
   title: string;
+  @Prop({ required: true })
   blogId: string;
+  @Prop({ required: true })
   blogName: string;
 }
 export const postInfoSchema = SchemaFactory.createForClass(postInfoType);

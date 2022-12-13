@@ -48,6 +48,7 @@ export class CommentsService {
       },
       false,
     );
+    console.log('newComment', newComment);
     return this.commentsRepository.createComments(newComment);
   }
   async updateComment(id: string, content: string) {

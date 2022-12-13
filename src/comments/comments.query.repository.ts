@@ -235,20 +235,21 @@ export class CommentsQueryRepository {
           { isBan: false },
         ],
       });
+      console.log('ccccc', c);
       return {
         id: c.id,
         content: c.content,
         createdAt: c.createdAt,
+        commentatorInfo: {
+          userId: c.commentatorInfo.userId,
+          userLogin: c.commentatorInfo.userLogin,
+        },
         likesInfo: {
           likesCount: likeCount,
           dislikesCount: disLikeCount,
           myStatus: likeStatus?.myStatus
             ? likeStatus.myStatus
             : LikeValueComment.none,
-        },
-        commentatorInfo: {
-          userId: c.commentatorInfo.userId,
-          userLogin: c.commentatorInfo.userLogin,
         },
         postInfo: {
           id: c.postInfo.id,
@@ -259,7 +260,7 @@ export class CommentsQueryRepository {
       };
     });
     const items = await Promise.all(Promises);
-
+    console.log('items', items);
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: items,

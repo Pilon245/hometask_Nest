@@ -67,6 +67,7 @@ export class CommentsController {
       commentId,
       updateModel.content,
     );
+    console.log('isUpdate', isUpdate);
     if (!isUpdate) {
       throw new HttpException('invalid blog', 404);
     }
@@ -74,6 +75,7 @@ export class CommentsController {
       currentUserId,
       commentId,
     );
+    console.log('found', found);
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
