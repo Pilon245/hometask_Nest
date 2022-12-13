@@ -58,9 +58,9 @@ export class PostsController {
     @Res() res: Response,
     @CurrentUserId() currentUserId,
   ) {
-    if (req.user) {
+    if (currentUserId) {
       const posts = await this.postsQueryRepository.findPosts(
-        req.user.id,
+        currentUserId,
         pagination(query),
       );
       return res.status(200).send(posts);
