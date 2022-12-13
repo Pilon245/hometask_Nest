@@ -43,10 +43,10 @@ export class Comment {
   @Prop({ require: true })
   content: string;
 
-  @Prop({ require: true })
+  @Prop({ require: true }) //todo  это можно убрать
   userId: string;
 
-  @Prop({ require: true })
+  @Prop({ require: true }) //todo и это
   userLogin: string;
 
   @Prop({ require: true })

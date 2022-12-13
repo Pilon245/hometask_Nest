@@ -86,14 +86,11 @@ export class UsersService {
     bloggerId: string,
     model: BanBLoggerUsersInputModel,
   ) {
-    console.log('this.userRepository', this.userRepository);
-    console.log('banUserId', banUserId);
     const user = await this.userRepository.findUsersById(banUserId);
     if (!user) return false;
-    console.log('user', user);
     if (model.isBanned) {
       const newBanUser = new BanBloggerUsersFactory(
-        String(new Date()),
+        String(+new Date()),
         model.blogId,
         bloggerId,
         banUserId,
@@ -110,7 +107,6 @@ export class UsersService {
       return newBanUser;
     } else {
       // const newBanUser = new BanUsersFactory(id, model.isBanned, null, null);
-      console.log('wwwwwwwwwwwwwwwwwwwwww');
       await this.userRepository.unbanBloggerUsers(banUserId, bloggerId);
 
       // await this.userRepository.updateUsers(newBanUser);

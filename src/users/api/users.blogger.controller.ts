@@ -65,14 +65,6 @@ export class UsersBloggerController {
     @Body() inputModel: BanBLoggerUsersInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const user = await this.usersService.banBloggerUsers(
-      id,
-      currentUserId,
-      inputModel,
-    );
-    if (!user) {
-      throw new HttpException('invalid user', 404);
-    }
     const resultFound = await this.blogsQueryRepository.findBlogBD(
       inputModel.blogId,
     );
@@ -82,6 +74,15 @@ export class UsersBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
+    const user = await this.usersService.banBloggerUsers(
+      id,
+      currentUserId,
+      inputModel,
+    );
+    if (!user) {
+      throw new HttpException('invalid user', 404);
+    }
+
     return;
   }
 }
