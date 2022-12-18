@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateBlogDTO } from './dto/blogsFactory';
 import {
+  BanBlogsRepo,
   UpdateBlogInputModelType,
   UpdateBlogOnNewUser,
   UpdateBlogOnNewUserRepo,
@@ -15,7 +16,7 @@ export class BlogsRepository {
 
   async findBlogByUserId(userId: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': userId, isBan: false },
+      { 'blogOwnerInfo.userId': userId, 'banInfo.isBanned': false },
       { _id: false, __v: 0 },
     );
   }
@@ -52,16 +53,17 @@ export class BlogsRepository {
     const result = await this.blogModel.updateMany(
       { 'blogOwnerInfo.userId': userId },
       {
-        isBan: value,
+        'banInfo.isBanned': value,
       },
     );
     return;
   }
-  async banBlogs(blogId: string, value: boolean) {
+  async banBlogs(banBlogs: BanBlogsRepo) {
     const result = await this.blogModel.updateOne(
-      { id: blogId },
+      { id: banBlogs.id },
       {
-        isBan: value,
+        'banInfo.isBanned': banBlogs.isBanned,
+        'banInfo.banDate': banBlogs.banDate,
       },
     );
     return;

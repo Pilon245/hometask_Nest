@@ -37,7 +37,7 @@ export class BanBLoggerUsersInputModel {
   isBanned: boolean;
   @Length(20)
   banReason: string;
-  @Validate(BloggerExistsRule)
+  @Validate(BlogExistsRule)
   blogId: string;
 }
 

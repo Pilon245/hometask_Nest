@@ -2,11 +2,13 @@ import { BlogsRepository } from './blogs.repository';
 import { Injectable, Scope } from '@nestjs/common';
 import { BlogsFactory, CreateBlogInputDTO } from './dto/blogsFactory';
 import {
+  BanBlogsFactory,
   UpdateBlogInputModelType,
   UpdateBlogOnNewUser,
   UpdateBlogOnNewUserRepo,
 } from './dto/update.blogs.dto';
 import { UsersRepository } from '../users/users.repository';
+import { BanUsersFactory } from '../users/dto/usersFactory';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsService {
@@ -50,7 +52,12 @@ export class BlogsService {
     return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
   }
   banBlogs(id: string, isBanned: boolean) {
-    return this.blogsRepository.banBlogs(id, isBanned);
+    const banBlogs = new BanBlogsFactory(
+      id,
+      isBanned,
+      new Date().toISOString(),
+    );
+    return this.blogsRepository.banBlogs(banBlogs);
   }
   deleteBlogs(id: string) {
     return this.blogsRepository.deleteBlogs(id);

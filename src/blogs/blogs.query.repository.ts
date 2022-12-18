@@ -38,7 +38,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
+      .find(filter, { _id: false, __v: 0, 'banInfo.isBanned': 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -58,20 +58,20 @@ export class BlogsQueryRepository {
   }
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { id: id, isBan: false },
-      { _id: false, __v: 0, blogOwnerInfo: false, isBan: 0 },
+      { id: id, 'banInfo.isBanned': false },
+      { _id: false, __v: 0, blogOwnerInfo: false, 'banInfo.isBanned': 0 },
     );
   }
   async findBlogBD(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0 },
+      { id, 'banInfo.isBanned': false },
+      { _id: false, __v: 0, 'banInfo.isBanned': 0 },
     );
   }
   async findBlogByUserId(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': id, isBan: false },
-      { _id: false, __v: 0, isBan: 0 },
+      { 'blogOwnerInfo.userId': id, 'banInfo.isBanned': false },
+      { _id: false, __v: 0, 'banInfo.isBanned': 0 },
     );
   }
   async findBlogsOnSuperAdmin({
@@ -139,7 +139,7 @@ export class BlogsQueryRepository {
       ],
     };
     const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0, isBan: 0 }, {})
+      .find(filter, { _id: false, __v: 0, 'banInfo.isBanned': 0 }, {})
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -159,7 +159,11 @@ export class BlogsQueryRepository {
   }
   async findBlogByIdOnBlogger(id: string) {
     const blog = await this.blogModel
-      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 }, {})
+      .findOne(
+        { id, 'banInfo.isBanned': false },
+        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
+        {},
+      )
       .lean();
 
     return {
