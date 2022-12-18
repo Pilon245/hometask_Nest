@@ -65,7 +65,7 @@ export class BlogsQueryRepository {
   async findBlogBD(id: string): Promise<Blog> {
     return this.blogModel.findOne(
       { id, 'banInfo.isBanned': false },
-      { _id: false, __v: 0, 'banInfo.isBanned': 0 },
+      { _id: false, __v: 0 },
     );
   }
   async findBlogByUserId(id: string): Promise<Blog> {
