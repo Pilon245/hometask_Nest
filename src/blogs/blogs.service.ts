@@ -29,7 +29,7 @@ export class BlogsService {
         userId: user.id,
         userLogin: user.accountData.login,
       },
-      false,
+      { isBanned: null, banDate: null },
     );
     return this.blogsRepository.createBlogs(newBlog);
   }

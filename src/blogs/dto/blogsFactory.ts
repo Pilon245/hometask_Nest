@@ -1,7 +1,7 @@
 import { IsBoolean, IsUrl, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { Injectable } from '@nestjs/common';
-import { BlogOwnerInfoType } from './blogs.entity.dto';
+import { BanBlogsInfoType, BlogOwnerInfoType } from './blogs.entity.dto';
 import { BlogExistsRule } from '../../posts/guards/blog-id-validation.service';
 import { UserExistsRule } from '../guards/blog-id-validation.service';
 import { ApiProperty } from '@nestjs/swagger';
@@ -15,7 +15,7 @@ export class BlogsFactory {
     public websiteUrl: string,
     public createdAt: string,
     public blogOwnerInfo: BlogOwnerInfoType,
-    public isBan: boolean,
+    public banInfo: BanBlogsInfoType,
   ) {}
 }
 export class CreateBlogInputDTO {
@@ -43,7 +43,7 @@ export class CreateBlogDTO {
   websiteUrl: string;
   createdAt: string;
   blogOwnerInfo: BlogOwnerInfoType;
-  isBan: boolean;
+  banInfo: BanBlogsInfoType;
 }
 export class IdModelType {
   @Validate(BlogExistsRule)
