@@ -86,9 +86,6 @@ export class BlogsQueryRepository {
         {
           name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
         },
-        {
-          isBan: false,
-        },
       ],
     };
     const blogs = await this.blogModel
