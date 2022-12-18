@@ -88,7 +88,11 @@ export class UsersService {
   ) {
     const user = await this.userRepository.findUsersById(banUserId);
     if (!user) return false;
-    if (model.isBanned) {
+    const banUser = await this.userRepository.findBanBloggerUsersDB(
+      banUserId,
+      model.blogId,
+    );
+    if (!banUser) {
       const newBanUser = new BanBloggerUsersFactory(
         String(+new Date()),
         model.blogId,
@@ -106,14 +110,15 @@ export class UsersService {
 
       return newBanUser;
     } else {
-      // const newBanUser = new BanUsersFactory(id, model.isBanned, null, null);
-      await this.userRepository.unbanBloggerUsers(banUserId, bloggerId);
-
-      // await this.userRepository.updateUsers(newBanUser);
-      // await this.blogsRepository.banUsers(newBanUser.id, model.isBanned);
-      // await this.postsRepository.banUsers(newBanUser.id, model.isBanned);
-      // await this.commentsRepository.banUsers(newBanUser.id, model.isBanned);
-
+      const banDate = String(+new Date());
+      await this.userRepository.unbanBloggerUsers(
+        banUserId,
+        bloggerId,
+        model.blogId,
+        model.isBanned,
+        banDate,
+        model.banReason,
+      );
       return true;
     }
   }

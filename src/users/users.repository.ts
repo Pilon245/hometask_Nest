@@ -27,6 +27,15 @@ export class UsersRepository {
   }
   async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
     return this.bloggerUsersBanModel.findOne(
+      { banUserId, blogId, 'banInfo.isBanned': true },
+      { _id: false, __v: 0 },
+    );
+  }
+  async findBanBloggerUsersDB(
+    banUserId: string,
+    blogId: string,
+  ): Promise<User> {
+    return this.bloggerUsersBanModel.findOne(
       { banUserId, blogId },
       { _id: false, __v: 0 },
     );
@@ -101,13 +110,32 @@ export class UsersRepository {
     );
     return result.matchedCount === 1;
   }
-  async unbanBloggerUsers(banUserId: string, bloggerId: string) {
-    const result = await this.bloggerUsersBanModel.deleteOne({
-      banUserId,
-      bloggerId,
-    });
-    return result.deletedCount === 1;
+
+  async unbanBloggerUsers(
+    banUserId: string,
+    bloggerId: string,
+    blogId: string,
+    isBanned: boolean,
+    banDate: string,
+    banReason: string,
+  ) {
+    const result = await this.bloggerUsersBanModel.updateOne(
+      { banUserId: banUserId, bloggerId: bloggerId, blogId: blogId },
+      {
+        'banInfo.isBanned': isBanned,
+        'banInfo.banDate': banDate,
+        'banInfo.banReason': banReason,
+      },
+    );
+    return result.matchedCount === 1;
   }
+  // async unbanBloggerUsers(banUserId: string, bloggerId: string) {
+  //   const result = await this.bloggerUsersBanModel.deleteOne({
+  //     banUserId,
+  //     bloggerId,
+  //   });
+  //   return result.deletedCount === 1;
+  // }
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;

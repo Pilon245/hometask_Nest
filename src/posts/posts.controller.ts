@@ -81,7 +81,6 @@ export class PostsController {
     const foundBanBlogs = await this.blogsQueryRepository.findBlogBD(
       resultFound.blogId,
     );
-    console.log('foundBanBlogs', foundBanBlogs);
     if (!foundBanBlogs) {
       throw new HttpException('invalid blog', 404);
     }
