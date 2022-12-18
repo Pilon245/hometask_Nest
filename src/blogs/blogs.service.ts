@@ -57,6 +57,7 @@ export class BlogsService {
       isBanned,
       new Date().toISOString(),
     );
+    console.log('banBlogs', banBlogs);
     return this.blogsRepository.banBlogs(banBlogs);
   }
   deleteBlogs(id: string) {

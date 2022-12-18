@@ -33,7 +33,7 @@ export class BlogsQueryRepository {
           name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
         },
         {
-          isBan: false,
+          'banInfo.isBanned': false,
         },
       ],
     };
@@ -109,8 +109,8 @@ export class BlogsQueryRepository {
           userLogin: b.blogOwnerInfo.userLogin,
         },
         banInfo: {
-          isBanned: false,
-          banDate: null,
+          isBanned: b.banInfo.isBanned,
+          banDate: b.banInfo.banDate,
         },
       })),
     };
@@ -134,7 +134,7 @@ export class BlogsQueryRepository {
           'blogOwnerInfo.userId': userId,
         },
         {
-          isBan: false,
+          'banInfo.isBanned': false,
         },
       ],
     };
