@@ -127,6 +127,7 @@ export class UsersQueryRepository {
           },
         },
         { blogId: blogId },
+        { 'banInfo.isBanned': true },
       ],
     };
     const users = await this.bloggerUsersBanModel
