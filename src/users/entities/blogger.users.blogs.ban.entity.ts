@@ -29,7 +29,7 @@ const BloggerUsersBanInfoTypeDataSchema = SchemaFactory.createForClass(
 
 @Schema()
 export class BloggerUsersBan {
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true })
   id: string;
 
   @Prop({ required: true })
