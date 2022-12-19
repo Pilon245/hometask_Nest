@@ -52,11 +52,13 @@ export class UsersBloggerController {
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.usersQueryRepository.findUsersOnBlogger(
+    const user = await this.usersQueryRepository.findUsersOnBlogger(
       currentUserId,
       blogId,
       pagination(query),
     );
+    console.log('user', user);
+    return user;
   }
   @Put(':id/ban')
   @HttpCode(204)

@@ -92,6 +92,7 @@ export class UsersService {
       banUserId,
       model.blogId,
     );
+    console.log('banUser', banUser);
     if (!banUser) {
       const newBanUser = new BanBloggerUsersFactory(
         banUserId,
@@ -123,6 +124,9 @@ export class UsersService {
   }
   deleteUsers(id: string) {
     return this.userRepository.deleteUsers(id);
+  }
+  deleteAllBanUsers() {
+    return this.userRepository.deleteAllBanUsers();
   }
   async deleteAllUsers() {
     return await this.userRepository.deleteAllUsers();

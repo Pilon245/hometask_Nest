@@ -35,10 +35,9 @@ export class UsersRepository {
     banUserId: string,
     blogId: string,
   ): Promise<User> {
-    return this.bloggerUsersBanModel.findOne(
-      { banUserId, blogId },
-      { _id: false, __v: 0 },
-    );
+    return this.bloggerUsersBanModel.findOne({
+      $and: [{ id: banUserId }, { blogId }],
+    });
   }
   async findLoginAndEmail(Login: string, Email: string): Promise<User> {
     const user = await this.userModel.findOne({
@@ -139,6 +138,10 @@ export class UsersRepository {
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;
+  }
+
+  async deleteAllBanUsers() {
+    return this.bloggerUsersBanModel.deleteMany();
   }
   async deleteAllUsers() {
     return this.userModel.deleteMany();

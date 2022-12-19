@@ -126,7 +126,6 @@ export class UsersQueryRepository {
             $options: '(?i)a(?-i)cme',
           },
         },
-        { bloggerId: bloggerId },
         { blogId: blogId },
       ],
     };

@@ -20,6 +20,7 @@ export class RemoveController {
     this.blogsService.deleteAllBlogs();
     this.postsService.deleteAllPost();
     this.usersService.deleteAllUsers();
+    this.usersService.deleteAllBanUsers();
     this.commentsService.deleteAllComment();
     this.sessionService.deleteAllSessions();
     return;
