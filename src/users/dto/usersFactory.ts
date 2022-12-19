@@ -63,7 +63,6 @@ export class BanBloggerUsersFactory {
     public id: string,
     public blogId: string,
     public bloggerId: string,
-    public banUserId: string,
     public login: string,
     public banInfo: BanInfoType,
   ) {}

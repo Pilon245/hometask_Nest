@@ -39,9 +39,6 @@ export class BloggerUsersBan {
   bloggerId: string;
 
   @Prop({ required: true })
-  banUserId: string;
-
-  @Prop({ required: true })
   login: string;
 
   @Prop({ type: BloggerUsersBanInfoTypeDataSchema })

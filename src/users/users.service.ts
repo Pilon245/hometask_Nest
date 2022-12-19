@@ -94,10 +94,9 @@ export class UsersService {
     );
     if (!banUser) {
       const newBanUser = new BanBloggerUsersFactory(
-        String(+new Date()),
+        banUserId,
         model.blogId,
         bloggerId,
-        banUserId,
         user.accountData.login,
         {
           isBanned: model.isBanned,
@@ -110,8 +109,8 @@ export class UsersService {
 
       return newBanUser;
     } else {
-      const banDate = String(+new Date());
-      await this.userRepository.unbanBloggerUsers(
+      const banDate = new Date().toISOString();
+      await this.userRepository.updateBanBloggerUsers(
         banUserId,
         bloggerId,
         model.blogId,

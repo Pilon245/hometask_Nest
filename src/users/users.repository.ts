@@ -111,7 +111,7 @@ export class UsersRepository {
     return result.matchedCount === 1;
   }
 
-  async unbanBloggerUsers(
+  async updateBanBloggerUsers(
     banUserId: string,
     bloggerId: string,
     blogId: string,
@@ -120,7 +120,7 @@ export class UsersRepository {
     banReason: string,
   ) {
     const result = await this.bloggerUsersBanModel.updateOne(
-      { banUserId: banUserId, bloggerId: bloggerId, blogId: blogId },
+      { id: banUserId, bloggerId: bloggerId, blogId: blogId },
       {
         'banInfo.isBanned': isBanned,
         'banInfo.banDate': banDate,
