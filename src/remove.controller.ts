@@ -3,7 +3,7 @@ import { PostsService } from './posts/posts.service';
 import { UsersService } from './users/users.service';
 import { CommentsService } from './comments/comments.service';
 import { SessionService } from './session/session.service';
-import { BlogsService } from './blogs/blogs.service';
+import { BlogsService } from './blogs/application/blogs.service';
 
 @Controller('testing/all-data')
 export class RemoveController {

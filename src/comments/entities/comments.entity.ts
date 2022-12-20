@@ -64,7 +64,7 @@ export class Comment {
   @Prop({ type: postInfoSchema })
   postInfo: postInfoType;
 
-  @Prop({ require: true })
+  @Prop({ require: true }) //todo убрать
   ownerUserId: string;
 
   @Prop()

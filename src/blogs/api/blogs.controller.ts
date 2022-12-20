@@ -10,7 +10,7 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../blogs.service';
+import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/posts.service';
 import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';

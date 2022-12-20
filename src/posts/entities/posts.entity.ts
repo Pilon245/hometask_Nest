@@ -55,7 +55,7 @@ export class Post {
   extendedLikesInfo: extendedLikesInfoType;
   @Prop()
   isBan: boolean;
-  @Prop({ require: true })
+  @Prop({ require: true }) //todo можно убрать
   userId: string;
 }
 

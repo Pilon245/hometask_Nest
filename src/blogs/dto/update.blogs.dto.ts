@@ -48,3 +48,9 @@ export class BanBlogsRepo {
   isBanned: boolean;
   banDate: string;
 }
+export class UpdateBlogUseCaseDto {
+  id: string;
+  name: string;
+  description: string;
+  websiteUrl: string;
+}

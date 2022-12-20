@@ -12,19 +12,26 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../blogs.service';
+import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/posts.service';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
 import { CreateBlogInputDTO } from '../dto/blogsFactory';
 import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
-import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
+import {
+  UpdateBlogInputModelType,
+  UpdateBlogUseCaseDto,
+} from '../dto/update.blogs.dto';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UpdatePostBloggerInputModelType } from '../../posts/dto/update.posts.dto';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CommentsQueryRepository } from '../../comments/comments.query.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateBlogsUseCaseDto } from '../dto/createBlogsDto';
+import { CreateBlogsCommand } from '../application/use-cases/create.blogs.use.cases';
+import { UpdateBlogCommand } from '../application/use-cases/update.blogs.use.cases';
 
 @ApiTags('blogger/blogs')
 @ApiSecurity('bearer')
@@ -40,6 +47,7 @@ export class BlogsBloggerController {
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
+    private commandBus: CommandBus,
   ) {}
 
   @Get()
@@ -67,9 +75,14 @@ export class BlogsBloggerController {
     @Body() inputModel: CreateBlogInputDTO,
     @CurrentUserId() currentUserId,
   ) {
-    const newBlog = await this.blogsService.createBlogs(
-      currentUserId,
-      inputModel,
+    const createUseCaseDto: CreateBlogsUseCaseDto = {
+      userId: currentUserId,
+      name: inputModel.name,
+      description: inputModel.description,
+      websiteUrl: inputModel.websiteUrl,
+    };
+    const newBlog = await this.commandBus.execute(
+      new CreateBlogsCommand(createUseCaseDto),
     );
     return this.blogsQueryRepository.findBlogByIdOnBlogger(newBlog.id);
   }
@@ -109,7 +122,13 @@ export class BlogsBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.blogsService.updateBlogs(blogId, model);
+    const updateDto: UpdateBlogUseCaseDto = {
+      id: blogId,
+      name: model.name,
+      description: model.description,
+      websiteUrl: model.websiteUrl,
+    };
+    return this.commandBus.execute(new UpdateBlogCommand(updateDto));
   }
   @Delete(':id')
   @HttpCode(204)

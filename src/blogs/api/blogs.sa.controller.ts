@@ -10,7 +10,7 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../blogs.service';
+import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/posts.service';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
@@ -41,20 +41,7 @@ export class BlogsSaController {
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(@Param() model: IdModelType) {
-    const resultFound = await this.blogsQueryRepository.findBlogById(model.id);
-    if (!resultFound || resultFound.blogOwnerInfo.userId) {
-      throw new BadRequestException([
-        { message: 'blogId Not Found', filed: 'blogId' },
-      ]);
-    }
-
-    const user = await this.usersQueryRepository.findUsersById(model.userId);
-    if (!user) {
-      throw new BadRequestException([
-        { message: 'userId Not Found', filed: 'userId' },
-      ]);
-    }
-    return this.blogsService.updatePostsOnNewUser(user.login, model);
+    return this.blogsService.updateBlogsOnNewUser(model);
   }
   @UseGuards(BasicAdminGuard)
   @Put(':id/ban')

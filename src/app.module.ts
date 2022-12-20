@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BlogsController } from './blogs/api/blogs.controller';
-import { BlogsService } from './blogs/blogs.service';
+import { BlogsService } from './blogs/application/blogs.service';
 import { BlogsRepository } from './blogs/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Blog, BlogSchema } from './blogs/entities/blog.entity';
@@ -43,6 +43,7 @@ import {
   BloggerUsersBanSchema,
 } from './users/entities/blogger.users.blogs.ban.entity';
 import { BloggerExistsRule } from './users/guards/blogger-ban-validation.service';
+import { CommandBus } from '@nestjs/cqrs';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -54,6 +55,10 @@ const schemas = [
   { name: Session.name, schema: SessionSchema },
   { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
 ];
+
+const adapters = [];
+const guards = [];
+const useCases = [];
 
 @Module({
   imports: [
@@ -99,6 +104,8 @@ const schemas = [
     BlogExistsRule,
     BloggerExistsRule,
     BlogsQueryRepository,
+    ...useCases,
+    CommandBus,
   ],
 })
 export class AppModule {}
