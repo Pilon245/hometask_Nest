@@ -11,17 +11,23 @@ import {
   Delete,
   Scope,
 } from '@nestjs/common';
-import { CommentsService } from './comments.service';
-import { CommentsQueryRepository } from './comments.query.repository';
+import { CommentsService } from '../application/comments.service';
+import { CommentsQueryRepository } from '../comments.query.repository';
 import {
   UpdateCommentInputModel,
   UpdateCommentLikeInputModel,
-} from './dto/update.comments.dto';
-import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
-import { LikeValueComment } from './entities/likes.comments.entity';
-import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
-import { CurrentUserId } from '../auth/current-user.param.decorator';
+  UpdateLikeCommentUseCaseDto,
+} from '../dto/update.comments.dto';
+import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
+import { LikeValueComment } from '../entities/likes.comments.entity';
+import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateCommentCommand } from '../application/use-cases/update.comment.use.cases';
+import { CommandBus } from '@nestjs/cqrs';
+import { UpdateLikeCommentCommand } from '../application/use-cases/update.like.comment.use.cases';
+import { UpdateCommentUseCaseDto } from '../dto/commentsFactory';
+import { DeleteCommentCommand } from '../application/use-cases/delete.comment.use.cases';
 
 @ApiTags('comments')
 @Controller({
@@ -32,6 +38,7 @@ export class CommentsController {
   constructor(
     protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
@@ -56,12 +63,15 @@ export class CommentsController {
   @HttpCode(204)
   async updateComment(
     @Param('commentId') commentId: string,
-    @Body() updateModel: UpdateCommentInputModel,
+    @Body() inputModel: UpdateCommentInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const isUpdate = await this.commentsService.updateComment(
-      commentId,
-      updateModel.content,
+    const updateComment: UpdateCommentUseCaseDto = {
+      id: commentId,
+      content: inputModel.content,
+    };
+    const isUpdate = await this.commandBus.execute(
+      new UpdateCommentCommand(updateComment),
     );
     if (!isUpdate) {
       throw new HttpException('invalid blog', 404);
@@ -90,11 +100,12 @@ export class CommentsController {
       throw new HttpException('invalid blog', 404);
     }
     const like = updateModel.likeStatus;
-    return this.commentsService.updateLike(
-      currentUserId,
-      commentId,
-      like as LikeValueComment,
-    );
+    const likeComment: UpdateLikeCommentUseCaseDto = {
+      userId: currentUserId,
+      commentId: commentId,
+      value: like as LikeValueComment,
+    };
+    return this.commandBus.execute(new UpdateLikeCommentCommand(likeComment));
   }
   @UseGuards(JwtAuthGuard)
   @Delete(':commentId')
@@ -116,6 +127,6 @@ export class CommentsController {
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
-    return this.commentsService.deleteComment(commentId);
+    return this.commandBus.execute(new DeleteCommentCommand(commentId));
   }
 }

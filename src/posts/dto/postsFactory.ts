@@ -8,14 +8,14 @@ import {
 import { LikeValuePost } from '../entities/likes.posts.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BlogExistsRule } from '../guards/blog-id-validation.service';
-import { newestLikesType } from '../entities/posts.entity';
+// import { newestLikesType } from '../entities/posts.entity';
 
-export class extendedLikesInfoType {
-  likesCount: number;
-  dislikesCount: number;
-  myStatus: LikeValuePost;
-  newestLikes: Array<newestLikesType>;
-}
+// export class extendedLikesInfoType {
+//   likesCount: number;
+//   dislikesCount: number;
+//   myStatus: LikeValuePost;
+//   newestLikes: Array<newestLikesType>;
+// }
 
 export class PostsFactory {
   constructor(
@@ -27,7 +27,7 @@ export class PostsFactory {
     public blogName: string,
     public createdAt: string,
     public isBan: boolean,
-    public extendedLikesInfo: extendedLikesInfoType,
+    // public extendedLikesInfo: extendedLikesInfoType,
     public userId: string,
   ) {}
 }
@@ -40,7 +40,14 @@ export class CreatePostRepo {
   blogName: string;
   createdAt: string;
   isBan: boolean;
-  extendedLikesInfo: extendedLikesInfoType;
+  // extendedLikesInfo: extendedLikesInfoType;
+  userId: string;
+}
+export class CreatePostUseCaseDto {
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
   userId: string;
 }
 export class CreatePostInputDTO {

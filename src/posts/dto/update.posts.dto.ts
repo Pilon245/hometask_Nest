@@ -33,3 +33,16 @@ export type UpdatePostDTO = {
   content: string;
   blogId: string;
 };
+export type UpdatePostUseCaseDTO = {
+  postId: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+};
+export type UpdateLikePostUseCaseDTO = {
+  userId: string;
+  postId: string;
+  value: string;
+  login: string;
+};

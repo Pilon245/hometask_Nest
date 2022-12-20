@@ -15,7 +15,7 @@
 // };
 
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users/application/users.service';
 import { Observable } from 'rxjs';
 import { _generatePasswordForDb } from './auth.function';
 import * as bcrypt from 'bcrypt';

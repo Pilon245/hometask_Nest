@@ -5,16 +5,16 @@ import { BlogsRepository } from './blogs/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Blog, BlogSchema } from './blogs/entities/blog.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PostsController } from './posts/posts.controller';
-import { PostsService } from './posts/posts.service';
+import { PostsController } from './posts/api/posts.controller';
+import { PostsService } from './posts/application/posts.service';
 import { PostsRepository } from './posts/posts.repository';
 import { Post, PostSchema } from './posts/entities/posts.entity';
 import { RemoveController } from './remove.controller';
 import { User, UserSchema } from './users/entities/users.entity';
 import { Comment, CommentSchema } from './comments/entities/comments.entity';
-import { CommentsService } from './comments/comments.service';
+import { CommentsService } from './comments/application/comments.service';
 import { CommentsRepository } from './comments/comments.repository';
-import { CommentsController } from './comments/comments.controller';
+import { CommentsController } from './comments/api/comments.controller';
 import { BlogsQueryRepository } from './blogs/blogs.query.repository';
 import { PostsQueryRepository } from './posts/posts.query.repository';
 import { CommentsQueryRepository } from './comments/comments.query.repository';
@@ -43,7 +43,36 @@ import {
   BloggerUsersBanSchema,
 } from './users/entities/blogger.users.blogs.ban.entity';
 import { BloggerExistsRule } from './users/guards/blogger-ban-validation.service';
-import { CommandBus } from '@nestjs/cqrs';
+import { CqrsModule } from '@nestjs/cqrs';
+import {
+  CreateUserCommand,
+  CreateUserUseCase,
+} from './users/application/use-cases/create.user.use.cases';
+import { BanBlogUseCase } from './blogs/application/use-cases/ban.blogs.use.cases';
+import { CreateBlogsUseCase } from './blogs/application/use-cases/create.blogs.use.cases';
+import {
+  DeleteBlogsCommand,
+  DeleteBlogsUseCase,
+} from './blogs/application/use-cases/delete.all.blogs.use.cases';
+import { DeleteBlogUseCase } from './blogs/application/use-cases/delete.blogs.use.cases';
+import { UpdateBlogOnNewUserUseCase } from './blogs/application/use-cases/update.blogs.on.new.user.use.cases';
+import { UpdateBlogUseCase } from './blogs/application/use-cases/update.blogs.use.cases';
+import { CreatePostsUseCase } from './posts/application/use-cases/create.post.use.cases';
+import { DeletePostsUseCase } from './posts/application/use-cases/delete.all.posts.use.cases';
+import { DeletePostUseCase } from './posts/application/use-cases/delete.post.use.cases';
+import { UpdateLikePostUseCase } from './posts/application/use-cases/update.like.post.use.cases';
+import { UpdatePostUseCase } from './posts/application/use-cases/update.post.use.cases';
+import { CreateSessionUseCase } from './session/application/use-cases/create.session.use.cases';
+import { DeleteSessionUseCase } from './session/application/use-cases/delete.all.session.use.cases';
+import { DeleteDeviceByDeviceIdUseCase } from './session/application/use-cases/delete.device.id.session.use.cases';
+import { DeleteDevicesUseCase } from './session/application/use-cases/delete.devices.session.use.cases';
+import { UpdateSessionUseCase } from './session/application/use-cases/update.session.use.cases';
+import { CreateCommentUseCase } from './comments/application/use-cases/create.comment.use.cases';
+import { DeleteCommentsUseCase } from './comments/application/use-cases/delete.all.comment.use.cases';
+import { DeleteCommentUseCase } from './comments/application/use-cases/delete.comment.use.cases';
+import { UpdateCommentUseCase } from './comments/application/use-cases/update.comment.use.cases';
+import { UpdateLikeCommentUseCase } from './comments/application/use-cases/update.like.comment.use.cases';
+import { DeleteUsersUseCase } from './users/application/use-cases/delete.all.users.use.cases';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -58,7 +87,44 @@ const schemas = [
 
 const adapters = [];
 const guards = [];
-const useCases = [];
+const useCases = [CreateUserUseCase];
+const blogsUseCase = [
+  BanBlogUseCase,
+  CreateBlogsUseCase,
+  DeleteBlogsUseCase,
+  DeleteBlogUseCase,
+  UpdateBlogOnNewUserUseCase,
+  UpdateBlogUseCase,
+];
+const postsUseCase = [
+  CreatePostsUseCase,
+  DeletePostsUseCase,
+  DeletePostUseCase,
+  UpdateLikePostUseCase,
+  UpdatePostUseCase,
+];
+const sessionUseCase = [
+  CreateSessionUseCase,
+  DeleteSessionUseCase,
+  DeleteDeviceByDeviceIdUseCase,
+  DeleteDevicesUseCase,
+  UpdateSessionUseCase,
+];
+const commentsUserCase = [
+  CreateCommentUseCase,
+  DeleteCommentsUseCase,
+  DeleteCommentUseCase,
+  UpdateCommentUseCase,
+  UpdateLikeCommentUseCase,
+];
+
+const deleteAll = [
+  DeleteBlogsUseCase,
+  DeletePostsUseCase,
+  DeleteUsersUseCase,
+  DeleteSessionUseCase,
+  DeleteCommentsUseCase,
+];
 
 @Module({
   imports: [
@@ -76,6 +142,7 @@ const useCases = [];
     SessionModule,
     UsersModule,
     AuthModule,
+    CqrsModule,
   ],
   controllers: [
     BlogsController,
@@ -105,7 +172,12 @@ const useCases = [];
     BloggerExistsRule,
     BlogsQueryRepository,
     ...useCases,
-    CommandBus,
+    CreateUserCommand,
+    ...blogsUseCase,
+    ...postsUseCase,
+    ...sessionUseCase,
+    ...commentsUserCase,
+    ...deleteAll,
   ],
 })
 export class AppModule {}

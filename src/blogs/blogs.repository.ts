@@ -13,11 +13,10 @@ import {
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
-
-  async findBlogByUserId(userId: string): Promise<Blog> {
+  async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': userId, 'banInfo.isBanned': false },
-      { _id: false, __v: 0 },
+      { id: id, 'banInfo.isBanned': false },
+      { _id: false, __v: 0, blogOwnerInfo: false, 'banInfo.isBanned': 0 },
     );
   }
   async createBlogs(blog: CreateBlogDTO) {

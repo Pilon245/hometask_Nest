@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/posts.service';
+import { PostsService } from '../../posts/application/posts.service';
 import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';

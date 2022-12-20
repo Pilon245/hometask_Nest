@@ -140,10 +140,8 @@ export class UsersRepository {
     return result.deletedCount === 1;
   }
 
-  async deleteAllBanUsers() {
-    return this.bloggerUsersBanModel.deleteMany();
-  }
   async deleteAllUsers() {
+    await this.bloggerUsersBanModel.deleteMany();
     return this.userModel.deleteMany();
   }
 }

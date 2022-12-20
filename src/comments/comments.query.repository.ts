@@ -28,7 +28,11 @@ export class CommentsQueryRepository {
   async findCommentByIdAndLogin(userId: string, commentId: string) {
     return this.commentModel.findOne(
       {
-        $and: [{ id: commentId }, { userId: userId }, { isBan: false }],
+        $and: [
+          { id: commentId },
+          { 'commentatorInfo.userId': userId },
+          { isBan: false },
+        ],
       },
       { _id: false, __v: 0, isBan: 0 },
     );
@@ -36,7 +40,7 @@ export class CommentsQueryRepository {
   async findCommentByIdNoAuth(id: string) {
     const comments = await this.commentModel.findOne(
       { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0, commentatorInfo: 0, postInfo: 0 },
+      { _id: false, __v: 0, isBan: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -49,8 +53,8 @@ export class CommentsQueryRepository {
       const outComment = {
         id: comments.id,
         content: comments.content,
-        userId: comments.userId,
-        userLogin: comments.userLogin,
+        userId: comments.commentatorInfo.userId,
+        userLogin: comments.commentatorInfo.userLogin,
         createdAt: comments.createdAt,
         likesInfo: {
           likesCount: totalLike,
@@ -75,15 +79,19 @@ export class CommentsQueryRepository {
       $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBan: false }],
     });
     const likeStatus = await this.likeCommentModel.findOne({
-      $and: [{ commentId: id }, { userId: userId }, { isBan: false }],
+      $and: [
+        { commentId: id },
+        { 'commentatorInfo.userId': userId },
+        { isBan: false },
+      ],
     });
 
     if (comments) {
       const outComment = {
         id: comments.id,
         content: comments.content,
-        userId: comments.userId,
-        userLogin: comments.userLogin,
+        userId: comments.commentatorInfo.userId,
+        userLogin: comments.commentatorInfo.userLogin,
         createdAt: comments.createdAt,
         likesInfo: {
           likesCount: totalLike,
@@ -125,8 +133,8 @@ export class CommentsQueryRepository {
       return {
         id: c.id,
         content: c.content,
-        userId: c.userId,
-        userLogin: c.userLogin,
+        userId: c.commentatorInfo.userId,
+        userLogin: c.commentatorInfo.userLogin,
         createdAt: c.createdAt,
         likesInfo: {
           likesCount: likeCount,
@@ -169,13 +177,17 @@ export class CommentsQueryRepository {
         $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
       });
       const likeStatus = await this.likeCommentModel.findOne({
-        $and: [{ commentId: c.id }, { userId: userId }, { isBan: false }],
+        $and: [
+          { commentId: c.id },
+          { 'commentatorInfo.userId': userId },
+          { isBan: false },
+        ],
       });
       return {
         id: c.id,
         content: c.content,
-        userId: c.userId,
-        userLogin: c.userLogin,
+        userId: c.commentatorInfo.userId,
+        userLogin: c.commentatorInfo.userLogin,
         createdAt: c.createdAt,
         likesInfo: {
           likesCount: likeCount,
@@ -235,7 +247,6 @@ export class CommentsQueryRepository {
           { isBan: false },
         ],
       });
-      console.log('ccccc', c);
       return {
         id: c.id,
         content: c.content,
@@ -260,7 +271,6 @@ export class CommentsQueryRepository {
       };
     });
     const items = await Promise.all(Promises);
-    console.log('items', items);
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: items,

@@ -10,14 +10,19 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../users.service';
+import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../users.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { BanBLoggerUsersInputModel } from '../dto/usersFactory';
+import {
+  BanBLoggerUsersInputModel,
+  BanBloggerUserUseCaseDto,
+} from '../dto/usersFactory';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { BanBloggerUserCommand } from '../application/use-cases/ban.blogger.user.use.cases';
 
 @ApiTags('blogger/users')
 @UseGuards(JwtAuthGuard)
@@ -30,6 +35,7 @@ export class UsersBloggerController {
     protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @Get('blog/:blogId')
   async getUsers(
@@ -66,15 +72,19 @@ export class UsersBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const user = await this.usersService.banBloggerUsers(
-      id,
-      currentUserId,
-      inputModel,
+    const banUser: BanBloggerUserUseCaseDto = {
+      banUserId: id,
+      bloggerId: currentUserId,
+      isBanned: inputModel.isBanned,
+      banReason: inputModel.banReason,
+      blogId: inputModel.blogId,
+    };
+    const user = await this.commandBus.execute(
+      new BanBloggerUserCommand(banUser),
     );
     if (!user) {
       throw new HttpException('invalid user', 404);
     }
-
     return;
   }
 }

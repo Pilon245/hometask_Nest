@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/posts.service';
+import { PostsService } from '../../posts/application/posts.service';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
@@ -19,6 +19,10 @@ import { BanBlogsInputModel, IdModelType } from '../dto/blogsFactory';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 import { UsersQueryRepository } from '../../users/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateBlogOnNewUserCommand } from '../application/use-cases/update.blogs.on.new.user.use.cases';
+import { CommandBus } from '@nestjs/cqrs';
+import { BanBlogUseCaseDto } from '../dto/update.blogs.dto';
+import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
 
 @ApiTags('sa/blogs')
 @Controller({
@@ -32,6 +36,7 @@ export class BlogsSaController {
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected usersQueryRepository: UsersQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @Get()
   getBlogs(@Query() query) {
@@ -41,7 +46,7 @@ export class BlogsSaController {
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(@Param() model: IdModelType) {
-    return this.blogsService.updateBlogsOnNewUser(model);
+    return this.commandBus.execute(new UpdateBlogOnNewUserCommand(model));
   }
   @UseGuards(BasicAdminGuard)
   @Put(':id/ban')
@@ -50,6 +55,10 @@ export class BlogsSaController {
     @Param('id') id: string,
     @Body() inputModel: BanBlogsInputModel,
   ) {
-    return this.blogsService.banBlogs(id, inputModel.isBanned);
+    const banBlogDto: BanBlogUseCaseDto = {
+      id: id,
+      isBanned: inputModel.isBanned,
+    };
+    return this.commandBus.execute(new BanBlogCommand(banBlogDto));
   }
 }

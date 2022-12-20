@@ -4,13 +4,13 @@ import { LikeValueComment } from './likes.comments.entity';
 
 export type CommentDocument = HydratedDocument<Comment>;
 
-@Schema({ id: false })
-export class likesInfoType {
-  likesCount: number;
-  dislikesCount: number;
-  myStatus: LikeValueComment;
-}
-export const likesInfoSchema = SchemaFactory.createForClass(likesInfoType);
+// @Schema({ id: false })
+// export class likesInfoType {
+//   likesCount: number;
+//   dislikesCount: number;
+//   myStatus: LikeValueComment;
+// }
+// export const likesInfoSchema = SchemaFactory.createForClass(likesInfoType);
 
 @Schema({ id: false })
 export class commentatorInfoType {
@@ -43,20 +43,14 @@ export class Comment {
   @Prop({ require: true })
   content: string;
 
-  @Prop({ require: true }) //todo  это можно убрать
-  userId: string;
-
-  @Prop({ require: true }) //todo и это
-  userLogin: string;
-
   @Prop({ require: true })
   postId: string;
 
   @Prop({ require: true })
   createdAt: string;
 
-  @Prop({ type: likesInfoSchema })
-  likesInfo: likesInfoType;
+  // @Prop({ type: likesInfoSchema }) //todo убрать
+  // likesInfo: likesInfoType;
 
   @Prop({ type: commentatorInfoSchema })
   commentatorInfo: commentatorInfoType;
@@ -64,7 +58,7 @@ export class Comment {
   @Prop({ type: postInfoSchema })
   postInfo: postInfoType;
 
-  @Prop({ require: true }) //todo убрать
+  @Prop({ require: true })
   ownerUserId: string;
 
   @Prop()

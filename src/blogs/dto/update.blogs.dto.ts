@@ -54,3 +54,13 @@ export class UpdateBlogUseCaseDto {
   description: string;
   websiteUrl: string;
 }
+
+export class UpdateBlogOnNewUserCommandUseCaseDto {
+  id: string;
+  userId: string;
+}
+
+export class BanBlogUseCaseDto {
+  id: string;
+  isBanned: boolean;
+}

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { AuthService } from './application/auth.service';
+import { AuthController } from './api/auth.controller';
 import { UsersQueryRepository } from '../users/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy';
@@ -24,7 +24,30 @@ import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
 } from '../users/entities/blogger.users.blogs.ban.entity';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreateUserUseCase } from '../users/application/use-cases/create.user.use.cases';
+import { BanAdminUserUseCase } from '../users/application/use-cases/ban.admin.user.use.cases';
+import { BanBloggerUserUseCase } from '../users/application/use-cases/ban.blogger.user.use.cases';
+import { DeleteUsersUseCase } from '../users/application/use-cases/delete.all.users.use.cases';
+import { DeleteUserUseCase } from '../users/application/use-cases/delete.user.use.cases';
+import { CreateSessionUseCase } from '../session/application/use-cases/create.session.use.cases';
+import { UpdateSessionUseCase } from '../session/application/use-cases/update.session.use.cases';
+import { ConfirmationEmailUseCase } from './application/use-cases/confirmation.email.use.cases';
+import { RecoveryPasswordUserUseCase } from './application/use-cases/recovery.password.user.use.cases';
+import { RegistrationUsersUseCase } from './application/use-cases/registration.users.use.cases';
+import { UpdateEmailCodeUseCase } from './application/use-cases/update.email.code.use.cases';
+import { UpdatePasswordCodeUseCase } from './application/use-cases/update.password.code.use.cases';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
+
+const authUseCase = [
+  CreateSessionUseCase,
+  UpdateSessionUseCase,
+  ConfirmationEmailUseCase,
+  RecoveryPasswordUserUseCase,
+  RegistrationUsersUseCase,
+  UpdateEmailCodeUseCase,
+  UpdatePasswordCodeUseCase,
+];
 
 @Module({
   imports: [
@@ -43,6 +66,7 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
       ttl: 10,
       limit: 5,
     }),
+    CqrsModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -58,6 +82,7 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
     JwtGenerate,
     RefreshTokenGuard,
     BasicAdminGuard,
+    ...authUseCase,
   ],
   exports: [
     AuthService,

@@ -67,3 +67,20 @@ export class BanBloggerUsersFactory {
     public banInfo: BanInfoType,
   ) {}
 }
+export class CreateUserUseCaseDto {
+  login: string;
+  password: string;
+  email: string;
+}
+export class BanAdminUserUseCaseDto {
+  id: string;
+  isBanned: boolean;
+  banReason: string;
+}
+export class BanBloggerUserUseCaseDto {
+  banUserId: string;
+  bloggerId: string;
+  isBanned: boolean;
+  banReason: string;
+  blogId: string;
+}

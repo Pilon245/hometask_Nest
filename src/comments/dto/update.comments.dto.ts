@@ -13,3 +13,8 @@ export class UpdateCommentLikeInputModel {
   @IsEnum(LikeValueComment)
   likeStatus: LikeValueComment;
 }
+export class UpdateLikeCommentUseCaseDto {
+  userId: string;
+  commentId: string;
+  value: string;
+}

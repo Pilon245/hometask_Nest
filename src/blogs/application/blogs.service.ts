@@ -44,27 +44,26 @@ export class BlogsService {
   //   return this.blogsRepository.updateBlogs(updateBlog);
   // }
 
-  async updateBlogsOnNewUser(model: UpdateBlogOnNewUser) {
-    const user = await this.usersRepository.findUsersById(model.userId);
-    const updateBlog: UpdateBlogOnNewUserRepo = {
-      id: model.id,
-      userId: model.userId,
-      userLogin: user.accountData.login,
-    };
-    return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
-  }
-  banBlogs(id: string, isBanned: boolean) {
-    const banBlogs = new BanBlogsFactory(
-      id,
-      isBanned,
-      new Date().toISOString(),
-    );
-    console.log('banBlogs', banBlogs);
-    return this.blogsRepository.banBlogs(banBlogs);
-  }
-  deleteBlogs(id: string) {
-    return this.blogsRepository.deleteBlogs(id);
-  }
+  // async updateBlogsOnNewUser(model: UpdateBlogOnNewUser) {
+  //   const user = await this.usersRepository.findUsersById(model.userId);
+  //   const updateBlog: UpdateBlogOnNewUserRepo = {
+  //     id: model.id,
+  //     userId: model.userId,
+  //     userLogin: user.accountData.login,
+  //   };
+  //   return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
+  // }
+  // banBlogs(id: string, isBanned: boolean) {
+  //   const banBlogs = new BanBlogsFactory(
+  //     id,
+  //     isBanned,
+  //     new Date().toISOString(),
+  //   );
+  //   return this.blogsRepository.banBlogs(banBlogs);
+  // }
+  // deleteBlogs(id: string) {
+  //   return this.blogsRepository.deleteBlogs(id);
+  // }
   async deleteAllBlogs() {
     return this.blogsRepository.deleteAllBlogs();
   }

@@ -13,21 +13,26 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { PostsService } from './posts.service';
-import { CommentsService } from '../comments/comments.service';
-import { PostsQueryRepository } from './posts.query.repository';
-import { CommentsQueryRepository } from '../comments/comments.query.repository';
-import { pagination } from '../validation/query.validation';
-import { BlogsQueryRepository } from '../blogs/blogs.query.repository';
-import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
-import { UsersQueryRepository } from '../users/users.query.repository';
-import { UpdateCommentInputModel } from '../comments/dto/update.comments.dto';
+import { PostsService } from '../application/posts.service';
+import { CommentsService } from '../../comments/application/comments.service';
+import { PostsQueryRepository } from '../posts.query.repository';
+import { CommentsQueryRepository } from '../../comments/comments.query.repository';
+import { pagination } from '../../validation/query.validation';
+import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
+import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
+import { UsersQueryRepository } from '../../users/users.query.repository';
+import { UpdateCommentInputModel } from '../../comments/dto/update.comments.dto';
 import { Response } from 'express';
-import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
-import { CurrentUserId } from '../auth/current-user.param.decorator';
+import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdatePostLikeInputModel } from './dto/postsFactory';
-import { LikeValuePost } from './entities/likes.posts.entity';
+import { UpdatePostLikeInputModel } from '../dto/postsFactory';
+import { LikeValuePost } from '../entities/likes.posts.entity';
+import { CommandBus } from '@nestjs/cqrs';
+import { UpdateLikePostCommand } from '../application/use-cases/update.like.post.use.cases';
+import { UpdateLikePostUseCaseDTO } from '../dto/update.posts.dto';
+import { CreateCommentUseCaseDto } from '../../comments/dto/commentsFactory';
+import { CreateCommentCommand } from '../../comments/application/use-cases/create.comment.use.cases';
 
 @ApiTags('posts')
 @Controller({
@@ -42,6 +47,7 @@ export class PostsController {
     protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
     protected usersQueryRepository: UsersQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @UseGuards(BearerAuthGuardOnGet)
   @Get()
@@ -133,11 +139,14 @@ export class PostsController {
       throw new HttpException('invalid blog', 404);
     }
     const user = await this.usersQueryRepository.findUsersForDTO(currentUserId);
-    const comment = await this.commentsService.createComment(
-      postId,
-      inputModel.content,
-      user.id,
-      user.accountData.login,
+    const newComment: CreateCommentUseCaseDto = {
+      content: inputModel.content,
+      userId: user.id,
+      postId: postId,
+      userLogin: user.accountData.login,
+    };
+    const comment = await this.commandBus.execute(
+      new CreateCommentCommand(newComment),
     );
     if (!comment) {
       throw new HttpException('Ban', 403);
@@ -164,11 +173,12 @@ export class PostsController {
     if (!user) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.postsService.updateLike(
-      user.id,
-      postId,
-      like as LikeValuePost,
-      user.login,
-    );
+    const likePost: UpdateLikePostUseCaseDTO = {
+      userId: user.id,
+      postId: postId,
+      value: like as LikeValuePost,
+      login: user.login,
+    };
+    return this.commandBus.execute(new UpdateLikePostCommand(likePost));
   }
 }

@@ -13,25 +13,35 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/posts.service';
+import { PostsService } from '../../posts/application/posts.service';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
 import { CreateBlogInputDTO } from '../dto/blogsFactory';
-import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
+import {
+  CreatePostByBlogIdInputDTO,
+  CreatePostUseCaseDto,
+} from '../../posts/dto/postsFactory';
 import {
   UpdateBlogInputModelType,
   UpdateBlogUseCaseDto,
 } from '../dto/update.blogs.dto';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
-import { UpdatePostBloggerInputModelType } from '../../posts/dto/update.posts.dto';
+import {
+  UpdatePostBloggerInputModelType,
+  UpdatePostUseCaseDTO,
+} from '../../posts/dto/update.posts.dto';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CommentsQueryRepository } from '../../comments/comments.query.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogsUseCaseDto } from '../dto/createBlogsDto';
 import { CreateBlogsCommand } from '../application/use-cases/create.blogs.use.cases';
 import { UpdateBlogCommand } from '../application/use-cases/update.blogs.use.cases';
+import { DeleteBlogCommand } from '../application/use-cases/delete.blogs.use.cases';
+import { CreatePostCommand } from '../../posts/application/use-cases/create.post.use.cases';
+import { UpdatePostCommand } from '../../posts/application/use-cases/update.post.use.cases';
+import { DeletePostCommand } from '../../posts/application/use-cases/delete.post.use.cases';
 
 @ApiTags('blogger/blogs')
 @ApiSecurity('bearer')
@@ -99,13 +109,14 @@ export class BlogsBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const newPost: CreatePostByBlogIdInputDTO = {
+    const newPost: CreatePostUseCaseDto = {
       title: inputModel.title,
       shortDescription: inputModel.shortDescription,
       content: inputModel.content,
       blogId: blogId,
+      userId: currentUserId,
     };
-    const posts = await this.postsService.createPosts(newPost, currentUserId);
+    const posts = await this.commandBus.execute(new CreatePostCommand(newPost));
     return this.postsQueryRepository.findPostByIdNoAuth(posts.id);
   }
   @Put(':id')
@@ -143,7 +154,7 @@ export class BlogsBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.blogsService.deleteBlogs(blogId);
+    return this.commandBus.execute(new DeleteBlogCommand(blogId));
   }
   @Put(':blogId/posts/:postId')
   @HttpCode(204)
@@ -165,7 +176,14 @@ export class BlogsBloggerController {
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.postsService.updatePosts(postId, blogId, model);
+    const updatePost: UpdatePostUseCaseDTO = {
+      postId: postId,
+      title: model.title,
+      shortDescription: model.shortDescription,
+      content: model.content,
+      blogId: blogId,
+    };
+    return this.commandBus.execute(new UpdatePostCommand(updatePost));
   }
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)
@@ -186,6 +204,6 @@ export class BlogsBloggerController {
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    return this.postsService.deletePosts(postId);
+    return this.commandBus.execute(new DeletePostCommand(postId));
   }
 }

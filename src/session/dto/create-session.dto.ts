@@ -16,3 +16,12 @@ export class SessionFactory {
     public userId: string,
   ) {}
 }
+export class CreateSessionUseCaseDto {
+  userId: string;
+  ip: string;
+  deviceName: string;
+}
+export class DeleteDevicesUseCaseDto {
+  id: string;
+  deviceId: string;
+}

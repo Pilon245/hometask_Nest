@@ -8,12 +8,16 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { SessionService } from './session.service';
-import { SessionQueryRepository } from './session.query.repository';
-import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
+import { SessionService } from '../application/session.service';
+import { SessionQueryRepository } from '../session.query.repository';
+import { RefreshTokenGuard } from '../../auth/strategy/refresh.token.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { CurrentUserId } from '../auth/current-user.param.decorator';
-import { CurrentPayload } from '../auth/current-payload.param.decorator';
+import { CurrentUserId } from '../../auth/current-user.param.decorator';
+import { CurrentPayload } from '../../auth/current-payload.param.decorator';
+import { CommandBus } from '@nestjs/cqrs';
+import { DeleteDeviceByDeviceIdCommand } from '../application/use-cases/delete.device.id.session.use.cases';
+import { DeleteDevicesUseCaseDto } from '../dto/create-session.dto';
+import { DeleteDevicesUseCase } from '../application/use-cases/delete.devices.session.use.cases';
 
 @ApiTags('security')
 @Controller({
@@ -24,6 +28,7 @@ export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,
     private sessionsQueryRepository: SessionQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @UseGuards(RefreshTokenGuard)
   @Get('devices')
@@ -34,10 +39,7 @@ export class SessionController {
   @Delete('devices')
   @HttpCode(204)
   async deleteAllSessionsExceptOne(@CurrentPayload() currentPayload) {
-    return this.sessionsService.deleteDevices(
-      currentPayload.id,
-      currentPayload.deviceId,
-    );
+    return this.commandBus.execute(new DeleteDevicesUseCase(currentPayload));
   }
   @UseGuards(RefreshTokenGuard)
   @Delete('devices/:deviceId')
@@ -58,6 +60,6 @@ export class SessionController {
     if (!foundUser) {
       throw new UnauthorizedException();
     }
-    return this.sessionsService.deleteDevicesById(deviceId);
+    return this.commandBus.execute(new DeleteDeviceByDeviceIdCommand(deviceId));
   }
 }

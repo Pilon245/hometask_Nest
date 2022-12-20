@@ -4,11 +4,9 @@ export class CommentsFactory {
   constructor(
     public id: string,
     public content: string,
-    public userId: string,
     public postId: string,
-    public userLogin: string,
     public createdAt: string,
-    public likesInfo: LikeInfoType,
+    // public likesInfo: LikeInfoType,
     public commentatorInfo: CommentatorInfoType,
     public postInfo: postInfoType,
     public ownerUserId: string,
@@ -48,4 +46,15 @@ export class LikesFactory {
     public commentId: string,
     public isBan: boolean,
   ) {}
+}
+
+export class CreateCommentUseCaseDto {
+  content: string;
+  userId: string;
+  postId: string;
+  userLogin: string;
+}
+export class UpdateCommentUseCaseDto {
+  id: string;
+  content: string;
 }

@@ -11,29 +11,43 @@ import {
   BadRequestException,
   Scope,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LoginInputModel } from './dto/create-auth.dto';
-import { SessionService } from '../session/session.service';
-import { LocalAuthGuard } from './strategy/local-auth.guard';
+import { AuthService } from '../application/auth.service';
+import { LoginInputModel } from '../dto/create-auth.dto';
+import { SessionService } from '../../session/application/session.service';
+import { LocalAuthGuard } from '../strategy/local-auth.guard';
 import { Response } from 'express';
-import { UsersQueryRepository } from '../users/users.query.repository';
-import { CreateUserInputModel } from '../users/dto/usersFactory';
-import { EmailManager } from '../managers/email.manager';
-import { JwtAuthGuard } from './strategy/jwt-auth.guard';
-import { UsersRepository } from '../users/users.repository';
+import { UsersQueryRepository } from '../../users/users.query.repository';
+import { CreateUserInputModel } from '../../users/dto/usersFactory';
+import { EmailManager } from '../../managers/email.manager';
+import { JwtAuthGuard } from '../strategy/jwt-auth.guard';
+import { UsersRepository } from '../../users/users.repository';
 import {
   ConfirmationInputModel,
   NewPasswordInputModel,
+  RecoveryPasswordUserUseCaseDto,
   RegistrationEmailInputModel,
-} from './dto/registration.dto';
+} from '../dto/registration.dto';
 import { Throttle } from '@nestjs/throttler';
-import { CustomThrottlerGuard } from './strategy/custom.throttler.guard';
-import { RefreshTokenGuard } from './strategy/refresh.token.guard';
-import { CurrentUserId } from './current-user.param.decorator';
-import { BasicStrategy } from './strategy/basic-strategy.service';
-import { BasicAdminGuard } from './guards/basic-admin.guard';
-import { CurrentPayload } from './current-payload.param.decorator';
+import { CustomThrottlerGuard } from '../strategy/custom.throttler.guard';
+import { RefreshTokenGuard } from '../strategy/refresh.token.guard';
+import { CurrentUserId } from '../current-user.param.decorator';
+import { BasicStrategy } from '../strategy/basic-strategy.service';
+import { BasicAdminGuard } from '../guards/basic-admin.guard';
+import { CurrentPayload } from '../current-payload.param.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CommandBus } from '@nestjs/cqrs';
+import { DeleteDeviceByDeviceIdCommand } from '../../session/application/use-cases/delete.device.id.session.use.cases';
+import { UpdateSessionCommand } from '../../session/application/use-cases/update.session.use.cases';
+import { CreateSessionCommand } from '../../session/application/use-cases/create.session.use.cases';
+import { CreateSessionUseCaseDto } from '../../session/dto/create-session.dto';
+import { RegistrationUsersCommand } from '../application/use-cases/registration.users.use.cases';
+import { ConfirmationEmailCommand } from '../application/use-cases/confirmation.email.use.cases';
+import { UpdateEmailCodeCommand } from '../application/use-cases/update.email.code.use.cases';
+import {
+  UpdatePasswordCodeCommand,
+  UpdatePasswordCodeUseCase,
+} from '../application/use-cases/update.password.code.use.cases';
+import { RecoveryPasswordUserCommand } from '../application/use-cases/recovery.password.user.use.cases';
 
 // @UseGuards(CustomThrottlerGuard)//todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
@@ -48,12 +62,8 @@ export class AuthController {
     protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository,
     protected emailManager: EmailManager,
+    private commandBus: CommandBus,
   ) {}
-  @UseGuards(BasicAdminGuard)
-  @Get('sa')
-  async superAdmin() {
-    return { ok: true };
-  }
   @ApiOperation({ summary: 'Login Request' })
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -70,10 +80,13 @@ export class AuthController {
     //   agent: req.headers['user-agent'],
     // };
     // const tokens = await this.authService.login(req);
-    const tokens = await this.sessionService.createSession(
-      req.user,
-      ip,
-      req.headers['user-agent'],
+    const newSession: CreateSessionUseCaseDto = {
+      userId: req.user.id,
+      ip: ip,
+      deviceName: req.headers['user-agent'],
+    };
+    const tokens = await this.commandBus.execute(
+      new CreateSessionCommand(newSession),
     );
     return res
       .cookie('refreshToken', tokens.refreshToken, {
@@ -87,10 +100,11 @@ export class AuthController {
   async updateRefreshToken(
     @Req() req,
     @Res() res: Response,
-    @CurrentUserId() currentUserId,
     @CurrentPayload() currentPayload,
   ) {
-    const tokens = await this.authService.refreshToken(currentPayload);
+    const tokens = await this.commandBus.execute(
+      new UpdateSessionCommand(currentPayload),
+    );
     return res
       .status(200)
       .cookie('refreshToken', tokens.refreshToken, {
@@ -134,12 +148,15 @@ export class AuthController {
         },
       ]);
     }
-    return this.authService.registrationUsers(inputModel);
+
+    return this.commandBus.execute(new RegistrationUsersCommand(inputModel));
   }
   @Post('registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
-    const result = await this.authService.confirmationEmail(inputModel.code);
+    const result = await this.commandBus.execute(
+      new ConfirmationEmailCommand(inputModel.code),
+    );
     if (!result) {
       throw new BadRequestException([
         { message: 'Incorrect code', field: 'code' },
@@ -150,7 +167,9 @@ export class AuthController {
   @Post('registration-email-resending')
   @HttpCode(204)
   async resendingEmail(@Body() inputModel: RegistrationEmailInputModel) {
-    const updateCode = await this.authService.updateEmailCode(inputModel.email);
+    const updateCode = await this.commandBus.execute(
+      new UpdateEmailCodeCommand(inputModel.email),
+    );
     if (!updateCode) {
       throw new BadRequestException([
         { message: 'Incorrect email', field: 'email' },
@@ -169,7 +188,9 @@ export class AuthController {
         { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    await this.authService.updatePasswordCode(inputModel.email);
+    await this.commandBus.execute(
+      new UpdatePasswordCodeCommand(inputModel.email),
+    );
 
     return this.emailManager.sendNewPasswordMessage(user);
   }
@@ -178,9 +199,12 @@ export class AuthController {
   async confirmationRecoveryPassword(
     @Body() inputModel: NewPasswordInputModel,
   ) {
-    const update = await this.authService.updatePasswordUsers(
-      inputModel.recoveryCode,
-      inputModel.newPassword,
+    const recovery: RecoveryPasswordUserUseCaseDto = {
+      code: inputModel.recoveryCode,
+      password: inputModel.newPassword,
+    };
+    const update = await this.commandBus.execute(
+      new RecoveryPasswordUserCommand(recovery),
     );
     if (!update) {
       throw new BadRequestException([
@@ -193,6 +217,8 @@ export class AuthController {
   @Post('logout')
   @HttpCode(204)
   async logOutAccount(@CurrentPayload() currentPayload) {
-    return this.sessionService.deleteDevicesById(currentPayload.deviceId);
+    return this.commandBus.execute(
+      new DeleteDeviceByDeviceIdCommand(currentPayload.deviceId),
+    );
   }
 }
