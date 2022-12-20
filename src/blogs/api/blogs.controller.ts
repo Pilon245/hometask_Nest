@@ -1,14 +1,9 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   HttpException,
   NotFoundException,
   Param,
-  Post,
-  Put,
   Query,
   Req,
   Res,
@@ -21,9 +16,6 @@ import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
-import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
-import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
 import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
@@ -82,51 +74,4 @@ export class BlogsController {
     }
     return res.status(200).send(result);
   }
-
-  // @UseGuards(BasicAuthGuard)
-  // @Post()
-  // createBlogs(@Body() inputModel: CreateBlogInputDTO) {
-  //   return this.blogsService.createBlogs(inputModel);
-  // }
-  // @UseGuards(BasicAuthGuard)
-  // @Post(':blogId/posts')
-  // async CreatePostsOnBlogId(
-  //   @Param('blogId') blogId: string,
-  //   @Body() inputModel: CreatePostByBlogIdInputDTO,
-  // ) {
-  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-  //   if (!resultFound) {
-  //     throw new HttpException('invalid blog', 404);
-  //   }
-  //   const newPost: CreatePostByBlogIdInputDTO = {
-  //     title: inputModel.title,
-  //     shortDescription: inputModel.shortDescription,
-  //     content: inputModel.content,
-  //     blogId: blogId,
-  //   };
-  //   return this.postsService.createPosts(newPost, 'userId');
-  // }
-  // @UseGuards(BasicAuthGuard)
-  // @Put(':id')
-  // @HttpCode(204)
-  // async updateBlogs(
-  //   @Param('id') blogId: string,
-  //   @Body() model: UpdateBlogInputModelType,
-  // ) {
-  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-  //   if (!resultFound) {
-  //     throw new HttpException('invalid blog', 404);
-  //   }
-  //   return this.blogsService.updateBlogs(blogId, model);
-  // }
-  // @UseGuards(BasicAuthGuard)
-  // @Delete(':id')
-  // @HttpCode(204)
-  // async deleteBlogs(@Param('id') blogId: string) {
-  //   const resultFound = await this.blogsQueryRepository.findBlogById(blogId);
-  //   if (!resultFound) {
-  //     throw new HttpException('invalid blog', 404);
-  //   }
-  //   return this.blogsService.deleteBlogs(blogId);
-  // }
 }

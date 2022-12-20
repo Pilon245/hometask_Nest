@@ -4,16 +4,16 @@ import {
   Get,
   HttpCode,
   Param,
-  Req,
-  Res,
   Scope,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { SessionService } from './session.service';
-import { Response } from 'express';
 import { SessionQueryRepository } from './session.query.repository';
 import { RefreshTokenGuard } from '../auth/strategy/refresh.token.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { CurrentUserId } from '../auth/current-user.param.decorator';
+import { CurrentPayload } from '../auth/current-payload.param.decorator';
 
 @ApiTags('security')
 @Controller({
@@ -27,34 +27,37 @@ export class SessionController {
   ) {}
   @UseGuards(RefreshTokenGuard)
   @Get('devices')
-  async getDevices(@Req() req, @Res() res: Response) {
-    const devices = await this.sessionsQueryRepository.findDevices(req.user.id);
-    return res.status(200).send(devices);
+  async getDevices(@CurrentUserId() currentUserId) {
+    return this.sessionsQueryRepository.findDevices(currentUserId);
   }
   @UseGuards(RefreshTokenGuard)
   @Delete('devices')
   @HttpCode(204)
-  async deleteAllSessionsExceptOne(@Req() req, @Res() res: Response) {
-    await this.sessionsService.deleteDevices(req.user.id, req.user.deviceId);
-    return res.sendStatus(204);
+  async deleteAllSessionsExceptOne(@CurrentPayload() currentPayload) {
+    return this.sessionsService.deleteDevices(
+      currentPayload.id,
+      currentPayload.deviceId,
+    );
   }
   @UseGuards(RefreshTokenGuard)
   @Delete('devices/:deviceId')
   async deleteSessionsByDeviceId(
     @Param('deviceId') deviceId: string,
-    @Req() req,
-    @Res() res: Response,
+    @CurrentUserId() currentUserId,
   ) {
     const foundDevice =
       await this.sessionsQueryRepository.findDevicesByDeviceId(deviceId);
-    if (!foundDevice) return res.sendStatus(404);
+    if (!foundDevice) {
+      throw new UnauthorizedException();
+    }
     const foundUser =
       await this.sessionsQueryRepository.findDevicesByDeviceIdAndUserId(
-        req.user.id,
+        currentUserId,
         deviceId,
       );
-    if (!foundUser) return res.sendStatus(403);
-    await this.sessionsService.deleteDevicesById(deviceId);
-    return res.sendStatus(204);
+    if (!foundUser) {
+      throw new UnauthorizedException();
+    }
+    return this.sessionsService.deleteDevicesById(deviceId);
   }
 }

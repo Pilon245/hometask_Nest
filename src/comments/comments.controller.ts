@@ -8,10 +8,7 @@ import {
   Put,
   Query,
   UseGuards,
-  Request,
   Delete,
-  Req,
-  Res,
   Scope,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
@@ -22,7 +19,6 @@ import {
 } from './dto/update.comments.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { LikeValueComment } from './entities/likes.comments.entity';
-import { Response } from 'express';
 import { BearerAuthGuardOnGet } from '../auth/strategy/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
@@ -67,7 +63,6 @@ export class CommentsController {
       commentId,
       updateModel.content,
     );
-    console.log('isUpdate', isUpdate);
     if (!isUpdate) {
       throw new HttpException('invalid blog', 404);
     }
@@ -75,7 +70,6 @@ export class CommentsController {
       currentUserId,
       commentId,
     );
-    console.log('found', found);
     if (!found) {
       throw new HttpException('invalid blog', 403);
     }
@@ -96,12 +90,11 @@ export class CommentsController {
       throw new HttpException('invalid blog', 404);
     }
     const like = updateModel.likeStatus;
-    const isUpdate = await this.commentsService.updateLike(
+    return this.commentsService.updateLike(
       currentUserId,
       commentId,
       like as LikeValueComment,
     );
-    return;
   }
   @UseGuards(JwtAuthGuard)
   @Delete(':commentId')

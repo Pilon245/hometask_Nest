@@ -2,38 +2,21 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
-  HttpException,
-  NotFoundException,
   Param,
-  Post,
   Put,
   Query,
-  Req,
-  Res,
   Scope,
   UseGuards,
 } from '@nestjs/common';
 import { BlogsService } from '../blogs.service';
 import { PostsService } from '../../posts/posts.service';
-import { Response } from 'express';
 import { BlogsQueryRepository } from '../blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import {
-  BanBlogsInputModel,
-  CreateBlogInputDTO,
-  IdModelType,
-} from '../dto/blogsFactory';
-import { CreatePostByBlogIdInputDTO } from '../../posts/dto/postsFactory';
-import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
-import { UpdateBlogInputModelType } from '../dto/update.blogs.dto';
-import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+import { BanBlogsInputModel, IdModelType } from '../dto/blogsFactory';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
-import { UpdatePostInputModelType } from '../../posts/dto/update.posts.dto';
-import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { UsersQueryRepository } from '../../users/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -57,10 +40,7 @@ export class BlogsSaController {
   @UseGuards(BasicAdminGuard)
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
-  async updateBlogsBindWithUser(
-    @Param() model: IdModelType,
-    @CurrentUserId() currentUserId,
-  ) {
+  async updateBlogsBindWithUser(@Param() model: IdModelType) {
     const resultFound = await this.blogsQueryRepository.findBlogById(model.id);
     if (!resultFound || resultFound.blogOwnerInfo.userId) {
       throw new BadRequestException([
@@ -83,8 +63,6 @@ export class BlogsSaController {
     @Param('id') id: string,
     @Body() inputModel: BanBlogsInputModel,
   ) {
-    const blog = await this.blogsService.banBlogs(id, inputModel.isBanned);
-    // if (blog) return;
-    return;
+    return this.blogsService.banBlogs(id, inputModel.isBanned);
   }
 }

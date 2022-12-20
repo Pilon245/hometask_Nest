@@ -57,7 +57,6 @@ export class BlogsBloggerController {
     if (!blog) {
       throw new HttpException('invalid blog', 404);
     }
-    console.log('blog.id', blog.id);
     return this.commentsQueryRepository.findCommentByBlogger(
       currentUserId,
       pagination(query),
@@ -94,8 +93,7 @@ export class BlogsBloggerController {
       blogId: blogId,
     };
     const posts = await this.postsService.createPosts(newPost, currentUserId);
-    const result = await this.postsQueryRepository.findPostByIdNoAuth(posts.id);
-    return result;
+    return this.postsQueryRepository.findPostByIdNoAuth(posts.id);
   }
   @Put(':id')
   @HttpCode(204)

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -17,7 +16,6 @@ import { UsersService } from '../users.service';
 import { UsersQueryRepository } from '../users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import { BanUserInputModel, CreateUserInputModel } from '../dto/usersFactory';
-import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 
@@ -36,7 +34,6 @@ export class UsersSaController {
   getUsers(@Query() query) {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
-  // @UseGuards(BasicAuthGuard)
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
     const created = await this.usersService.createUsers(inputModel);
@@ -54,7 +51,6 @@ export class UsersSaController {
     const user = await this.usersService.updateUsers(id, inputModel);
     if (user) return;
   }
-  // @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {

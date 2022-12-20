@@ -111,7 +111,6 @@ export class AuthController {
   async createRegistrationUser(
     @Req() req,
     @Body() inputModel: CreateUserInputModel,
-    @Res() res: Response,
   ) {
     const findUserByEmail = await this.usersQueryRepository.findLoginOrEmail(
       inputModel.email,
@@ -135,30 +134,22 @@ export class AuthController {
         },
       ]);
     }
-    await this.authService.registrationUsers(inputModel);
-    return res.sendStatus(204);
+    return this.authService.registrationUsers(inputModel);
   }
   @Post('registration-confirmation')
   @HttpCode(204)
-  async confirmationEmail(
-    @Body() inputModel: ConfirmationInputModel,
-    @Res() res: Response,
-  ) {
+  async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
     const result = await this.authService.confirmationEmail(inputModel.code);
     if (!result) {
       throw new BadRequestException([
         { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    return res.sendStatus(204);
+    return;
   }
   @Post('registration-email-resending')
   @HttpCode(204)
-  async resendingEmail(
-    @Req() req,
-    @Body() inputModel: RegistrationEmailInputModel,
-    @Res() res: Response,
-  ) {
+  async resendingEmail(@Body() inputModel: RegistrationEmailInputModel) {
     const updateCode = await this.authService.updateEmailCode(inputModel.email);
     if (!updateCode) {
       throw new BadRequestException([
@@ -167,15 +158,11 @@ export class AuthController {
     }
 
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
-    await this.emailManager.sendPasswordRecoveryMessage(user);
-    return res.sendStatus(204);
+    return this.emailManager.sendPasswordRecoveryMessage(user);
   }
   @Post('password-recovery')
   @HttpCode(204)
-  async recoveryPassword(
-    @Body() inputModel: RegistrationEmailInputModel,
-    @Res() res: Response,
-  ) {
+  async recoveryPassword(@Body() inputModel: RegistrationEmailInputModel) {
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     if (!user) {
       throw new BadRequestException([
@@ -184,15 +171,12 @@ export class AuthController {
     }
     await this.authService.updatePasswordCode(inputModel.email);
 
-    await this.emailManager.sendNewPasswordMessage(user);
-    return res.sendStatus(204);
+    return this.emailManager.sendNewPasswordMessage(user);
   }
   @Post('new-password')
   @HttpCode(204)
   async confirmationRecoveryPassword(
-    @Req() req,
     @Body() inputModel: NewPasswordInputModel,
-    @Res() res: Response,
   ) {
     const update = await this.authService.updatePasswordUsers(
       inputModel.recoveryCode,
@@ -203,13 +187,12 @@ export class AuthController {
         { message: 'Incorrect code', field: 'code' },
       ]);
     }
-    return res.sendStatus(204);
+    return;
   }
   @UseGuards(RefreshTokenGuard)
   @Post('logout')
   @HttpCode(204)
-  async logOutAccount(@Req() req, @Res() res: Response) {
-    await this.sessionService.deleteDevicesById(req.user.deviceId);
-    return res.sendStatus(204);
+  async logOutAccount(@CurrentPayload() currentPayload) {
+    return this.sessionService.deleteDevicesById(currentPayload.deviceId);
   }
 }

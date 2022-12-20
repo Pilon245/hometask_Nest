@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   HttpException,
-  NotFoundException,
   Param,
   Put,
   Query,
@@ -15,12 +13,7 @@ import {
 import { UsersService } from '../users.service';
 import { UsersQueryRepository } from '../users.query.repository';
 import { pagination } from '../../validation/query.validation';
-import {
-  BanBLoggerUsersInputModel,
-  BanUserInputModel,
-  CreateUserInputModel,
-} from '../dto/usersFactory';
-import { BasicAuthGuard } from '../../auth/strategy/basic-auth.guard';
+import { BanBLoggerUsersInputModel } from '../dto/usersFactory';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
@@ -48,17 +41,14 @@ export class UsersBloggerController {
     if (!blog) {
       throw new HttpException('invalid blog', 404);
     }
-    console.log('blog', blog);
     if (blog.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
-    const user = await this.usersQueryRepository.findUsersOnBlogger(
+    return this.usersQueryRepository.findUsersOnBlogger(
       currentUserId,
       blogId,
       pagination(query),
     );
-    console.log('user', user);
-    return user;
   }
   @Put(':id/ban')
   @HttpCode(204)
