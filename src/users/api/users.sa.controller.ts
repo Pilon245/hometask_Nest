@@ -44,8 +44,10 @@ export class UsersSaController {
     private commandBus: CommandBus,
   ) {}
   @Get()
-  getUsers(@Query() query) {
-    return this.usersQueryRepository.findUsers(pagination(query));
+  async getUsers(@Query() query) {
+    const users = await this.usersQueryRepository.findUsers(pagination(query));
+    console.log('users', users);
+    return users;
   }
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {

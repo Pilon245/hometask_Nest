@@ -19,11 +19,6 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
     const user = await this.usersRepository.findUsersById(
       command.createUseCaseDto.userId,
     );
-    console.log(
-      'command.createUseCaseDto.userId',
-      command.createUseCaseDto.userId,
-    );
-    console.log('user', user);
     const newBlog = new BlogsFactory(
       String(+new Date()),
       command.createUseCaseDto.name,
@@ -31,7 +26,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       command.createUseCaseDto.websiteUrl,
       new Date().toISOString(),
       {
-        userId: command.createUseCaseDto.userId,
+        userId: user.id,
         userLogin: user.accountData.login,
       },
       {
