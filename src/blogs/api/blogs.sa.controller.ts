@@ -46,6 +46,12 @@ export class BlogsSaController {
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
   async updateBlogsBindWithUser(@Param() model: IdModelType) {
+    const resultFound = await this.blogsQueryRepository.findBlogById(model.id);
+    if (!resultFound || resultFound.blogOwnerInfo.userId) {
+      throw new BadRequestException([
+        { message: 'blogId Not Found', filed: 'blogId' },
+      ]);
+    }
     return this.commandBus.execute(new UpdateBlogOnNewUserCommand(model));
   }
   @UseGuards(BasicAdminGuard)
