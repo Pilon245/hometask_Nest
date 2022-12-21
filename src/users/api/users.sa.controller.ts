@@ -45,9 +45,7 @@ export class UsersSaController {
   ) {}
   @Get()
   async getUsers(@Query() query) {
-    const users = await this.usersQueryRepository.findUsers(pagination(query));
-    console.log('users', users);
-    return users;
+    return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
