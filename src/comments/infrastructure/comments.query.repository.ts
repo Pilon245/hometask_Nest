@@ -37,39 +37,10 @@ export class CommentsQueryRepository {
       { _id: false, __v: 0, isBanned: 0 },
     );
   }
-  // async findCommentByIdNoAuth(id: string) {
-  //   const comments = await this.commentModel.findOne(
-  //     { id, isBanned: false },
-  //     { _id: false, __v: 0, isBanned: 0, postInfo: 0 },
-  //   );
-  //
-  //   const totalLike = await this.likeCommentModel.countDocuments({
-  //     $and: [{ commentId: id }, { likesStatus: 1 }, { isBanned: false }],
-  //   });
-  //   const totalDislike = await this.likeCommentModel.countDocuments({
-  //     $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBanned: false }],
-  //   });
-  //   if (comments) {
-  //     const outComment = {
-  //       id: comments.id,
-  //       content: comments.content,
-  //       userId: comments.commentatorInfo.userId,
-  //       userLogin: comments.commentatorInfo.userLogin,
-  //       createdAt: comments.createdAt,
-  //       likesInfo: {
-  //         likesCount: totalLike,
-  //         dislikesCount: totalDislike,
-  //         myStatus: LikeValueComment.none,
-  //       },
-  //     };
-  //     return outComment;
-  //   }
-  //   return comments;
-  // }
   async findCommentById(id: string, userId?: string) {
     const comments = await this.commentModel.findOne(
       { id, isBanned: false },
-      { _id: false, __v: 0, isBanned: 0, commentatorInfo: 0, postInfo: 0 },
+      { _id: false, __v: 0, isBanned: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -106,54 +77,6 @@ export class CommentsQueryRepository {
     }
     return comments;
   }
-  // async findCommentByPostIdNoAuth(
-  //   postId: string,
-  //   { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
-  // ) {
-  //   const comments = await this.commentModel
-  //     .find(
-  //       { postId: postId, isBanned: false },
-  //       { _id: 0, __v: 0, isBanned: 0 },
-  //     )
-  //     .sort([[sortBy, sortDirection]])
-  //     .skip(getSkipNumber(pageNumber, pageSize))
-  //     .limit(pageSize)
-  //     .lean();
-  //
-  //   const totalCount = await this.commentModel.countDocuments({
-  //     postId: postId,
-  //     isBanned: false,
-  //   });
-  //
-  //   const Promises = comments.map(async (c) => {
-  //     const likeCount = await this.likeCommentModel.countDocuments({
-  //       commentId: c.id,
-  //       likesStatus: 1,
-  //       isBanned: false,
-  //     });
-  //     const disLikeCount = await this.likeCommentModel.countDocuments({
-  //       $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBanned: false }],
-  //     });
-  //     return {
-  //       id: c.id,
-  //       content: c.content,
-  //       userId: c.commentatorInfo.userId,
-  //       userLogin: c.commentatorInfo.userLogin,
-  //       createdAt: c.createdAt,
-  //       likesInfo: {
-  //         likesCount: likeCount,
-  //         dislikesCount: disLikeCount,
-  //         myStatus: LikeValueComment.none,
-  //       },
-  //     };
-  //   });
-  //   const items = await Promise.all(Promises);
-  //
-  //   return {
-  //     ...outputModel(totalCount, pageSize, pageNumber),
-  //     items: items,
-  //   };
-  // }
   async findCommentByPostId(
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
     postId: string,
@@ -229,7 +152,7 @@ export class CommentsQueryRepository {
       ],
     };
     const comments = await this.commentModel
-      .find(filter, { _id: 0, __v: 0, isBanned: 0, userId: 0, userLogin: 0 })
+      .find(filter, { _id: 0, __v: 0, isBanned: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
