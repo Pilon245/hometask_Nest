@@ -1,14 +1,16 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtGenerate } from '../helper/generate.token';
 import { ConfigService } from '@nestjs/config';
+import { UsersRepository } from '../../users/users.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private jwtGenerate: JwtGenerate,
     private configService: ConfigService,
+    private usersRepository: UsersRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,6 +20,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    const user = await this.usersRepository.findUsersById(payload.id);
+    if (!user || user.banInfo.isBanned) throw new UnauthorizedException();
     return { id: payload.id };
   }
 }
