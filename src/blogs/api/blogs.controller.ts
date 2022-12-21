@@ -55,16 +55,16 @@ export class BlogsController {
     }
     if (req.user) {
       const posts = await this.postsQueryRepository.findPostByBlogId(
+        pagination(query),
         blogId,
         req.user.id,
-        pagination(query),
       );
       return res.status(200).send(posts);
     }
     if (!req.user) {
-      const posts = await this.postsQueryRepository.findPostByBlogIdNoAuth(
-        blogId,
+      const posts = await this.postsQueryRepository.findPostByBlogId(
         pagination(query),
+        blogId,
       );
       return res.status(200).send(posts);
     }

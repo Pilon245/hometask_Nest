@@ -9,7 +9,7 @@ export class CommentsFactory {
     public commentatorInfo: CommentatorInfoType,
     public postInfo: postInfoType,
     public ownerUserId: string,
-    public isBan: boolean,
+    public isBanned: boolean,
   ) {}
 }
 export class LikeInfoType {
@@ -33,7 +33,7 @@ export class CreateLikeInputDTO {
   myStatus: LikeValueComment;
   userId: string;
   commentId: string;
-  isBan: boolean;
+  isBanned: boolean;
 }
 
 export class LikesFactory {
@@ -43,7 +43,7 @@ export class LikesFactory {
     public myStatus: LikeValueComment,
     public userId: string,
     public commentId: string,
-    public isBan: boolean,
+    public isBanned: boolean,
   ) {}
 }
 

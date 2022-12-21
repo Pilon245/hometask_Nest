@@ -19,12 +19,12 @@ export class PostsRepository {
   ) {}
   async findLikeByIdAndPostId(id: string, postId: string) {
     return this.likePostModel.findOne({
-      $and: [{ userId: id }, { postId: postId }, { isBan: false }],
+      $and: [{ userId: id }, { postId: postId }, { isBanned: false }],
     });
   }
   async findPostById(id: string) {
     return this.postModel
-      .findOne({ id, isBan: false }, { _id: false, __v: 0, isBan: 0 })
+      .findOne({ id, isBanned: false }, { _id: false, __v: 0, isBanned: 0 })
       .exec();
   }
   async createPosts(post: CreatePostRepo) {
@@ -75,13 +75,13 @@ export class PostsRepository {
     await this.postModel.updateMany(
       { userId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
     await this.likePostModel.updateMany(
       { userId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
     return;

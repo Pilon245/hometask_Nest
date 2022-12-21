@@ -31,158 +31,169 @@ export class CommentsQueryRepository {
         $and: [
           { id: commentId },
           { 'commentatorInfo.userId': userId },
-          { isBan: false },
+          { isBanned: false },
         ],
       },
-      { _id: false, __v: 0, isBan: 0 },
+      { _id: false, __v: 0, isBanned: 0 },
     );
   }
-  async findCommentByIdNoAuth(id: string) {
+  // async findCommentByIdNoAuth(id: string) {
+  //   const comments = await this.commentModel.findOne(
+  //     { id, isBanned: false },
+  //     { _id: false, __v: 0, isBanned: 0, postInfo: 0 },
+  //   );
+  //
+  //   const totalLike = await this.likeCommentModel.countDocuments({
+  //     $and: [{ commentId: id }, { likesStatus: 1 }, { isBanned: false }],
+  //   });
+  //   const totalDislike = await this.likeCommentModel.countDocuments({
+  //     $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBanned: false }],
+  //   });
+  //   if (comments) {
+  //     const outComment = {
+  //       id: comments.id,
+  //       content: comments.content,
+  //       userId: comments.commentatorInfo.userId,
+  //       userLogin: comments.commentatorInfo.userLogin,
+  //       createdAt: comments.createdAt,
+  //       likesInfo: {
+  //         likesCount: totalLike,
+  //         dislikesCount: totalDislike,
+  //         myStatus: LikeValueComment.none,
+  //       },
+  //     };
+  //     return outComment;
+  //   }
+  //   return comments;
+  // }
+  async findCommentById(id: string, userId?: string) {
     const comments = await this.commentModel.findOne(
-      { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0, postInfo: 0 },
+      { id, isBanned: false },
+      { _id: false, __v: 0, isBanned: 0, commentatorInfo: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { likesStatus: 1 }, { isBan: false }],
+      $and: [{ commentId: id }, { likesStatus: 1 }, { isBanned: false }],
     });
     const totalDislike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBan: false }],
+      $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBanned: false }],
     });
-    if (comments) {
-      const outComment = {
-        id: comments.id,
-        content: comments.content,
-        userId: comments.commentatorInfo.userId,
-        userLogin: comments.commentatorInfo.userLogin,
-        createdAt: comments.createdAt,
-        likesInfo: {
-          likesCount: totalLike,
-          dislikesCount: totalDislike,
-          myStatus: LikeValueComment.none,
-        },
-      };
-      return outComment;
-    }
-    return comments;
-  }
-  async findCommentById(id: string, userId: string) {
-    const comments = await this.commentModel.findOne(
-      { id, isBan: false },
-      { _id: false, __v: 0, isBan: 0, commentatorInfo: 0, postInfo: 0 },
-    );
-
-    const totalLike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { likesStatus: 1 }, { isBan: false }],
-    });
-    const totalDislike = await this.likeCommentModel.countDocuments({
-      $and: [{ commentId: id }, { dislikesStatus: 1 }, { isBan: false }],
-    });
-    const likeStatus = await this.likeCommentModel.findOne({
-      $and: [
-        { commentId: id },
-        { 'commentatorInfo.userId': userId },
-        { isBan: false },
-      ],
-    });
-
-    if (comments) {
-      const outComment = {
-        id: comments.id,
-        content: comments.content,
-        userId: comments.commentatorInfo.userId,
-        userLogin: comments.commentatorInfo.userLogin,
-        createdAt: comments.createdAt,
-        likesInfo: {
-          likesCount: totalLike,
-          dislikesCount: totalDislike,
-          myStatus: likeStatus?.myStatus
-            ? likeStatus?.myStatus
-            : LikeValueComment.none,
-        },
-      };
-      return outComment;
-    }
-    return comments;
-  }
-  async findCommentByPostIdNoAuth(
-    postId: string,
-    { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
-  ) {
-    const comments = await this.commentModel
-      .find({ postId: postId, isBan: false }, { _id: 0, __v: 0, isBan: 0 })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-
-    const totalCount = await this.commentModel.countDocuments({
-      postId: postId,
-      isBan: false,
-    });
-
-    const Promises = comments.map(async (c) => {
-      const likeCount = await this.likeCommentModel.countDocuments({
-        commentId: c.id,
-        likesStatus: 1,
-        isBan: false,
-      });
-      const disLikeCount = await this.likeCommentModel.countDocuments({
-        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
-      });
-      return {
-        id: c.id,
-        content: c.content,
-        userId: c.commentatorInfo.userId,
-        userLogin: c.commentatorInfo.userLogin,
-        createdAt: c.createdAt,
-        likesInfo: {
-          likesCount: likeCount,
-          dislikesCount: disLikeCount,
-          myStatus: LikeValueComment.none,
-        },
-      };
-    });
-    const items = await Promise.all(Promises);
-
-    return {
-      ...outputModel(totalCount, pageSize, pageNumber),
-      items: items,
-    };
-  }
-  async findCommentByPostId(
-    postId: string,
-    userId: string,
-    { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
-  ) {
-    const comments = await this.commentModel
-      .find({ postId: postId, isBan: false }, { _id: 0, __v: 0, isBan: 0 })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-
-    const totalCount = await this.commentModel.countDocuments({
-      postId: postId,
-      isBan: false,
-    });
-
-    const Promises = comments.map(async (c) => {
-      const likeCount = await this.likeCommentModel.countDocuments({
-        commentId: c.id,
-        likesStatus: 1,
-        isBan: false,
-      });
-      const disLikeCount = await this.likeCommentModel.countDocuments({
-        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
-      });
-      const likeStatus = await this.likeCommentModel.findOne({
+    let likeStatus = LikeValueComment.none;
+    if (userId) {
+      const status = await this.likeCommentModel.findOne({
         $and: [
-          { commentId: c.id },
+          { commentId: id },
           { 'commentatorInfo.userId': userId },
-          { isBan: false },
+          { isBanned: false },
         ],
       });
+      likeStatus = status?.myStatus || LikeValueComment.none;
+    }
+    if (comments) {
+      const outComment = {
+        id: comments.id,
+        content: comments.content,
+        userId: comments.commentatorInfo.userId,
+        userLogin: comments.commentatorInfo.userLogin,
+        createdAt: comments.createdAt,
+        likesInfo: {
+          likesCount: totalLike,
+          dislikesCount: totalDislike,
+          myStatus: likeStatus,
+        },
+      };
+      return outComment;
+    }
+    return comments;
+  }
+  // async findCommentByPostIdNoAuth(
+  //   postId: string,
+  //   { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
+  // ) {
+  //   const comments = await this.commentModel
+  //     .find(
+  //       { postId: postId, isBanned: false },
+  //       { _id: 0, __v: 0, isBanned: 0 },
+  //     )
+  //     .sort([[sortBy, sortDirection]])
+  //     .skip(getSkipNumber(pageNumber, pageSize))
+  //     .limit(pageSize)
+  //     .lean();
+  //
+  //   const totalCount = await this.commentModel.countDocuments({
+  //     postId: postId,
+  //     isBanned: false,
+  //   });
+  //
+  //   const Promises = comments.map(async (c) => {
+  //     const likeCount = await this.likeCommentModel.countDocuments({
+  //       commentId: c.id,
+  //       likesStatus: 1,
+  //       isBanned: false,
+  //     });
+  //     const disLikeCount = await this.likeCommentModel.countDocuments({
+  //       $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBanned: false }],
+  //     });
+  //     return {
+  //       id: c.id,
+  //       content: c.content,
+  //       userId: c.commentatorInfo.userId,
+  //       userLogin: c.commentatorInfo.userLogin,
+  //       createdAt: c.createdAt,
+  //       likesInfo: {
+  //         likesCount: likeCount,
+  //         dislikesCount: disLikeCount,
+  //         myStatus: LikeValueComment.none,
+  //       },
+  //     };
+  //   });
+  //   const items = await Promise.all(Promises);
+  //
+  //   return {
+  //     ...outputModel(totalCount, pageSize, pageNumber),
+  //     items: items,
+  //   };
+  // }
+  async findCommentByPostId(
+    { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
+    postId: string,
+    userId?: string,
+  ) {
+    const comments = await this.commentModel
+      .find(
+        { postId: postId, isBanned: false },
+        { _id: 0, __v: 0, isBanned: 0 },
+      )
+      .sort([[sortBy, sortDirection]])
+      .skip(getSkipNumber(pageNumber, pageSize))
+      .limit(pageSize)
+      .lean();
+
+    const totalCount = await this.commentModel.countDocuments({
+      postId: postId,
+      isBanned: false,
+    });
+
+    const Promises = comments.map(async (c) => {
+      const likeCount = await this.likeCommentModel.countDocuments({
+        commentId: c.id,
+        likesStatus: 1,
+        isBanned: false,
+      });
+      const disLikeCount = await this.likeCommentModel.countDocuments({
+        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBanned: false }],
+      });
+      let likeStatus = LikeValueComment.none;
+      if (userId) {
+        const status = await this.likeCommentModel.findOne({
+          $and: [
+            { commentId: c.id },
+            { 'commentatorInfo.userId': userId },
+            { isBanned: false },
+          ],
+        });
+        likeStatus = status?.myStatus || LikeValueComment.none;
+      }
       return {
         id: c.id,
         content: c.content,
@@ -192,9 +203,7 @@ export class CommentsQueryRepository {
         likesInfo: {
           likesCount: likeCount,
           dislikesCount: disLikeCount,
-          myStatus: likeStatus?.myStatus
-            ? likeStatus.myStatus
-            : LikeValueComment.none,
+          myStatus: likeStatus,
         },
       };
     });
@@ -215,12 +224,12 @@ export class CommentsQueryRepository {
           ownerUserId: ownerUserId,
         },
         {
-          isBan: false,
+          isBanned: false,
         },
       ],
     };
     const comments = await this.commentModel
-      .find(filter, { _id: 0, __v: 0, isBan: 0, userId: 0, userLogin: 0 })
+      .find(filter, { _id: 0, __v: 0, isBanned: 0, userId: 0, userLogin: 0 })
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
@@ -228,23 +237,23 @@ export class CommentsQueryRepository {
 
     const totalCount = await this.commentModel.countDocuments({
       ownerUserId: ownerUserId,
-      isBan: false,
+      isBanned: false,
     });
 
     const Promises = comments.map(async (c) => {
       const likeCount = await this.likeCommentModel.countDocuments({
         commentId: c.id,
         likesStatus: 1,
-        isBan: false,
+        isBanned: false,
       });
       const disLikeCount = await this.likeCommentModel.countDocuments({
-        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBan: false }],
+        $and: [{ commentId: c.id }, { dislikesStatus: 1 }, { isBanned: false }],
       });
       const likeStatus = await this.likeCommentModel.findOne({
         $and: [
           { commentId: c.id },
           { 'commentatorInfo.userId': ownerUserId },
-          { isBan: false },
+          { isBanned: false },
         ],
       });
       return {

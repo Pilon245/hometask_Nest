@@ -18,7 +18,7 @@ export class PostsFactory {
     public blogId: string,
     public blogName: string,
     public createdAt: string,
-    public isBan: boolean,
+    public isBanned: boolean,
     public userId: string,
   ) {}
 }
@@ -30,7 +30,7 @@ export class CreatePostRepo {
   blogId: string;
   blogName: string;
   createdAt: string;
-  isBan: boolean;
+  isBanned: boolean;
   userId: string;
 }
 export class CreatePostUseCaseDto {
@@ -82,7 +82,7 @@ export class LikesPostFactory {
     public postId: string,
     public login: string,
     public addedAt: string,
-    public isBan: boolean,
+    public isBanned: boolean,
   ) {}
 }
 

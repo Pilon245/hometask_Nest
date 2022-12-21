@@ -57,12 +57,12 @@ export class PostsController {
   ) {
     if (currentUserId) {
       const posts = await this.postsQueryRepository.findPosts(
-        currentUserId,
         pagination(query),
+        currentUserId,
       );
       return res.status(200).send(posts);
     } else {
-      const posts = await this.postsQueryRepository.findPostsNoAuth(
+      const posts = await this.postsQueryRepository.findPosts(
         pagination(query),
       );
       return res.status(200).send(posts);
@@ -71,7 +71,7 @@ export class PostsController {
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getPost(@Param('id') id: string, @Req() req, @Res() res: Response) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(id);
+    const resultFound = await this.postsQueryRepository.findPostById(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -88,7 +88,7 @@ export class PostsController {
       );
       return res.status(200).send(post);
     } else {
-      const post = await this.postsQueryRepository.findPostByIdNoAuth(id);
+      const post = await this.postsQueryRepository.findPostById(id);
       return res.status(200).send(post);
     }
   }
@@ -100,25 +100,22 @@ export class PostsController {
     @Req() req,
     @Res() res: Response,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
     if (req.user) {
       const comments = await this.commentsQueryRepository.findCommentByPostId(
+        pagination(query),
         postId,
         req.user.id,
-        pagination(query),
       );
       return res.status(200).send(comments);
     } else {
-      const comments =
-        await this.commentsQueryRepository.findCommentByPostIdNoAuth(
-          postId,
-          pagination(query),
-        );
+      const comments = await this.commentsQueryRepository.findCommentByPostId(
+        pagination(query),
+        postId,
+      );
       return res.status(200).send(comments);
     }
   }
@@ -130,9 +127,7 @@ export class PostsController {
     @Body() inputModel: UpdateCommentInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -149,7 +144,7 @@ export class PostsController {
     if (!comment) {
       throw new HttpException('Ban', 403);
     }
-    return this.commentsQueryRepository.findCommentByIdNoAuth(comment.id);
+    return this.commentsQueryRepository.findCommentById(comment.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -160,9 +155,7 @@ export class PostsController {
     @Body() updateModel: UpdatePostLikeInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }

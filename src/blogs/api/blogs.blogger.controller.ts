@@ -113,7 +113,7 @@ export class BlogsBloggerController {
       userId: currentUserId,
     };
     const posts = await this.commandBus.execute(new CreatePostCommand(newPost));
-    return this.postsQueryRepository.findPostByIdNoAuth(posts.id);
+    return this.postsQueryRepository.findPostById(posts.id);
   }
   @Put(':id')
   @HttpCode(204)
@@ -159,9 +159,7 @@ export class BlogsBloggerController {
     @Body() model: UpdatePostBloggerInputModelType,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
       throw new HttpException('Invalid id', 404);
     }
@@ -187,9 +185,7 @@ export class BlogsBloggerController {
     @Param() { blogId, postId },
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostByIdNoAuth(
-      postId,
-    );
+    const resultFound = await this.postsQueryRepository.findPostById(postId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }

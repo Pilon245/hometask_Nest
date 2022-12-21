@@ -45,8 +45,7 @@ export class CommentsController {
     @Query() query,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound =
-      await this.commentsQueryRepository.findCommentByIdNoAuth(id);
+    const resultFound = await this.commentsQueryRepository.findCommentById(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -92,8 +91,9 @@ export class CommentsController {
     @Body() updateModel: UpdateCommentLikeInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound =
-      await this.commentsQueryRepository.findCommentByIdNoAuth(commentId);
+    const resultFound = await this.commentsQueryRepository.findCommentById(
+      commentId,
+    );
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -112,7 +112,7 @@ export class CommentsController {
     @Param('commentId') commentId: string,
     @CurrentUserId() currentUserId,
   ) {
-    const result = await this.commentsQueryRepository.findCommentByIdNoAuth(
+    const result = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
     if (!result) {

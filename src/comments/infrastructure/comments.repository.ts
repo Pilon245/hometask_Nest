@@ -65,13 +65,13 @@ export class CommentsRepository {
     await this.commentModel.updateMany(
       { ownerUserId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
     await this.likeCommentModel.updateMany(
       { ownerUserId: userId },
       {
-        isBan: value,
+        isBanned: value,
       },
     );
     return;
