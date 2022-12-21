@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import {
   ValidationArguments,
   ValidatorConstraint,
@@ -11,8 +11,8 @@ import {
 export class BlogExistsRule implements ValidatorConstraintInterface {
   constructor(private blogsQueryRepository: BlogsQueryRepository) {}
   async validate(value: string) {
-    const result = await this.blogsQueryRepository.findBlogById(value);
-    if (!result || result.blogOwnerInfo.userId) return false;
+    const result = await this.blogsQueryRepository.findBlogBD(value);
+    if (!result) return false;
     return true;
   }
   defaultMessage(args: ValidationArguments) {
