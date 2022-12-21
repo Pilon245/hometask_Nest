@@ -16,7 +16,6 @@ import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { CurrentPayload } from '../../auth/current-payload.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { DeleteDeviceByDeviceIdCommand } from '../application/use-cases/delete.device.id.session.use.cases';
-import { DeleteDevicesUseCaseDto } from '../domain/dto/create-session.dto';
 import { DeleteDevicesUseCase } from '../application/use-cases/delete.devices.session.use.cases';
 
 @ApiTags('security')

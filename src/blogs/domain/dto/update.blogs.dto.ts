@@ -1,7 +1,6 @@
 import { IsOptional, IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { BlogOwnerInfoType } from './blogs.entity.dto';
 
 export class UpdateBlogInputModelType {
   @ApiPropertyOptional()

@@ -11,7 +11,6 @@ import {
   Delete,
   Scope,
 } from '@nestjs/common';
-import { CommentsService } from '../application/comments.service';
 import { CommentsQueryRepository } from '../infrastructure/comments.query.repository';
 import {
   UpdateCommentInputModel,
@@ -36,7 +35,6 @@ import { DeleteCommentCommand } from '../application/use-cases/delete.comment.us
 })
 export class CommentsController {
   constructor(
-    protected commentsService: CommentsService,
     protected commentsQueryRepository: CommentsQueryRepository,
     private commandBus: CommandBus,
   ) {}

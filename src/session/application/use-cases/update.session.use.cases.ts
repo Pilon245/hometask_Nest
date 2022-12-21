@@ -1,11 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SessionRepository } from '../../infrastructure/session.repository';
-import { randomUUID } from 'crypto';
-import {
-  CreateSessionUseCaseDto,
-  DeleteDevicesUseCaseDto,
-  SessionFactory,
-} from '../../domain/dto/create-session.dto';
+import { DeleteDevicesUseCaseDto } from '../../domain/dto/create-session.dto';
 import { JwtGenerate } from '../../../auth/helper/generate.token';
 
 export class UpdateSessionCommand {

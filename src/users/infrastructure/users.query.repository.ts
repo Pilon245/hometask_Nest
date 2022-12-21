@@ -1,4 +1,4 @@
-import { InjectModel, Prop } from '@nestjs/mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../domain/entities/users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';

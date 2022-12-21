@@ -1,7 +1,5 @@
 import { Length, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { RecoveryPasswordUserCommand } from '../../application/use-cases/recovery.password.user.use.cases';
-import { RegistrationUsersUseCaseDto } from './create-auth.dto';
 
 export class RegistrationInputModel {
   @ApiProperty()

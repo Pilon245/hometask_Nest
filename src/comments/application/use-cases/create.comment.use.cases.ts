@@ -4,7 +4,6 @@ import {
   CommentsFactory,
   CreateCommentUseCaseDto,
 } from '../../domain/dto/commentsFactory';
-import { LikeValueComment } from '../../domain/entities/likes.comments.entity';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 

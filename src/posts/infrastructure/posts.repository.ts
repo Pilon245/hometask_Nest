@@ -2,20 +2,13 @@ import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from '../domain/entities/posts.entity';
-import {
-  CreateLikeInputDTO,
-  CreatePostInputDTO,
-  CreatePostRepo,
-} from '../domain/dto/postsFactory';
+import { CreateLikeInputDTO, CreatePostRepo } from '../domain/dto/postsFactory';
 import {
   LikePost,
   LikePostDocument,
   LikeValuePost,
 } from '../domain/entities/likes.posts.entity';
 import { UpdatePostDTO } from '../domain/dto/update.posts.dto';
-import { UpdateBlogOnNewUserRepo } from '../../blogs/domain/dto/update.blogs.dto';
-import { getSkipNumber, outputModel } from '../../helper/helper.function';
-import { FindPostsPayload } from './posts.query.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class PostsRepository {

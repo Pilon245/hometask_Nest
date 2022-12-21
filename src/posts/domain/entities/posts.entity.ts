@@ -1,32 +1,7 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { LikeValuePost } from './likes.posts.entity';
 
 export type PostDocument = HydratedDocument<Post>;
-
-// @Schema()
-// export class newestLikesType {
-//   @Prop()
-//   addedAt: string;
-//   @Prop()
-//   userId: string;
-//   @Prop()
-//   login: string;
-// }
-// @Schema()
-// export class extendedLikesInfoType {
-//   @Prop()
-//   likesCount: number;
-//   @Prop()
-//   dislikesCount: number;
-//   @Prop()
-//   myStatus: LikeValuePost;
-//   @Prop()
-//   newestLikes: newestLikesType[];
-// }
-// const extendedLikesInfoSchema = SchemaFactory.createForClass(
-//   extendedLikesInfoType,
-// );
 
 @Schema()
 export class Post {
@@ -51,11 +26,10 @@ export class Post {
   @Prop({ require: true })
   createdAt: string;
 
-  // @Prop({ type: extendedLikesInfoSchema })
-  // extendedLikesInfo: extendedLikesInfoType;
   @Prop()
   isBan: boolean;
-  @Prop({ require: true }) //todo можно убрать
+
+  @Prop({ require: true })
   userId: string;
 }
 

@@ -1,9 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../../infrastructure/blogs.repository';
-import { CreateBlogsUseCaseDto } from '../../domain/dto/createBlogsDto';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import {
-  UpdateBlogOnNewUser,
   UpdateBlogOnNewUserCommandUseCaseDto,
   UpdateBlogOnNewUserRepo,
 } from '../../domain/dto/update.blogs.dto';

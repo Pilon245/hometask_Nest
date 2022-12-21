@@ -59,7 +59,6 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     protected usersRepository: UsersRepository,
-    protected sessionService: SessionService,
     protected usersQueryRepository: UsersQueryRepository,
     protected emailManager: EmailManager,
     private commandBus: CommandBus,

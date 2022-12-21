@@ -10,14 +10,10 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/application/posts.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
-import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
 import { BanBlogsInputModel, IdModelType } from '../domain/dto/blogsFactory';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
-import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateBlogOnNewUserCommand } from '../application/use-cases/update.blogs.on.new.user.use.cases';
 import { CommandBus } from '@nestjs/cqrs';
@@ -31,11 +27,7 @@ import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
 })
 export class BlogsSaController {
   constructor(
-    protected blogsService: BlogsService,
-    protected postsService: PostsService,
-    protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
-    protected usersQueryRepository: UsersQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @Get()

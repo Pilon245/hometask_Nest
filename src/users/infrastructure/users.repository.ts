@@ -128,13 +128,7 @@ export class UsersRepository {
     );
     return result.matchedCount === 1;
   }
-  // async unbanBloggerUsers(banUserId: string, bloggerId: string) {
-  //   const result = await this.bloggerUsersBanModel.deleteOne({
-  //     banUserId,
-  //     bloggerId,
-  //   });
-  //   return result.deletedCount === 1;
-  // }
+
   async deleteUsers(id: string) {
     const result = await this.userModel.deleteOne({ id });
     return result.deletedCount === 1;

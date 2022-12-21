@@ -2,10 +2,7 @@ import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment, CommentDocument } from '../domain/entities/comments.entity';
-import {
-  CommentsFactory,
-  CreateLikeInputDTO,
-} from '../domain/dto/commentsFactory';
+import { CreateLikeInputDTO } from '../domain/dto/commentsFactory';
 import {
   LikeComment,
   LikeCommentDocument,
@@ -66,13 +63,13 @@ export class CommentsRepository {
   }
   async banUsers(userId: string, value: boolean) {
     await this.commentModel.updateMany(
-      { userId },
+      { ownerUserId: userId },
       {
         isBan: value,
       },
     );
     await this.likeCommentModel.updateMany(
-      { userId },
+      { ownerUserId: userId },
       {
         isBan: value,
       },

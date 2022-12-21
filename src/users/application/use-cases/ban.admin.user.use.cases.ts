@@ -1,15 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure/users.repository';
-import { _generatePasswordForDb } from '../../../helper/auth.function';
 import {
   BanUsersFactory,
-  BanBloggerUserUseCaseDto,
-  CreateUserUseCaseDto,
-  UsersFactory,
   BanAdminUserUseCaseDto,
 } from '../../domain/dto/usersFactory';
-import { randomUUID } from 'crypto';
-import { add } from 'date-fns';
 import { SessionRepository } from '../../../session/infrastructure/session.repository';
 import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';

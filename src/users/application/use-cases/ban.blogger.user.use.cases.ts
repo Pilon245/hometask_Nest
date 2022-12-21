@@ -1,15 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure/users.repository';
-import { _generatePasswordForDb } from '../../../helper/auth.function';
 import {
-  BanUsersFactory,
   BanBloggerUserUseCaseDto,
-  CreateUserUseCaseDto,
-  UsersFactory,
   BanBloggerUsersFactory,
 } from '../../domain/dto/usersFactory';
-import { randomUUID } from 'crypto';
-import { add } from 'date-fns';
 import { SessionRepository } from '../../../session/infrastructure/session.repository';
 import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
@@ -23,13 +17,7 @@ export class BanBloggerUserCommand {
 export class BanBloggerUserUseCase
   implements ICommandHandler<BanBloggerUserCommand>
 {
-  constructor(
-    private usersRepository: UsersRepository,
-    private blogsRepository: BlogsRepository,
-    private postsRepository: PostsRepository,
-    private commentsRepository: CommentsRepository,
-    private sessionRepository: SessionRepository,
-  ) {}
+  constructor(private usersRepository: UsersRepository) {}
 
   async execute(command: BanBloggerUserCommand) {
     const user = await this.usersRepository.findUsersById(

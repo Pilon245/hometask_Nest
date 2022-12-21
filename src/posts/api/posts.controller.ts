@@ -41,8 +41,6 @@ import { CreateCommentCommand } from '../../comments/application/use-cases/creat
 })
 export class PostsController {
   constructor(
-    protected postsService: PostsService,
-    protected commentsService: CommentsService,
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,

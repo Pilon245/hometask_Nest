@@ -1,13 +1,5 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-  BanInfoType,
-  EmailConfirmationType,
-  PasswordConfirmationType,
-  UsersAccountDataType,
-} from '../dto/entity.dto';
-import { json } from 'express';
-import { UsersBanInfoTypeData } from './users.entity';
 
 export type BloggerUsersBanDocument = HydratedDocument<BloggerUsersBan>;
 

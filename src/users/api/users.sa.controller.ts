@@ -17,7 +17,6 @@ import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import {
   BanAdminUserUseCaseDto,
-  BanBloggerUserUseCaseDto,
   BanUserInputModel,
   CreateUserInputModel,
 } from '../domain/dto/usersFactory';
@@ -25,10 +24,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../application/use-cases/create.user.use.cases';
-import {
-  BanAdminUserCommand,
-  BanAdminUserUseCase,
-} from '../application/use-cases/ban.admin.user.use.cases';
+import { BanAdminUserCommand } from '../application/use-cases/ban.admin.user.use.cases';
 import { DeleteUserCommand } from '../application/use-cases/delete.user.use.cases';
 
 @UseGuards(BasicAdminGuard)
@@ -39,7 +35,6 @@ import { DeleteUserCommand } from '../application/use-cases/delete.user.use.case
 })
 export class UsersSaController {
   constructor(
-    protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
     private commandBus: CommandBus,
   ) {}

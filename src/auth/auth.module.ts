@@ -25,11 +25,6 @@ import {
   BloggerUsersBanSchema,
 } from '../users/domain/entities/blogger.users.blogs.ban.entity';
 import { CqrsModule } from '@nestjs/cqrs';
-import { CreateUserUseCase } from '../users/application/use-cases/create.user.use.cases';
-import { BanAdminUserUseCase } from '../users/application/use-cases/ban.admin.user.use.cases';
-import { BanBloggerUserUseCase } from '../users/application/use-cases/ban.blogger.user.use.cases';
-import { DeleteUsersUseCase } from '../users/application/use-cases/delete.all.users.use.cases';
-import { DeleteUserUseCase } from '../users/application/use-cases/delete.user.use.cases';
 import { CreateSessionUseCase } from '../session/application/use-cases/create.session.use.cases';
 import { UpdateSessionUseCase } from '../session/application/use-cases/update.session.use.cases';
 import { ConfirmationEmailUseCase } from './application/use-cases/confirmation.email.use.cases';

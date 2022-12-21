@@ -6,7 +6,6 @@ import { CreateBlogDTO } from '../domain/dto/blogsFactory';
 import {
   BanBlogsRepo,
   UpdateBlogInputModelType,
-  UpdateBlogOnNewUser,
   UpdateBlogOnNewUserRepo,
 } from '../domain/dto/update.blogs.dto';
 

@@ -1,6 +1,5 @@
 import { IsBoolean, IsUrl, Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { Injectable } from '@nestjs/common';
 import { BanBlogsInfoType, BlogOwnerInfoType } from './blogs.entity.dto';
 import { BlogExistsRule } from '../../../posts/guards/blog-id-validation.service';
 import { UserExistsRule } from '../../guards/blog-id-validation.service';

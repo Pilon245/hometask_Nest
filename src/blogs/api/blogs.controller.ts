@@ -10,8 +10,6 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/application/posts.service';
 import { Response } from 'express';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
@@ -26,8 +24,6 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 })
 export class BlogsController {
   constructor(
-    protected blogsService: BlogsService,
-    protected postsService: PostsService,
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
   ) {}

@@ -10,7 +10,6 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import {
@@ -32,7 +31,6 @@ import { BanBloggerUserCommand } from '../application/use-cases/ban.blogger.user
 })
 export class UsersBloggerController {
   constructor(
-    protected usersService: UsersService,
     protected usersQueryRepository: UsersQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     private commandBus: CommandBus,

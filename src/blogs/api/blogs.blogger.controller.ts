@@ -12,8 +12,6 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
-import { PostsService } from '../../posts/application/posts.service';
 import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
@@ -52,8 +50,6 @@ import { DeletePostCommand } from '../../posts/application/use-cases/delete.post
 })
 export class BlogsBloggerController {
   constructor(
-    protected blogsService: BlogsService,
-    protected postsService: PostsService,
     protected postsQueryRepository: PostsQueryRepository,
     protected blogsQueryRepository: BlogsQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,

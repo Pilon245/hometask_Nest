@@ -1,12 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
-import {
-  CommentsFactory,
-  CreateCommentUseCaseDto,
-  UpdateCommentUseCaseDto,
-} from '../../domain/dto/commentsFactory';
-import { LikeValueComment } from '../../domain/entities/likes.comments.entity';
-import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { UpdateCommentUseCaseDto } from '../../domain/dto/commentsFactory';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 
 export class UpdateCommentCommand {

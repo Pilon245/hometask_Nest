@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 
 export class DeleteCommentCommand {

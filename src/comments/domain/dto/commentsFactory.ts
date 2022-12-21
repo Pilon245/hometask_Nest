@@ -6,7 +6,6 @@ export class CommentsFactory {
     public content: string,
     public postId: string,
     public createdAt: string,
-    // public likesInfo: LikeInfoType,
     public commentatorInfo: CommentatorInfoType,
     public postInfo: postInfoType,
     public ownerUserId: string,
