@@ -1,39 +1,24 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../blogs.repository';
-import { CreateBlogsUseCaseDto } from '../../dto/createBlogsDto';
-import { UsersRepository } from '../../../users/users.repository';
-import { BlogsFactory } from '../../dto/blogsFactory';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import {
+  BanBlogsFactory,
+  BanBlogUseCaseDto,
+} from '../../domain/dto/update.blogs.dto';
 
-export class CreateBlogsCommand {
-  constructor(public createUseCaseDto: CreateBlogsUseCaseDto) {}
+export class BanBlogCommand {
+  constructor(public banUseCaseDto: BanBlogUseCaseDto) {}
 }
 
-@CommandHandler(CreateBlogsCommand)
-export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
-  constructor(
-    private blogsRepository: BlogsRepository,
-    private usersRepository: UsersRepository,
-  ) {}
+@CommandHandler(BanBlogCommand)
+export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
+  constructor(private blogsRepository: BlogsRepository) {}
 
-  async execute(command: CreateBlogsCommand) {
-    const user = await this.usersRepository.findUsersById(
-      command.createUseCaseDto.userId,
-    );
-    const newBlog = new BlogsFactory(
-      String(+new Date()),
-      command.createUseCaseDto.name,
-      command.createUseCaseDto.description,
-      command.createUseCaseDto.websiteUrl,
+  async execute(command: BanBlogCommand) {
+    const banBlogs = new BanBlogsFactory(
+      command.banUseCaseDto.id,
+      command.banUseCaseDto.isBanned,
       new Date().toISOString(),
-      {
-        userId: command.createUseCaseDto.userId,
-        userLogin: user.accountData.login,
-      },
-      {
-        isBanned: false,
-        banDate: null,
-      },
     );
-    return this.blogsRepository.createBlogs(newBlog);
+    return this.blogsRepository.banBlogs(banBlogs);
   }
 }

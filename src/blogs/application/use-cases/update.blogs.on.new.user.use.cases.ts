@@ -1,9 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../blogs.repository';
-import { CreateBlogsUseCaseDto } from '../../dto/createBlogsDto';
-import { UsersRepository } from '../../../users/users.repository';
-import { BlogsFactory } from '../../dto/blogsFactory';
-import { UpdateBlogOnNewUserRepo } from '../../dto/update.blogs.dto';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import {
+  UpdateBlogOnNewUserCommandUseCaseDto,
+  UpdateBlogOnNewUserRepo,
+} from '../../domain/dto/update.blogs.dto';
 
 export class UpdateBlogOnNewUserCommand {
   constructor(public updateUseCaseDto: UpdateBlogOnNewUserCommandUseCaseDto) {}
@@ -19,10 +20,12 @@ export class UpdateBlogOnNewUserUseCase
   ) {}
 
   async execute(command: UpdateBlogOnNewUserCommand) {
-    const user = await this.usersRepository.findUsersById(command.userId);
+    const user = await this.usersRepository.findUsersById(
+      command.updateUseCaseDto.userId,
+    );
     const updateBlog: UpdateBlogOnNewUserRepo = {
-      id: command.id,
-      userId: command.userId,
+      id: command.updateUseCaseDto.id,
+      userId: command.updateUseCaseDto.userId,
       userLogin: user.accountData.login,
     };
     return this.blogsRepository.updateBlogsOnNewUser(updateBlog);

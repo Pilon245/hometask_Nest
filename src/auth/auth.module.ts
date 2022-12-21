@@ -1,30 +1,48 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsersQueryRepository } from '../users/users.query.repository';
+import { AuthService } from './application/auth.service';
+import { AuthController } from './api/auth.controller';
+import { UsersQueryRepository } from '../users/infrastructure/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../users/entities/users.entity';
+import { User, UserSchema } from '../users/domain/entities/users.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { SessionModule } from '../session/session.module';
-import { UsersRepository } from '../users/users.repository';
-import { BearerAuthGuardOnGet } from './strategy/bearer-auth-guard-on-get.service';
+import { UsersRepository } from '../users/infrastructure/users.repository';
+import { BearerAuthGuardOnGet } from './guards/bearer-auth-guard-on-get.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenGuard } from './strategy/refresh.token.guard';
+import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
 import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
-} from '../users/entities/blogger.users.blogs.ban.entity';
+} from '../users/domain/entities/blogger.users.blogs.ban.entity';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreateSessionUseCase } from '../session/application/use-cases/create.session.use.cases';
+import { UpdateSessionUseCase } from '../session/application/use-cases/update.session.use.cases';
+import { ConfirmationEmailUseCase } from './application/use-cases/confirmation.email.use.cases';
+import { RecoveryPasswordUserUseCase } from './application/use-cases/recovery.password.user.use.cases';
+import { RegistrationUsersUseCase } from './application/use-cases/registration.users.use.cases';
+import { UpdateEmailCodeUseCase } from './application/use-cases/update.email.code.use.cases';
+import { UpdatePasswordCodeUseCase } from './application/use-cases/update.password.code.use.cases';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
+
+const authUseCase = [
+  CreateSessionUseCase,
+  UpdateSessionUseCase,
+  ConfirmationEmailUseCase,
+  RecoveryPasswordUserUseCase,
+  RegistrationUsersUseCase,
+  UpdateEmailCodeUseCase,
+  UpdatePasswordCodeUseCase,
+];
 
 @Module({
   imports: [
@@ -43,6 +61,7 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
       ttl: 10,
       limit: 5,
     }),
+    CqrsModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -58,6 +77,7 @@ const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
     JwtGenerate,
     RefreshTokenGuard,
     BasicAdminGuard,
+    ...authUseCase,
   ],
   exports: [
     AuthService,

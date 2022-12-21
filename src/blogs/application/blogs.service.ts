@@ -1,14 +1,6 @@
-import { BlogsRepository } from '../blogs.repository';
+import { BlogsRepository } from '../infrastructure/blogs.repository';
 import { Injectable, Scope } from '@nestjs/common';
-import { BlogsFactory, CreateBlogInputDTO } from '../dto/blogsFactory';
-import {
-  BanBlogsFactory,
-  UpdateBlogInputModelType,
-  UpdateBlogOnNewUser,
-  UpdateBlogOnNewUserRepo,
-} from '../dto/update.blogs.dto';
-import { UsersRepository } from '../../users/users.repository';
-import { BanUsersFactory } from '../../users/dto/usersFactory';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsService {
@@ -33,39 +25,4 @@ export class BlogsService {
   //   );
   //   return this.blogsRepository.createBlogs(newBlog);
   // }
-
-  // updateBlogs(id: string, model: UpdateBlogInputModelType) {
-  //   const updateBlog: UpdateBlogInputModelType = {
-  //     id: id,
-  //     name: model.name,
-  //     description: model.description,
-  //     websiteUrl: model.websiteUrl,
-  //   };
-  //   return this.blogsRepository.updateBlogs(updateBlog);
-  // }
-
-  async updateBlogsOnNewUser(model: UpdateBlogOnNewUser) {
-    const user = await this.usersRepository.findUsersById(model.userId);
-    const updateBlog: UpdateBlogOnNewUserRepo = {
-      id: model.id,
-      userId: model.userId,
-      userLogin: user.accountData.login,
-    };
-    return this.blogsRepository.updateBlogsOnNewUser(updateBlog);
-  }
-  banBlogs(id: string, isBanned: boolean) {
-    const banBlogs = new BanBlogsFactory(
-      id,
-      isBanned,
-      new Date().toISOString(),
-    );
-    console.log('banBlogs', banBlogs);
-    return this.blogsRepository.banBlogs(banBlogs);
-  }
-  deleteBlogs(id: string) {
-    return this.blogsRepository.deleteBlogs(id);
-  }
-  async deleteAllBlogs() {
-    return this.blogsRepository.deleteAllBlogs();
-  }
 }

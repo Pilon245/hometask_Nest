@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../blogs.repository';
-import { CreateBlogsUseCaseDto } from '../../dto/createBlogsDto';
-import { UsersRepository } from '../../../users/users.repository';
-import { BlogsFactory } from '../../dto/blogsFactory';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { CreateBlogsUseCaseDto } from '../../domain/dto/createBlogsDto';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { BlogsFactory } from '../../domain/dto/blogsFactory';
 
 export class CreateBlogsCommand {
   constructor(public createUseCaseDto: CreateBlogsUseCaseDto) {}
@@ -26,7 +26,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       command.createUseCaseDto.websiteUrl,
       new Date().toISOString(),
       {
-        userId: command.createUseCaseDto.userId,
+        userId: user.id,
         userLogin: user.accountData.login,
       },
       {
