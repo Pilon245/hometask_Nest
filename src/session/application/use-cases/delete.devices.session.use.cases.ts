@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SessionRepository } from '../../session.repository';
-import { DeleteDevicesUseCaseDto } from '../../dto/create-session.dto';
+import { SessionRepository } from '../../infrastructure/session.repository';
+import { DeleteDevicesUseCaseDto } from '../../domain/dto/create-session.dto';
 
 export class DeleteDevicesCommand {
   constructor(public deleteUseCaseDto: DeleteDevicesUseCaseDto) {}

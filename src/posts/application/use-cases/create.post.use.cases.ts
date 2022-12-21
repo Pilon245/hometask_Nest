@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/users.repository';
-import { CreatePostUseCaseDto, PostsFactory } from '../../dto/postsFactory';
-import { LikeValuePost } from '../../entities/likes.posts.entity';
-import { BlogsRepository } from '../../../blogs/blogs.repository';
-import { PostsRepository } from '../../posts.repository';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { CreatePostUseCaseDto, PostsFactory } from '../../domain/dto/postsFactory';
+import { LikeValuePost } from '../../domain/entities/likes.posts.entity';
+import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+import { PostsRepository } from '../../infrastructure/posts.repository';
 
 export class CreatePostCommand {
   constructor(public createUseCaseDto: CreatePostUseCaseDto) {}

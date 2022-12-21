@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import {
   ValidationArguments,
   ValidatorConstraint,

@@ -19,7 +19,7 @@ import { UsersService } from 'src/users/application/users.service';
 import { Observable } from 'rxjs';
 import { _generatePasswordForDb } from './auth.function';
 import * as bcrypt from 'bcrypt';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '../users/infrastructure/users.repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

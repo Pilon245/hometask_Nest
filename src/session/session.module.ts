@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { SessionService } from './application/session.service';
 import { SessionController } from './api/session.controller';
-import { SessionRepository } from './session.repository';
+import { SessionRepository } from './infrastructure/session.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Session, SessionSchema } from './entities/session.entity';
+import { Session, SessionSchema } from './domain/entities/session.entity';
 import { AuthService } from '../auth/application/auth.service';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { UsersModule } from '../users/users.module';
-import { SessionQueryRepository } from './session.query.repository';
+import { SessionQueryRepository } from './infrastructure/session.query.repository';
 import { JwtGenerate } from '../auth/helper/generate.token';
 import { CqrsModule } from '@nestjs/cqrs';
 

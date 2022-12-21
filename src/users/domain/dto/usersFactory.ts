@@ -6,11 +6,11 @@ import {
 } from './entity.dto';
 import { IsBoolean, Length, Matches, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { UsersQueryRepository } from '../users.query.repository';
-import { BloggerExistsRule } from '../guards/blogger-ban-validation.service';
+import { UsersQueryRepository } from '../../infrastructure/users.query.repository';
+import { BloggerExistsRule } from '../../guards/blogger-ban-validation.service';
 import { Prop } from '@nestjs/mongoose';
 import { BloggerUsersBanInfoTypeData } from '../entities/blogger.users.blogs.ban.entity';
-import { BlogExistsRule } from '../../posts/guards/blog-id-validation.service';
+import { BlogExistsRule } from '../../../posts/guards/blog-id-validation.service';
 
 export class CreateUserInputModel {
   @Matches(/^[a-zA-Z0-9_-]*$/)

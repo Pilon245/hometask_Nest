@@ -1,13 +1,16 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Comment, CommentDocument } from './entities/comments.entity';
-import { CommentsFactory, CreateLikeInputDTO } from './dto/commentsFactory';
+import { Comment, CommentDocument } from '../domain/entities/comments.entity';
+import {
+  CommentsFactory,
+  CreateLikeInputDTO,
+} from '../domain/dto/commentsFactory';
 import {
   LikeComment,
   LikeCommentDocument,
   LikeValueComment,
-} from './entities/likes.comments.entity';
+} from '../domain/entities/likes.comments.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class CommentsRepository {

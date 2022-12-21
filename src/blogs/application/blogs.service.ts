@@ -1,14 +1,14 @@
-import { BlogsRepository } from '../blogs.repository';
+import { BlogsRepository } from '../infrastructure/blogs.repository';
 import { Injectable, Scope } from '@nestjs/common';
-import { BlogsFactory, CreateBlogInputDTO } from '../dto/blogsFactory';
+import { BlogsFactory, CreateBlogInputDTO } from '../domain/dto/blogsFactory';
 import {
   BanBlogsFactory,
   UpdateBlogInputModelType,
   UpdateBlogOnNewUser,
   UpdateBlogOnNewUserRepo,
-} from '../dto/update.blogs.dto';
-import { UsersRepository } from '../../users/users.repository';
-import { BanUsersFactory } from '../../users/dto/usersFactory';
+} from '../domain/dto/update.blogs.dto';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { BanUsersFactory } from '../../users/domain/dto/usersFactory';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsService {

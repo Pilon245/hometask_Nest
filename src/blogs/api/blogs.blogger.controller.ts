@@ -14,28 +14,28 @@ import {
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/application/posts.service';
-import { BlogsQueryRepository } from '../blogs.query.repository';
-import { PostsQueryRepository } from '../../posts/posts.query.repository';
+import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreateBlogInputDTO } from '../dto/blogsFactory';
+import { CreateBlogInputDTO } from '../domain/dto/blogsFactory';
 import {
   CreatePostByBlogIdInputDTO,
   CreatePostUseCaseDto,
-} from '../../posts/dto/postsFactory';
+} from '../../posts/domain/dto/postsFactory';
 import {
   UpdateBlogInputModelType,
   UpdateBlogUseCaseDto,
-} from '../dto/update.blogs.dto';
-import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
+} from '../domain/dto/update.blogs.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import {
   UpdatePostBloggerInputModelType,
   UpdatePostUseCaseDTO,
-} from '../../posts/dto/update.posts.dto';
+} from '../../posts/domain/dto/update.posts.dto';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
-import { CommentsQueryRepository } from '../../comments/comments.query.repository';
+import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateBlogsUseCaseDto } from '../dto/createBlogsDto';
+import { CreateBlogsUseCaseDto } from '../domain/dto/createBlogsDto';
 import { CreateBlogsCommand } from '../application/use-cases/create.blogs.use.cases';
 import { UpdateBlogCommand } from '../application/use-cases/update.blogs.use.cases';
 import { DeleteBlogCommand } from '../application/use-cases/delete.blogs.use.cases';

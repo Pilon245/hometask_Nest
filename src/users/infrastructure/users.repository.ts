@@ -1,11 +1,11 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from './entities/users.entity';
+import { User, UserDocument } from '../domain/entities/users.entity';
 import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
-} from './entities/blogger.users.blogs.ban.entity';
+} from '../domain/entities/blogger.users.blogs.ban.entity';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersRepository {

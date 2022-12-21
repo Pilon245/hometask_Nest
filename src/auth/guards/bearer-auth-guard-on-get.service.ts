@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { UsersQueryRepository } from '../../users/users.query.repository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { JwtGenerate } from '../helper/generate.token';
 
 @Injectable()

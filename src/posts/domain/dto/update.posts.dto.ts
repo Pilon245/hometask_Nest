@@ -1,6 +1,6 @@
 import { Length, Validate } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { BlogExistsRule } from '../guards/blog-id-validation.service';
+import { BlogExistsRule } from '../../guards/blog-id-validation.service';
 
 export class UpdatePostInputModelType {
   @Length(1, 30)

@@ -1,14 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import {
   CommentsFactory,
   CreateCommentUseCaseDto,
   LikesFactory,
-} from '../../dto/commentsFactory';
-import { LikeValueComment } from '../../entities/likes.comments.entity';
-import { PostsRepository } from '../../../posts/posts.repository';
-import { CommentsRepository } from '../../comments.repository';
-import { UpdateLikeCommentUseCaseDto } from '../../dto/update.comments.dto';
+} from '../../domain/dto/commentsFactory';
+import { LikeValueComment } from '../../domain/entities/likes.comments.entity';
+import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { UpdateLikeCommentUseCaseDto } from '../../domain/dto/update.comments.dto';
 
 export class UpdateLikeCommentCommand {
   constructor(public updateUseCaseDto: UpdateLikeCommentUseCaseDto) {}

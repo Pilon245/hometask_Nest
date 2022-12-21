@@ -1,17 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { UsersRepository } from '../../users/users.repository';
-import { randomUUID } from 'crypto';
-import { _generatePasswordForDb } from '../../helper/auth.function';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 import * as bcrypt from 'bcrypt';
 import { SessionService } from '../../session/application/session.service';
-import { JwtGenerate } from '../helper/generate.token';
-import { EmailManager } from '../../managers/email.manager';
-import {
-  CreateUserInputModel,
-  UsersFactory,
-} from '../../users/dto/usersFactory';
-import { add } from 'date-fns';
-import { CreateSessionUseCaseDto } from '../../session/dto/create-session.dto';
+import { CreateSessionUseCaseDto } from '../../session/domain/dto/create-session.dto';
 import { CreateSessionCommand } from '../../session/application/use-cases/create.session.use.cases';
 import { CommandBus } from '@nestjs/cqrs';
 
@@ -20,8 +11,6 @@ export class AuthService {
   constructor(
     protected usersRepository: UsersRepository,
     private sessionService: SessionService,
-    protected jwtGenerate: JwtGenerate,
-    protected emailManager: EmailManager,
     private commandBus: CommandBus,
   ) {}
 

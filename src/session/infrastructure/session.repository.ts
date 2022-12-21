@@ -1,8 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Session, SessionDocument } from './entities/session.entity';
+import { Session, SessionDocument } from '../domain/entities/session.entity';
 import { Injectable, Scope } from '@nestjs/common';
-import { CreateSessionInputModel } from './dto/create-session.dto';
+import { CreateSessionInputModel } from '../domain/dto/create-session.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class SessionRepository {

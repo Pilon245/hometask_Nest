@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../users.repository';
+import { UsersRepository } from '../../infrastructure/users.repository';
 import { _generatePasswordForDb } from '../../../helper/auth.function';
 import {
   BanUsersFactory,
@@ -7,13 +7,13 @@ import {
   CreateUserUseCaseDto,
   UsersFactory,
   BanBloggerUsersFactory,
-} from '../../dto/usersFactory';
+} from '../../domain/dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
-import { SessionRepository } from '../../../session/session.repository';
-import { CommentsRepository } from '../../../comments/comments.repository';
-import { PostsRepository } from '../../../posts/posts.repository';
-import { BlogsRepository } from '../../../blogs/blogs.repository';
+import { SessionRepository } from '../../../session/infrastructure/session.repository';
+import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
+import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
+import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 
 export class BanBloggerUserCommand {
   constructor(public banBloggerUserUseCase: BanBloggerUserUseCaseDto) {}

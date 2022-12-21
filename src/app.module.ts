@@ -1,37 +1,40 @@
 import { Module } from '@nestjs/common';
 import { BlogsController } from './blogs/api/blogs.controller';
 import { BlogsService } from './blogs/application/blogs.service';
-import { BlogsRepository } from './blogs/blogs.repository';
+import { BlogsRepository } from './blogs/infrastructure/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Blog, BlogSchema } from './blogs/entities/blog.entity';
+import { Blog, BlogSchema } from './blogs/domain/entities/blog.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostsController } from './posts/api/posts.controller';
 import { PostsService } from './posts/application/posts.service';
-import { PostsRepository } from './posts/posts.repository';
-import { Post, PostSchema } from './posts/entities/posts.entity';
+import { PostsRepository } from './posts/infrastructure/posts.repository';
+import { Post, PostSchema } from './posts/domain/entities/posts.entity';
 import { RemoveController } from './remove.controller';
-import { User, UserSchema } from './users/entities/users.entity';
-import { Comment, CommentSchema } from './comments/entities/comments.entity';
+import { User, UserSchema } from './users/domain/entities/users.entity';
+import {
+  Comment,
+  CommentSchema,
+} from './comments/domain/entities/comments.entity';
 import { CommentsService } from './comments/application/comments.service';
-import { CommentsRepository } from './comments/comments.repository';
+import { CommentsRepository } from './comments/infrastructure/comments.repository';
 import { CommentsController } from './comments/api/comments.controller';
-import { BlogsQueryRepository } from './blogs/blogs.query.repository';
-import { PostsQueryRepository } from './posts/posts.query.repository';
-import { CommentsQueryRepository } from './comments/comments.query.repository';
+import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.repository';
+import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
+import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 import { SessionModule } from './session/session.module';
-import { LikePost, LikePostSchema } from './posts/entities/likes.posts.entity';
+import { LikePost, LikePostSchema } from './posts/domain/entities/likes.posts.entity';
 import {
   LikeComment,
   LikeCommentSchema,
-} from './comments/entities/likes.comments.entity';
+} from './comments/domain/entities/likes.comments.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
 import { EmailAdapter } from './adapters/emailAdapter';
-import { Session, SessionSchema } from './session/entities/session.entity';
-import { BearerAuthGuardOnGet } from './auth/strategy/bearer-auth-guard-on-get.service';
+import { Session, SessionSchema } from './session/domain/entities/session.entity';
+import { BearerAuthGuardOnGet } from './auth/guards/bearer-auth-guard-on-get.service';
 import { JwtGenerate } from './auth/helper/generate.token';
 import { EmailManager } from './managers/email.manager';
 import { BlogExistsRule } from './posts/guards/blog-id-validation.service';
@@ -41,7 +44,7 @@ import { BlogsBloggerController } from './blogs/api/blogs.blogger.controller';
 import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
-} from './users/entities/blogger.users.blogs.ban.entity';
+} from './users/domain/entities/blogger.users.blogs.ban.entity';
 import { BloggerExistsRule } from './users/guards/blogger-ban-validation.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import {

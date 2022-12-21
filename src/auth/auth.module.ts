@@ -1,29 +1,29 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './application/auth.service';
 import { AuthController } from './api/auth.controller';
-import { UsersQueryRepository } from '../users/users.query.repository';
+import { UsersQueryRepository } from '../users/infrastructure/users.query.repository';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../users/entities/users.entity';
+import { User, UserSchema } from '../users/domain/entities/users.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
 import { PasswordEmailAdapter } from '../adapters/password-email-adapter.service';
 import { SessionModule } from '../session/session.module';
-import { UsersRepository } from '../users/users.repository';
-import { BearerAuthGuardOnGet } from './strategy/bearer-auth-guard-on-get.service';
+import { UsersRepository } from '../users/infrastructure/users.repository';
+import { BearerAuthGuardOnGet } from './guards/bearer-auth-guard-on-get.service';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { JwtGenerate } from './helper/generate.token';
 import { ConfigService } from '@nestjs/config';
-import { RefreshTokenGuard } from './strategy/refresh.token.guard';
+import { RefreshTokenGuard } from './guards/refresh.token.guard';
 import { BasicAdminGuard } from './guards/basic-admin.guard';
 import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
-} from '../users/entities/blogger.users.blogs.ban.entity';
+} from '../users/domain/entities/blogger.users.blogs.ban.entity';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateUserUseCase } from '../users/application/use-cases/create.user.use.cases';
 import { BanAdminUserUseCase } from '../users/application/use-cases/ban.admin.user.use.cases';

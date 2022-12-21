@@ -12,21 +12,21 @@ import {
   Scope,
 } from '@nestjs/common';
 import { CommentsService } from '../application/comments.service';
-import { CommentsQueryRepository } from '../comments.query.repository';
+import { CommentsQueryRepository } from '../infrastructure/comments.query.repository';
 import {
   UpdateCommentInputModel,
   UpdateCommentLikeInputModel,
   UpdateLikeCommentUseCaseDto,
-} from '../dto/update.comments.dto';
-import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
-import { LikeValueComment } from '../entities/likes.comments.entity';
-import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+} from '../domain/dto/update.comments.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { LikeValueComment } from '../domain/entities/likes.comments.entity';
+import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateCommentCommand } from '../application/use-cases/update.comment.use.cases';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateLikeCommentCommand } from '../application/use-cases/update.like.comment.use.cases';
-import { UpdateCommentUseCaseDto } from '../dto/commentsFactory';
+import { UpdateCommentUseCaseDto } from '../domain/dto/commentsFactory';
 import { DeleteCommentCommand } from '../application/use-cases/delete.comment.use.cases';
 
 @ApiTags('comments')

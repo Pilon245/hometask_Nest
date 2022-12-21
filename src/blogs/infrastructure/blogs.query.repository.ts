@@ -1,9 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from './entities/blog.entity';
+import { Blog, BlogDocument } from '../domain/entities/blog.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
-import { getSkipNumber, outputModel } from '../helper/helper.function';
-import { SortDirection } from '../validation/query.validation';
+import { getSkipNumber, outputModel } from '../../helper/helper.function';
+import { SortDirection } from '../../validation/query.validation';
 
 export type FindBlogsPayload = {
   pageSize: number;

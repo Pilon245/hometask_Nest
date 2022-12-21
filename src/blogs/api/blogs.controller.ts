@@ -13,10 +13,10 @@ import {
 import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/application/posts.service';
 import { Response } from 'express';
-import { BlogsQueryRepository } from '../blogs.query.repository';
-import { PostsQueryRepository } from '../../posts/posts.query.repository';
+import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get.service';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('blogs')

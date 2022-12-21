@@ -1,14 +1,14 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post, PostDocument } from './entities/posts.entity';
+import { Post, PostDocument } from '../domain/entities/posts.entity';
 import { Injectable, Scope } from '@nestjs/common';
-import { getSkipNumber, outputModel } from '../helper/helper.function';
+import { getSkipNumber, outputModel } from '../../helper/helper.function';
 import {
   LikePost,
   LikePostDocument,
   LikeValuePost,
-} from './entities/likes.posts.entity';
-import { SortDirection } from '../validation/query.validation';
+} from '../domain/entities/likes.posts.entity';
+import { SortDirection } from '../../validation/query.validation';
 
 export type FindPostsPayload = {
   pageSize: number;

@@ -1,14 +1,14 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { Blog, BlogDocument } from './entities/blog.entity';
+import { Blog, BlogDocument } from '../domain/entities/blog.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateBlogDTO } from './dto/blogsFactory';
+import { CreateBlogDTO } from '../domain/dto/blogsFactory';
 import {
   BanBlogsRepo,
   UpdateBlogInputModelType,
   UpdateBlogOnNewUser,
   UpdateBlogOnNewUserRepo,
-} from './dto/update.blogs.dto';
+} from '../domain/dto/update.blogs.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsRepository {

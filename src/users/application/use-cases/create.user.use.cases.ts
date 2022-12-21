@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../users.repository';
+import { UsersRepository } from '../../infrastructure/users.repository';
 import { _generatePasswordForDb } from '../../../helper/auth.function';
-import { CreateUserUseCaseDto, UsersFactory } from '../../dto/usersFactory';
+import { CreateUserUseCaseDto, UsersFactory } from '../../domain/dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 

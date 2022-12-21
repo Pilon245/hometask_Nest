@@ -11,16 +11,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
-import { UsersQueryRepository } from '../users.query.repository';
+import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import {
   BanBLoggerUsersInputModel,
   BanBloggerUserUseCaseDto,
-} from '../dto/usersFactory';
+} from '../domain/dto/usersFactory';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
-import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { BanBloggerUserCommand } from '../application/use-cases/ban.blogger.user.use.cases';
 

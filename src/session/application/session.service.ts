@@ -1,8 +1,8 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { SessionFactory } from '../dto/create-session.dto';
+import { SessionFactory } from '../domain/dto/create-session.dto';
 
-import { SessionRepository } from '../session.repository';
-import { UserAccountDBType, UserOutputModel } from '../../users/dto/entity.dto';
+import { SessionRepository } from '../infrastructure/session.repository';
+import { UserAccountDBType, UserOutputModel } from '../../users/domain/dto/entity.dto';
 import { randomUUID } from 'crypto';
 import { JwtGenerate } from '../../auth/helper/generate.token';
 

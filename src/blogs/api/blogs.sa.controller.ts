@@ -12,16 +12,16 @@ import {
 } from '@nestjs/common';
 import { BlogsService } from '../application/blogs.service';
 import { PostsService } from '../../posts/application/posts.service';
-import { BlogsQueryRepository } from '../blogs.query.repository';
-import { PostsQueryRepository } from '../../posts/posts.query.repository';
+import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { BanBlogsInputModel, IdModelType } from '../dto/blogsFactory';
+import { BanBlogsInputModel, IdModelType } from '../domain/dto/blogsFactory';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
-import { UsersQueryRepository } from '../../users/users.query.repository';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateBlogOnNewUserCommand } from '../application/use-cases/update.blogs.on.new.user.use.cases';
 import { CommandBus } from '@nestjs/cqrs';
-import { BanBlogUseCaseDto } from '../dto/update.blogs.dto';
+import { BanBlogUseCaseDto } from '../domain/dto/update.blogs.dto';
 import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
 
 @ApiTags('sa/blogs')

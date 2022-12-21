@@ -1,12 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../blogs.repository';
-import { CreateBlogsUseCaseDto } from '../../dto/createBlogsDto';
-import { UsersRepository } from '../../../users/users.repository';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import { CreateBlogsUseCaseDto } from '../../domain/dto/createBlogsDto';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import {
   UpdateBlogOnNewUser,
   UpdateBlogOnNewUserCommandUseCaseDto,
   UpdateBlogOnNewUserRepo,
-} from '../../dto/update.blogs.dto';
+} from '../../domain/dto/update.blogs.dto';
 
 export class UpdateBlogOnNewUserCommand {
   constructor(public updateUseCaseDto: UpdateBlogOnNewUserCommandUseCaseDto) {}

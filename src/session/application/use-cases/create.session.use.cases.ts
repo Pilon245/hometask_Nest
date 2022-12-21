@@ -1,10 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SessionRepository } from '../../session.repository';
+import { SessionRepository } from '../../infrastructure/session.repository';
 import { randomUUID } from 'crypto';
 import {
   CreateSessionUseCaseDto,
   SessionFactory,
-} from '../../dto/create-session.dto';
+} from '../../domain/dto/create-session.dto';
 import { JwtGenerate } from '../../../auth/helper/generate.token';
 
 export class CreateSessionCommand {

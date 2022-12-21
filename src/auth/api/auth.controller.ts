@@ -12,24 +12,24 @@ import {
   Scope,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
-import { LoginInputModel } from '../dto/create-auth.dto';
+import { LoginInputModel } from '../domain/dto/create-auth.dto';
 import { SessionService } from '../../session/application/session.service';
-import { LocalAuthGuard } from '../strategy/local-auth.guard';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { Response } from 'express';
-import { UsersQueryRepository } from '../../users/users.query.repository';
-import { CreateUserInputModel } from '../../users/dto/usersFactory';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
+import { CreateUserInputModel } from '../../users/domain/dto/usersFactory';
 import { EmailManager } from '../../managers/email.manager';
-import { JwtAuthGuard } from '../strategy/jwt-auth.guard';
-import { UsersRepository } from '../../users/users.repository';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 import {
   ConfirmationInputModel,
   NewPasswordInputModel,
   RecoveryPasswordUserUseCaseDto,
   RegistrationEmailInputModel,
-} from '../dto/registration.dto';
+} from '../domain/dto/registration.dto';
 import { Throttle } from '@nestjs/throttler';
-import { CustomThrottlerGuard } from '../strategy/custom.throttler.guard';
-import { RefreshTokenGuard } from '../strategy/refresh.token.guard';
+import { CustomThrottlerGuard } from '../guards/custom.throttler.guard';
+import { RefreshTokenGuard } from '../guards/refresh.token.guard';
 import { CurrentUserId } from '../current-user.param.decorator';
 import { BasicStrategy } from '../strategy/basic-strategy.service';
 import { BasicAdminGuard } from '../guards/basic-admin.guard';
@@ -39,7 +39,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { DeleteDeviceByDeviceIdCommand } from '../../session/application/use-cases/delete.device.id.session.use.cases';
 import { UpdateSessionCommand } from '../../session/application/use-cases/update.session.use.cases';
 import { CreateSessionCommand } from '../../session/application/use-cases/create.session.use.cases';
-import { CreateSessionUseCaseDto } from '../../session/dto/create-session.dto';
+import { CreateSessionUseCaseDto } from '../../session/domain/dto/create-session.dto';
 import { RegistrationUsersCommand } from '../application/use-cases/registration.users.use.cases';
 import { ConfirmationEmailCommand } from '../application/use-cases/confirmation.email.use.cases';
 import { UpdateEmailCodeCommand } from '../application/use-cases/update.email.code.use.cases';

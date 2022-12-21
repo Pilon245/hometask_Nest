@@ -1,5 +1,5 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { UsersRepository } from '../users.repository';
+import { UsersRepository } from '../infrastructure/users.repository';
 import {
   BanBloggerUsersFactory,
   BanBLoggerUsersInputModel,
@@ -7,14 +7,14 @@ import {
   BanUsersFactory,
   CreateUserInputModel,
   UsersFactory,
-} from '../dto/usersFactory';
+} from '../domain/dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { _generatePasswordForDb } from '../../helper/auth.function';
 import { SessionService } from '../../session/application/session.service';
-import { BlogsRepository } from '../../blogs/blogs.repository';
-import { CommentsRepository } from '../../comments/comments.repository';
-import { PostsRepository } from '../../posts/posts.repository';
+import { BlogsRepository } from '../../blogs/infrastructure/blogs.repository';
+import { CommentsRepository } from '../../comments/infrastructure/comments.repository';
+import { PostsRepository } from '../../posts/infrastructure/posts.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersService {

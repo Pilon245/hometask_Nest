@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/users.repository';
+import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { _generatePasswordForDb } from '../../../helper/auth.function';
-import { UsersFactory } from '../../../users/dto/usersFactory';
+import { UsersFactory } from '../../../users/domain/dto/usersFactory';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { EmailManager } from '../../../managers/email.manager';
-import { RegistrationUsersUseCaseDto } from '../../dto/create-auth.dto';
+import { RegistrationUsersUseCaseDto } from '../../domain/dto/create-auth.dto';
 
 export class RegistrationUsersCommand {
   constructor(public registrationUseCaseDto: RegistrationUsersUseCaseDto) {}

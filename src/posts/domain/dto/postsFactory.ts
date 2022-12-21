@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { LikeValuePost } from '../entities/likes.posts.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { BlogExistsRule } from '../guards/blog-id-validation.service';
+import { BlogExistsRule } from '../../guards/blog-id-validation.service';
 // import { newestLikesType } from '../entities/posts.entity';
 
 // export class extendedLikesInfoType {

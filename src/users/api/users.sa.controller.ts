@@ -13,14 +13,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../application/users.service';
-import { UsersQueryRepository } from '../users.query.repository';
+import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import {
   BanAdminUserUseCaseDto,
   BanBloggerUserUseCaseDto,
   BanUserInputModel,
   CreateUserInputModel,
-} from '../dto/usersFactory';
+} from '../domain/dto/usersFactory';
 import { ApiTags } from '@nestjs/swagger';
 import { BasicAdminGuard } from '../../auth/guards/basic-admin.guard';
 import { CommandBus } from '@nestjs/cqrs';

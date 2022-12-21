@@ -1,6 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { BlogsRepository } from '../../blogs.repository';
-import { BanBlogsFactory, BanBlogUseCaseDto } from '../../dto/update.blogs.dto';
+import { BlogsRepository } from '../../infrastructure/blogs.repository';
+import {
+  BanBlogsFactory,
+  BanBlogUseCaseDto,
+} from '../../domain/dto/update.blogs.dto';
 
 export class BanBlogCommand {
   constructor(public banUseCaseDto: BanBlogUseCaseDto) {}

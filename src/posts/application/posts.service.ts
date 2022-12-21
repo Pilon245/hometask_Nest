@@ -1,17 +1,17 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { PostsRepository } from '../posts.repository';
-import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
-import { LikeValuePost } from '../entities/likes.posts.entity';
+import { PostsRepository } from '../infrastructure/posts.repository';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
+import { LikeValuePost } from '../domain/entities/likes.posts.entity';
 // import { newestLikesType } from '../entities/posts.entity';
 import {
   CreatePostInputDTO,
   LikesPostFactory,
   PostsFactory,
-} from '../dto/postsFactory';
+} from '../domain/dto/postsFactory';
 import {
   UpdatePostBloggerInputModelType,
   UpdatePostDTO,
-} from '../dto/update.posts.dto';
+} from '../domain/dto/update.posts.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class PostsService {

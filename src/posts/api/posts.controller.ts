@@ -15,23 +15,23 @@ import {
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { CommentsService } from '../../comments/application/comments.service';
-import { PostsQueryRepository } from '../posts.query.repository';
-import { CommentsQueryRepository } from '../../comments/comments.query.repository';
+import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
+import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { BlogsQueryRepository } from '../../blogs/blogs.query.repository';
-import { JwtAuthGuard } from '../../auth/strategy/jwt-auth.guard';
-import { UsersQueryRepository } from '../../users/users.query.repository';
-import { UpdateCommentInputModel } from '../../comments/dto/update.comments.dto';
+import { BlogsQueryRepository } from '../../blogs/infrastructure/blogs.query.repository';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
+import { UpdateCommentInputModel } from '../../comments/domain/dto/update.comments.dto';
 import { Response } from 'express';
-import { BearerAuthGuardOnGet } from '../../auth/strategy/bearer-auth-guard-on-get.service';
+import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdatePostLikeInputModel } from '../dto/postsFactory';
-import { LikeValuePost } from '../entities/likes.posts.entity';
+import { UpdatePostLikeInputModel } from '../domain/dto/postsFactory';
+import { LikeValuePost } from '../domain/entities/likes.posts.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateLikePostCommand } from '../application/use-cases/update.like.post.use.cases';
-import { UpdateLikePostUseCaseDTO } from '../dto/update.posts.dto';
-import { CreateCommentUseCaseDto } from '../../comments/dto/commentsFactory';
+import { UpdateLikePostUseCaseDTO } from '../domain/dto/update.posts.dto';
+import { CreateCommentUseCaseDto } from '../../comments/domain/dto/commentsFactory';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create.comment.use.cases';
 
 @ApiTags('posts')

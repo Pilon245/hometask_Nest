@@ -1,9 +1,9 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { CommentsRepository } from '../comments.repository';
-import { CommentsFactory, LikesFactory } from '../dto/commentsFactory';
-import { LikeValueComment } from '../entities/likes.comments.entity';
-import { PostsRepository } from '../../posts/posts.repository';
-import { UsersRepository } from '../../users/users.repository';
+import { CommentsRepository } from '../infrastructure/comments.repository';
+import { CommentsFactory, LikesFactory } from '../domain/dto/commentsFactory';
+import { LikeValueComment } from '../domain/entities/likes.comments.entity';
+import { PostsRepository } from '../../posts/infrastructure/posts.repository';
+import { UsersRepository } from '../../users/infrastructure/users.repository';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class CommentsService {
