@@ -19,6 +19,11 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
     const user = await this.usersRepository.findUsersById(
       command.createUseCaseDto.userId,
     );
+    console.log(
+      'command.createUseCaseDto.userId',
+      command.createUseCaseDto.userId,
+    );
+    console.log('user', user);
     const newBlog = new BlogsFactory(
       String(+new Date()),
       command.createUseCaseDto.name,
