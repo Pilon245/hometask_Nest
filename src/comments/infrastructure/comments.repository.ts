@@ -63,13 +63,13 @@ export class CommentsRepository {
   }
   async banUsers(userId: string, value: boolean) {
     await this.commentModel.updateMany(
-      { ownerUserId: userId },
+      { $or: [{ ownerUserId: userId }, { 'commentatorInfo.userId': userId }] },
       {
         isBanned: value,
       },
     );
     await this.likeCommentModel.updateMany(
-      { ownerUserId: userId },
+      { userId: userId },
       {
         isBanned: value,
       },
