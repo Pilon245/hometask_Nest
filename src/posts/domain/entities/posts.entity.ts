@@ -27,7 +27,7 @@ export class Post {
   createdAt: string;
 
   @Prop()
-  isBan: boolean;
+  isBanned: boolean;
 
   @Prop({ require: true })
   userId: string;

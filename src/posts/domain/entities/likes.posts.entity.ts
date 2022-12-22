@@ -20,7 +20,7 @@ export class LikePost {
   @Prop()
   addedAt: string;
   @Prop()
-  isBan: boolean;
+  isBanned: boolean;
 }
 
 export const LikePostSchema = SchemaFactory.createForClass(LikePost);
