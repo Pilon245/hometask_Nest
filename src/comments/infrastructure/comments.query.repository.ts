@@ -40,7 +40,7 @@ export class CommentsQueryRepository {
   async findCommentById(id: string, userId?: string) {
     const comments = await this.commentModel.findOne(
       { id, isBanned: false },
-      { _id: false, __v: 0, isBanned: 0, postInfo: 0 },
+      // { _id: false, __v: 0, isBanned: 0, postInfo: 0 },
     );
 
     const totalLike = await this.likeCommentModel.countDocuments({
@@ -85,7 +85,7 @@ export class CommentsQueryRepository {
     const comments = await this.commentModel
       .find(
         { postId: postId, isBanned: false },
-        { _id: 0, __v: 0, isBanned: 0 },
+        // { _id: 0, __v: 0, isBanned: 0 },
       )
       .sort([[sortBy, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))

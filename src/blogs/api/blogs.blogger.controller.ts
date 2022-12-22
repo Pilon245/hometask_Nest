@@ -12,10 +12,13 @@ import {
   Scope,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsQueryRepository } from '../infrastructure/blogs.query.repository';
+import {
+  BlogsQueryRepository,
+  FindBlogsPayload,
+} from '../infrastructure/blogs.query.repository';
 import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.repository';
 import { pagination } from '../../validation/query.validation';
-import { CreateBlogInputDTO } from '../domain/dto/blogsFactory';
+import { BlogsFactory, CreateBlogInputDTO } from '../domain/dto/blogsFactory';
 import {
   CreatePostByBlogIdInputDTO,
   CreatePostUseCaseDto,
@@ -30,7 +33,13 @@ import {
   UpdatePostBloggerInputModelType,
   UpdatePostUseCaseDTO,
 } from '../../posts/domain/dto/update.posts.dto';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiQuery,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CommentsQueryRepository } from '../../comments/infrastructure/comments.query.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogsUseCaseDto } from '../domain/dto/createBlogsDto';
@@ -40,6 +49,7 @@ import { DeleteBlogCommand } from '../application/use-cases/delete.blogs.use.cas
 import { CreatePostCommand } from '../../posts/application/use-cases/create.post.use.cases';
 import { UpdatePostCommand } from '../../posts/application/use-cases/update.post.use.cases';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete.post.use.cases';
+import { Blog, BlogSchema } from '../domain/entities/blog.entity';
 
 @ApiTags('blogger/blogs')
 @ApiSecurity('bearer')
@@ -55,7 +65,17 @@ export class BlogsBloggerController {
     protected commentsQueryRepository: CommentsQueryRepository,
     private commandBus: CommandBus,
   ) {}
-
+  @ApiOkResponse({
+    description: 'The blog records',
+    type: BlogsFactory,
+    isArray: true,
+  })
+  @ApiQuery({ name: 'pageSize' })
+  @ApiQuery({ name: 'pageNumber' })
+  @ApiQuery({ name: 'sortBy' })
+  @ApiQuery({ name: 'sortDirection' })
+  @ApiQuery({ name: 'searchNameTerm' })
+  @ApiResponse({ status: 200, description: 'Find is successes' })
   @Get()
   getBlogs(@Query() query, @CurrentUserId() currentUserId) {
     return this.blogsQueryRepository.findBlogsOnBlogger(
@@ -63,6 +83,8 @@ export class BlogsBloggerController {
       pagination(query),
     );
   }
+  @ApiResponse({ status: 200, description: 'Find is successes' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Get('comments')
   async getComments(@Query() query, @CurrentUserId() currentUserId) {
     const blog = await this.blogsQueryRepository.findBlogByUserId(
@@ -76,6 +98,8 @@ export class BlogsBloggerController {
       pagination(query),
     );
   }
+  @ApiResponse({ status: 201, description: 'Created is successes' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Post()
   async createBlogs(
     @Body() inputModel: CreateBlogInputDTO,
@@ -92,6 +116,9 @@ export class BlogsBloggerController {
     );
     return this.blogsQueryRepository.findBlogByIdOnBlogger(newBlog.id);
   }
+  @ApiResponse({ status: 201, description: 'Created is successes' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Post(':blogId/posts')
   async CreatePostsOnBlogId(
     @Param('blogId') blogId: string,
@@ -115,6 +142,9 @@ export class BlogsBloggerController {
     const posts = await this.commandBus.execute(new CreatePostCommand(newPost));
     return this.postsQueryRepository.findPostById(posts.id);
   }
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Put(':id')
   @HttpCode(204)
   async updateBlogs(
@@ -137,6 +167,9 @@ export class BlogsBloggerController {
     };
     return this.commandBus.execute(new UpdateBlogCommand(updateDto));
   }
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Delete(':id')
   @HttpCode(204)
   async deleteBlogs(
@@ -152,6 +185,9 @@ export class BlogsBloggerController {
     }
     return this.commandBus.execute(new DeleteBlogCommand(blogId));
   }
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Put(':blogId/posts/:postId')
   @HttpCode(204)
   async updatePosts(
@@ -179,6 +215,9 @@ export class BlogsBloggerController {
     };
     return this.commandBus.execute(new UpdatePostCommand(updatePost));
   }
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
   @Delete(':blogId/posts/:postId')
   @HttpCode(204)
   async deletePosts(

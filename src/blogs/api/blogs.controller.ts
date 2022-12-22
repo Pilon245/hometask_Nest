@@ -53,21 +53,11 @@ export class BlogsController {
     if (!result) {
       throw new HttpException('invalid blog', 404);
     }
-    if (req.user) {
-      const posts = await this.postsQueryRepository.findPostByBlogId(
-        pagination(query),
-        blogId,
-        req.user.id,
-      );
-      return res.status(200).send(posts);
-    }
-    if (!req.user) {
-      const posts = await this.postsQueryRepository.findPostByBlogId(
-        pagination(query),
-        blogId,
-      );
-      return res.status(200).send(posts);
-    }
-    return res.status(200).send(result);
+    const posts = await this.postsQueryRepository.findPostByBlogId(
+      pagination(query),
+      blogId,
+      req.user?.id,
+    );
+    return res.status(200).send(posts);
   }
 }

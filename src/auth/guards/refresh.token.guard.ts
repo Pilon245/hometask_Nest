@@ -34,7 +34,7 @@ export class RefreshTokenGuard implements CanActivate {
     ) {
       throw new UnauthorizedException();
     }
-    // req.user = user;
+    // req.user = user; //todo почему так не работает
     req.user = await this.usersQueryRepository.findUsersById(user.id);
     return true;
   }

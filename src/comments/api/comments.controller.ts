@@ -10,6 +10,8 @@ import {
   UseGuards,
   Delete,
   Scope,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { CommentsQueryRepository } from '../infrastructure/comments.query.repository';
 import {
@@ -27,6 +29,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { UpdateLikeCommentCommand } from '../application/use-cases/update.like.comment.use.cases';
 import { UpdateCommentUseCaseDto } from '../domain/dto/commentsFactory';
 import { DeleteCommentCommand } from '../application/use-cases/delete.comment.use.cases';
+import { Response } from 'express';
 
 @ApiTags('comments')
 @Controller({
@@ -40,18 +43,15 @@ export class CommentsController {
   ) {}
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
-  async getCommentById(
-    @Param('id') id: string,
-    @Query() query,
-    @CurrentUserId() currentUserId,
-  ) {
-    const resultFound = await this.commentsQueryRepository.findCommentById(id);
+  async getCommentById(@Param('id') id: string, @Req() req) {
+    const resultFound = await this.commentsQueryRepository.findCommentById(
+      id,
+      req.user?.id,
+    );
     if (!resultFound) {
-      throw new HttpException('invalid blog', 404);
+      throw new HttpException({}, 404);
     }
-    if (currentUserId) {
-      return this.commentsQueryRepository.findCommentById(id, currentUserId);
-    }
+
     return resultFound;
   }
 

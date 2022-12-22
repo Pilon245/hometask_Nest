@@ -49,24 +49,12 @@ export class PostsController {
   ) {}
   @UseGuards(BearerAuthGuardOnGet)
   @Get()
-  async getPosts(
-    @Query() query,
-    @Req() req,
-    @Res() res: Response,
-    @CurrentUserId() currentUserId,
-  ) {
-    if (currentUserId) {
-      const posts = await this.postsQueryRepository.findPosts(
-        pagination(query),
-        currentUserId,
-      );
-      return res.status(200).send(posts);
-    } else {
-      const posts = await this.postsQueryRepository.findPosts(
-        pagination(query),
-      );
-      return res.status(200).send(posts);
-    }
+  async getPosts(@Query() query, @Req() req, @Res() res: Response) {
+    const posts = await this.postsQueryRepository.findPosts(
+      pagination(query),
+      req.user?.id,
+    );
+    return res.status(200).send(posts);
   }
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
@@ -81,16 +69,8 @@ export class PostsController {
     if (!foundBanBlogs) {
       throw new HttpException('invalid blog', 404);
     }
-    if (req.user) {
-      const post = await this.postsQueryRepository.findPostById(
-        id,
-        req.user.id,
-      );
-      return res.status(200).send(post);
-    } else {
-      const post = await this.postsQueryRepository.findPostById(id);
-      return res.status(200).send(post);
-    }
+    const post = await this.postsQueryRepository.findPostById(id, req.user?.id);
+    return res.status(200).send(post);
   }
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':postId/comments')
@@ -104,20 +84,12 @@ export class PostsController {
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
-    if (req.user) {
-      const comments = await this.commentsQueryRepository.findCommentByPostId(
-        pagination(query),
-        postId,
-        req.user.id,
-      );
-      return res.status(200).send(comments);
-    } else {
-      const comments = await this.commentsQueryRepository.findCommentByPostId(
-        pagination(query),
-        postId,
-      );
-      return res.status(200).send(comments);
-    }
+    const comments = await this.commentsQueryRepository.findCommentByPostId(
+      pagination(query),
+      postId,
+      req.user?.id,
+    );
+    return res.status(200).send(comments);
   }
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')

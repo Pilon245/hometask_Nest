@@ -19,17 +19,32 @@ export class BlogsFactory {
 }
 export class CreateBlogInputDTO {
   // для валидации
-  @ApiProperty()
+  @ApiProperty({
+    description: 'name blog',
+    minimum: 1,
+    maximum: 15,
+    type: String,
+  })
   @Length(1, 15, { message: 'incorrect name' })
   @Transform(({ value }: TransformFnParams) => value?.trim()) //todo крашит когда отпраляешь намбер
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'description blog',
+    minimum: 1,
+    maximum: 500,
+    type: String,
+  })
   @Length(1, 500)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'websiteUrl blog',
+    minimum: 1,
+    maximum: 100,
+    type: String,
+  })
   @Length(1, 100)
   @IsUrl()
   @Transform(({ value }: TransformFnParams) => value?.trim())

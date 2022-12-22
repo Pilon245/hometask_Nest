@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // const user = await this.usersRepository.findUsersById(payload.id);
     // if (!user || user.banInfo.isBanned) throw new UnauthorizedException();
+    //todo проврека если у пользователя сохранился тоекн после бана и он сможет дальше активничать
     return { id: payload.id };
   }
 }

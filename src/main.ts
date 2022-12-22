@@ -39,7 +39,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Network example')
+    .setTitle('Network project API-V1')
     .setDescription('The Network API description')
     .setVersion('v1.0')
     .addBearerAuth()
