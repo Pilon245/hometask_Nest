@@ -52,6 +52,10 @@ export class CreateCommentUseCaseDto {
   userId: string;
   postId: string;
   userLogin: string;
+  title: string;
+  blogId: string;
+  blogName: string;
+  ownerUserId: string;
 }
 export class UpdateCommentUseCaseDto {
   id: string;

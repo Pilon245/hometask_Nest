@@ -49,6 +49,12 @@ export class UsersQueryRepository {
       email: users.accountData.email,
     };
   }
+  async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
+    return this.bloggerUsersBanModel.findOne(
+      { banUserId, blogId, 'banInfo.isBanned': true },
+      { _id: false, __v: 0 },
+    );
+  }
   async findUsers({
     searchLoginTerm,
     searchEmailTerm,

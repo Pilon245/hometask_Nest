@@ -99,7 +99,7 @@ export class PostsController {
     @Body() inputModel: UpdateCommentInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.postsQueryRepository.findPostById(postId);
+    const resultFound = await this.postsQueryRepository.findPostDB(postId);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
     }
@@ -109,11 +109,19 @@ export class PostsController {
       userId: user.id,
       postId: postId,
       userLogin: user.accountData.login,
+      title: resultFound.title,
+      blogId: resultFound.blogId,
+      blogName: resultFound.blogName,
+      ownerUserId: resultFound.userId,
     };
     const comment = await this.commandBus.execute(
       new CreateCommentCommand(newComment),
     );
-    if (!comment) {
+    const banUser = await this.usersQueryRepository.findBanBloggerUsers(
+      newComment.userId,
+      newComment.blogId,
+    );
+    if (banUser) {
       throw new HttpException('Ban', 403);
     }
     return this.commentsQueryRepository.findCommentById(comment.id);

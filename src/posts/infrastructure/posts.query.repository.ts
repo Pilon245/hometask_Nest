@@ -23,6 +23,9 @@ export class PostsQueryRepository {
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(LikePost.name) private likePostModel: Model<LikePostDocument>,
   ) {}
+  async findPostDB(id: string, userId?: string) {
+    return this.postModel.findOne({ id, isBanned: false }).lean();
+  }
   async findPosts(
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
     userId?: string,

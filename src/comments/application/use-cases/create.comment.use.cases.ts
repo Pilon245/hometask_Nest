@@ -18,39 +18,25 @@ export class CreateCommentUseCase
   constructor(
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,
-    private usersRepository: UsersRepository,
   ) {}
 
   async execute(command: CreateCommentCommand) {
-    const post = await this.postsRepository.findPostById(
-      command.createUseCaseDto.postId,
-    );
-    const banUser = await this.usersRepository.findBanBloggerUsers(
-      command.createUseCaseDto.userId,
-      post.blogId,
-    );
-    if (banUser) return false;
     const newComment = new CommentsFactory(
       String(+new Date()),
       command.createUseCaseDto.content,
       command.createUseCaseDto.postId,
       new Date().toISOString(),
-      // {
-      //   likesCount: 0,
-      //   dislikesCount: 0,
-      //   myStatus: LikeValueComment.none,
-      // },
       {
         userId: command.createUseCaseDto.userId,
         userLogin: command.createUseCaseDto.userLogin,
       },
       {
         id: command.createUseCaseDto.postId,
-        title: post.title,
-        blogId: post.blogId,
-        blogName: post.blogName,
+        title: command.createUseCaseDto.title,
+        blogId: command.createUseCaseDto.blogId,
+        blogName: command.createUseCaseDto.blogName,
       },
-      post.userId,
+      command.createUseCaseDto.ownerUserId,
       false,
     );
     return this.commentsRepository.createComments(newComment);
