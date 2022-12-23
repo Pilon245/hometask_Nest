@@ -22,7 +22,10 @@ import { BlogsQueryRepository } from './blogs/infrastructure/blogs.query.reposit
 import { PostsQueryRepository } from './posts/infrastructure/posts.query.repository';
 import { CommentsQueryRepository } from './comments/infrastructure/comments.query.repository';
 import { SessionModule } from './session/session.module';
-import { LikePost, LikePostSchema } from './posts/domain/entities/likes.posts.entity';
+import {
+  LikePost,
+  LikePostSchema,
+} from './posts/domain/entities/likes.posts.entity';
 import {
   LikeComment,
   LikeCommentSchema,
@@ -33,7 +36,10 @@ import { PassportModule } from '@nestjs/passport';
 import { BasicStrategy } from './auth/strategy/basic-strategy.service';
 import { PasswordEmailAdapter } from './adapters/password-email-adapter.service';
 import { EmailAdapter } from './adapters/emailAdapter';
-import { Session, SessionSchema } from './session/domain/entities/session.entity';
+import {
+  Session,
+  SessionSchema,
+} from './session/domain/entities/session.entity';
 import { BearerAuthGuardOnGet } from './auth/guards/bearer-auth-guard-on-get.service';
 import { JwtGenerate } from './auth/helper/generate.token';
 import { EmailManager } from './managers/email.manager';
@@ -76,6 +82,7 @@ import { DeleteCommentUseCase } from './comments/application/use-cases/delete.co
 import { UpdateCommentUseCase } from './comments/application/use-cases/update.comment.use.cases';
 import { UpdateLikeCommentUseCase } from './comments/application/use-cases/update.like.comment.use.cases';
 import { DeleteUsersUseCase } from './users/application/use-cases/delete.all.users.use.cases';
+import { UserExistsRule } from './blogs/guards/blog-id-validation.service';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -181,6 +188,7 @@ const deleteAll = [
     ...sessionUseCase,
     ...commentsUserCase,
     ...deleteAll,
+    UserExistsRule,
   ],
 })
 export class AppModule {}

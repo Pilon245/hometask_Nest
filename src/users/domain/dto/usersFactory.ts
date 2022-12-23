@@ -28,7 +28,7 @@ export class BanUserInputModel {
   banReason: string;
 }
 
-export class BanBLoggerUsersInputModel {
+export class BanBloggerUsersInputModel {
   @IsBoolean()
   isBanned: boolean;
   @Length(20)

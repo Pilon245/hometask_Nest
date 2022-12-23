@@ -13,7 +13,7 @@ import {
 import { UsersQueryRepository } from '../infrastructure/users.query.repository';
 import { pagination } from '../../validation/query.validation';
 import {
-  BanBLoggerUsersInputModel,
+  BanBloggerUsersInputModel,
   BanBloggerUserUseCaseDto,
 } from '../domain/dto/usersFactory';
 import { ApiTags } from '@nestjs/swagger';
@@ -58,7 +58,7 @@ export class UsersBloggerController {
   @HttpCode(204)
   async banBloggerUsers(
     @Param('id') id: string,
-    @Body() inputModel: BanBLoggerUsersInputModel,
+    @Body() inputModel: BanBloggerUsersInputModel,
     @CurrentUserId() currentUserId,
   ) {
     const resultFound = await this.blogsQueryRepository.findBlogBD(
