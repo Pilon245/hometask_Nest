@@ -19,9 +19,12 @@
 // import request from 'supertest';
 //
 // describe('AuthController', () => {
-//   let controller: AuthController;
+//   let authService: AuthService;
+//   let authController: AuthController;
 //
 //   beforeEach(async () => {
+//     authService = new AuthService();
+//     authController = new AuthController(authService);
 //     const module: TestingModule = await Test.createTestingModule({
 //       imports: [
 //         AppModule,
