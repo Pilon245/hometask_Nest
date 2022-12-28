@@ -41,6 +41,7 @@ export class UsersBloggerController {
     @Param('blogId') blogId: string,
     @CurrentUserId() currentUserId,
   ) {
+    console.log();
     const blog = await this.blogsQueryRepository.findBlogBD(blogId); //todo наверное надо перести в сервис
     if (!blog) {
       throw new HttpException('invalid blog', 404);
