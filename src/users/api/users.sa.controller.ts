@@ -68,6 +68,7 @@ export class UsersSaController {
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {
+    //todo добавить isDeleted
     const result = await this.commandBus.execute(new DeleteUserCommand(id));
     if (!result) {
       throw new HttpException('Incorect Not Found', 404);
