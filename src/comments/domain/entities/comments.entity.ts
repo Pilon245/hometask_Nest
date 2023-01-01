@@ -14,6 +14,7 @@ export type CommentDocument = HydratedDocument<Comment>;
 
 @Schema({ id: false })
 export class commentatorInfoType {
+  //todo в sql можно объедленить в OwnerInfoId
   @Prop({ required: true })
   userId: string;
   @Prop({ required: true })
@@ -48,9 +49,6 @@ export class Comment {
 
   @Prop({ require: true })
   createdAt: string;
-
-  // @Prop({ type: likesInfoSchema }) //todo убрать
-  // likesInfo: likesInfoType;
 
   @Prop({ type: commentatorInfoSchema })
   commentatorInfo: commentatorInfoType;

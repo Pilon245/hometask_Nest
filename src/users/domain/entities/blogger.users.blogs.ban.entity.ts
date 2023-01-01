@@ -5,6 +5,7 @@ export type BloggerUsersBanDocument = HydratedDocument<BloggerUsersBan>;
 
 @Schema({ id: false })
 export class BloggerUsersBanInfoTypeData {
+  //todo тут лучше  уже все в одной таблице длеать?
   @Prop()
   isBanned: boolean;
 

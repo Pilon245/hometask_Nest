@@ -83,6 +83,7 @@ import { UpdateCommentUseCase } from './comments/application/use-cases/update.co
 import { UpdateLikeCommentUseCase } from './comments/application/use-cases/update.like.comment.use.cases';
 import { DeleteUsersUseCase } from './users/application/use-cases/delete.all.users.use.cases';
 import { UserExistsRule } from './blogs/guards/blog-id-validation.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -147,7 +148,16 @@ const deleteAll = [
       }),
       inject: [ConfigService],
     }),
-
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: '1234',
+      database: 'network',
+      entities: [],
+      synchronize: false,
+    }),
     MongooseModule.forFeature(schemas),
     SessionModule,
     UsersModule,
