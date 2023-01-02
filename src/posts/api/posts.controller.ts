@@ -50,7 +50,7 @@ export class PostsController {
   @UseGuards(BearerAuthGuardOnGet)
   @Get()
   async getPosts(@Query() query, @Req() req, @Res() res: Response) {
-    console.log();
+    console.log('dddddd');
     const posts = await this.postsQueryRepository.findPosts(
       pagination(query),
       req.user?.id,
