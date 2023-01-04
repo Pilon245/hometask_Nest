@@ -59,6 +59,7 @@ export class PostsController {
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getPost(@Param('id') id: string, @Req() req, @Res() res: Response) {
+    console.log();
     const resultFound = await this.postsQueryRepository.findPostById(id);
     if (!resultFound) {
       throw new HttpException('invalid blog', 404);
