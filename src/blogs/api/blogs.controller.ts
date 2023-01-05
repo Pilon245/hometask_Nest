@@ -16,6 +16,7 @@ import { PostsQueryRepository } from '../../posts/infrastructure/posts.query.rep
 import { pagination } from '../../validation/query.validation';
 import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get.service';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 
 @ApiTags('blogs')
 @Controller({
@@ -25,7 +26,7 @@ import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 export class BlogsController {
   constructor(
     protected postsQueryRepository: PostsQueryRepository,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
   ) {}
   @Get()
   getBlogs(@Query() query) {

@@ -9,7 +9,10 @@ import { SessionModule } from '../session/session.module';
 import { SessionService } from '../session/application/session.service';
 import { SessionRepository } from '../session/infrastructure/session.repository';
 import { JwtGenerate } from '../auth/helper/generate.token';
-import { Session, SessionSchema } from '../session/domain/entities/session.entity';
+import {
+  Session,
+  SessionSchema,
+} from '../session/domain/entities/session.entity';
 import { BlogsRepository } from '../blogs/infrastructure/blogs.repository';
 import { PostsRepository } from '../posts/infrastructure/posts.repository';
 import { CommentsRepository } from '../comments/infrastructure/comments.repository';
@@ -19,7 +22,10 @@ import {
   Comment,
   CommentSchema,
 } from '../comments/domain/entities/comments.entity';
-import { LikePost, LikePostSchema } from '../posts/domain/entities/likes.posts.entity';
+import {
+  LikePost,
+  LikePostSchema,
+} from '../posts/domain/entities/likes.posts.entity';
 import {
   LikeComment,
   LikeCommentSchema,
@@ -52,6 +58,7 @@ import {
   DeleteUserCommand,
   DeleteUserUseCase,
 } from './application/use-cases/delete.user.use.cases';
+import { UsersSqlRepository } from './infrastructure/users.sql.repository';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -89,6 +96,7 @@ const userUseCase = [
     BlogsQueryRepository,
     BloggerExistsRule,
     ...userUseCase,
+    UsersSqlRepository,
   ],
   exports: [UsersService, UsersRepository, UsersQueryRepository],
 })

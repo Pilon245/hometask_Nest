@@ -84,6 +84,8 @@ import { UpdateLikeCommentUseCase } from './comments/application/use-cases/updat
 import { DeleteUsersUseCase } from './users/application/use-cases/delete.all.users.use.cases';
 import { UserExistsRule } from './blogs/guards/blog-id-validation.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BlogsSqlQueryRepository } from './blogs/infrastructure/blogs.sql.query.repository';
+import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -199,6 +201,8 @@ const deleteAll = [
     ...commentsUserCase,
     ...deleteAll,
     UserExistsRule,
+    BlogsSqlQueryRepository,
+    UsersSqlRepository,
   ],
 })
 export class AppModule {}
