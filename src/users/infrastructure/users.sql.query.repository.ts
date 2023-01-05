@@ -29,27 +29,31 @@ export class UsersSqlQueryRepository {
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
   async findUsersById(id: string) {
-    const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
+    const users = await this.dataSource.query(
+      `SELECT * FROM "Users"  WHERE "id" = '${id}'`,
+    );
     if (!users) return false;
     return {
-      id: users.id,
-      login: users.accountData.login,
-      email: users.accountData.email,
-      createdAt: users.accountData.createdAt,
+      id: users[0].id,
+      login: users[0].login,
+      email: users[0].email,
+      createdAt: users[0].createdAt,
       banInfo: {
-        isBanned: users.banInfo.isBanned,
-        banDate: users.banInfo.banDate,
-        banReason: users.banInfo.banReason,
+        isBanned: users[0].isBanned,
+        banDate: users[0].banDate,
+        banReason: users[0].banReason,
       },
     };
   }
   async findUsersByIdOnMyAccount(id: string) {
-    const users = await this.userModel.findOne({ id }, { _id: false, __v: 0 });
+    const users = await this.dataSource.query(
+      `SELECT * FROM "Users"  WHERE "id" = '${id}'`,
+    );
     if (!users) return false;
     return {
-      userId: users.id,
-      login: users.accountData.login,
-      email: users.accountData.email,
+      userId: users[0].id,
+      login: users[0].login,
+      email: users[0].email,
     };
   }
   async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
@@ -82,39 +86,54 @@ export class UsersSqlQueryRepository {
         },
       ],
     };
-    const users = await this.userModel
+    await this.userModel
       .find(filter, { _id: false, __v: 0 })
       .sort([[`accountData.${sortBy}`, sortDirection]])
       .skip(getSkipNumber(pageNumber, pageSize))
       .limit(pageSize)
       .lean();
-    const totalCount = await this.userModel.countDocuments(filter);
-
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const users = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "login" like '%${searchLoginTerm}%' AND 
+              "email" like '%${searchEmailTerm}%' 
+              ORDER BY "${sortBy}" ${sortDirection}
+             LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) FROM "Users" 
+        WHERE "login" like '%${searchLoginTerm}%' AND 
+              "email" like '%${searchEmailTerm}%' `,
+    );
+    const totalCount = +valueCount[0].count;
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: users.map((u) => ({
         id: u.id,
-        login: u.accountData.login,
-        email: u.accountData.email,
-        createdAt: u.accountData.createdAt,
+        login: u.login,
+        email: u.email,
+        createdAt: u.createdAt,
         banInfo: {
-          isBanned: u.banInfo.isBanned,
-          banDate: u.banInfo.banDate,
-          banReason: u.banInfo.banReason,
+          isBanned: u.isBanned,
+          banDate: u.banDate,
+          banReason: u.banReason,
         },
       })),
     };
   }
   async findUsersForDTO(id: string): Promise<User> {
-    return this.userModel.findOne({ id }, { _id: false, __v: 0 }).lean();
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "id" = '${id}'`,
+    );
+    return result[0];
   }
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
-    return this.userModel.findOne({
-      $or: [
-        { 'accountData.login': LoginOrEmailL },
-        { 'accountData.email': LoginOrEmailL },
-      ],
-    });
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
+    );
+    return result[0];
   }
   async findUsersOnBlogger(
     bloggerId: string,

@@ -26,6 +26,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateUserCommand } from '../application/use-cases/create.user.use.cases';
 import { BanAdminUserCommand } from '../application/use-cases/ban.admin.user.use.cases';
 import { DeleteUserCommand } from '../application/use-cases/delete.user.use.cases';
+import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repository';
 
 @UseGuards(BasicAdminGuard)
 @ApiTags('sa/users')
@@ -35,7 +36,7 @@ import { DeleteUserCommand } from '../application/use-cases/delete.user.use.case
 })
 export class UsersSaController {
   constructor(
-    protected usersQueryRepository: UsersQueryRepository,
+    protected usersQueryRepository: UsersSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @Get()

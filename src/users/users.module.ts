@@ -59,6 +59,7 @@ import {
   DeleteUserUseCase,
 } from './application/use-cases/delete.user.use.cases';
 import { UsersSqlRepository } from './infrastructure/users.sql.repository';
+import { UsersSqlQueryRepository } from './infrastructure/users.sql.query.repository';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -97,6 +98,7 @@ const userUseCase = [
     BloggerExistsRule,
     ...userUseCase,
     UsersSqlRepository,
+    UsersSqlQueryRepository,
   ],
   exports: [UsersService, UsersRepository, UsersQueryRepository],
 })
