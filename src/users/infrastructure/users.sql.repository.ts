@@ -19,24 +19,21 @@ export class UsersSqlRepository {
   ) {}
 
   async findUsersById(id: string): Promise<User> {
-    return this.userModel.findOne({ id }, { _id: false, __v: 0 });
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "id" = '${id}' `,
+    );
+    return result[0];
   }
 
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
-    return this.userModel.findOne({
-      $or: [
-        { 'accountData.login': LoginOrEmailL },
-        { 'accountData.email': LoginOrEmailL },
-      ],
-    });
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
+    );
+    return result[0];
   }
 
-  // async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
-  //   return this.bloggerUsersBanModel.findOne(
-  //     { banUserId, blogId, 'banInfo.isBanned': true },
-  //     { _id: false, __v: 0 },
-  //   );
-  // }
   async findBanBloggerUsersDB(
     banUserId: string,
     blogId: string,
@@ -45,63 +42,65 @@ export class UsersSqlRepository {
       $and: [{ id: banUserId }, { blogId }],
     });
   }
-
-  // async findLoginAndEmail(Login: string, Email: string): Promise<User> {
-  //   const user = await this.userModel.findOne({
-  //     $or: [{ 'accountData.login': Login }, { 'accountData.email': Email }],
-  //   });
-  //   return user;
-  // }
   async updateEmailConfirmation(id: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'emailConfirmation.isConfirmed': true } },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "emailIsConfirmed"=True
+	WHERE "id" = '${id}';`,
     );
-    return result.modifiedCount === 1;
+    return result[0];
   }
 
   async updatePasswordConfirmation(id: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'passwordConfirmation.isConfirmed': true } },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "passIsConfirmed"=True
+	WHERE "id" = '${id}';`,
     );
-    return result.modifiedCount === 1;
+    return result[0];
   }
 
   async updateEmailCode(id: string, code: any) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'emailConfirmation.confirmationCode': code } },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "emailConfirmationCode"='${code}'
+	WHERE "id" = '${id}';`,
     );
-    return result.modifiedCount === 1;
+    return result[0];
   }
 
   async updatePasswordCode(id: string, code: any) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'passwordConfirmation.confirmationCode': code } },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "passConfirmationCode"='${code}'
+	WHERE "id" = '${id}';`,
     );
-    return result.modifiedCount === 1;
+    return result[0];
   }
 
   async updatePasswordUsers(id: string, password: string) {
-    const result = await this.userModel.updateOne(
-      { id: id },
-      { $set: { 'accountData.passwordHash': password } },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "passwordHash"='${password}'
+	WHERE "id" = '${id}';`,
     );
-    return result.modifiedCount === 1;
+    return result[0];
   }
 
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
-    return this.userModel.findOne({
-      'emailConfirmation.confirmationCode': emailConfirmationCode,
-    });
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "emailConfirmationCode" = '${emailConfirmationCode}' `,
+    );
+    return result[0];
   }
 
   async findUserByConfirmationPasswordCode(passwordConfirmation: string) {
-    return this.userModel.findOne({
-      'passwordConfirmation.confirmationCode': passwordConfirmation,
-    });
+    const result = await this.dataSource.query(
+      `SELECT * FROM "Users" 
+        WHERE "passConfirmationCode" = '${passwordConfirmation}' `,
+    );
+    return result[0];
   }
 
   async createUsers(user: any) {
@@ -116,11 +115,6 @@ export class UsersSqlRepository {
       '${user.passwordConfirmation.confirmationCode}','${user.passwordConfirmation.expirationDate}', 
       '${user.passwordConfirmation.isConfirmed}',
        '${user.banInfo.isBanned}','${user.banInfo.banDate}', '${user.banInfo.banReason}');`);
-    console.log('users', users);
-    const outUser = await this.dataSource.query(
-      `SELECT * FROM "Users" WHERE "id" = '${user.id}'`,
-    );
-    console.log('outUser', outUser);
 
     return;
   }
@@ -131,15 +125,13 @@ export class UsersSqlRepository {
   }
 
   async updateUsers(model: any) {
-    const result = await this.userModel.updateOne(
-      { id: model.id },
-      {
-        'banInfo.isBanned': model.isBanned,
-        'banInfo.banDate': model.banDate,
-        'banInfo.banReason': model.banReason,
-      },
+    const result = await this.dataSource.query(
+      `UPDATE "Users"
+	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
+	 "banReason" = '${model.banReason}'
+	WHERE "id" = '${model.id}';`,
     );
-    return result.matchedCount === 1;
+    return result[0];
   }
 
   async updateBanBloggerUsers(
@@ -162,8 +154,11 @@ export class UsersSqlRepository {
   }
 
   async deleteUsers(id: string) {
-    const result = await this.userModel.deleteOne({ id });
-    return result.deletedCount === 1;
+    const result = await this.dataSource.query(
+      `DELETE FROM "Users"
+	WHERE "id" = '${id}';`,
+    );
+    return result[0];
   }
 
   async deleteAllUsers() {
