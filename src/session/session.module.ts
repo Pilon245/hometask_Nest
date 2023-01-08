@@ -12,6 +12,7 @@ import { UsersModule } from '../users/users.module';
 import { SessionQueryRepository } from './infrastructure/session.query.repository';
 import { JwtGenerate } from '../auth/helper/generate.token';
 import { CqrsModule } from '@nestjs/cqrs';
+import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
 
 @Module({
   imports: [

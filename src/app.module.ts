@@ -87,6 +87,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { BlogsSqlQueryRepository } from './blogs/infrastructure/blogs.sql.query.repository';
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
+import { BlogsSqlRepository } from './blogs/infrastructure/blogs.sql.repository';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -205,6 +206,7 @@ const deleteAll = [
     BlogsSqlQueryRepository,
     UsersSqlRepository,
     UsersSqlQueryRepository,
+    BlogsSqlRepository,
   ],
 })
 export class AppModule {}

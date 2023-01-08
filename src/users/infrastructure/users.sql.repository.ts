@@ -18,7 +18,7 @@ export class UsersSqlRepository {
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
 
-  async findUsersById(id: string): Promise<User> {
+  async findUsersById(id: string) {
     const result = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "id" = '${id}' `,
@@ -26,7 +26,7 @@ export class UsersSqlRepository {
     return result[0];
   }
 
-  async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
+  async findLoginOrEmail(LoginOrEmailL: string) {
     const result = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,

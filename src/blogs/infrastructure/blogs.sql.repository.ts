@@ -13,7 +13,10 @@ import { DataSource } from 'typeorm';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsSqlRepository {
-  constructor(@InjectDataSource() protected dataSource: DataSource) {}
+  constructor(
+    @InjectModel(Blog.name) private blogModel: Model<BlogDocument>,
+    @InjectDataSource() protected dataSource: DataSource,
+  ) {}
   async findBlogById(id: string) {
     return this.blogModel.findOne(
       { id: id, 'banInfo.isBanned': false },
@@ -22,9 +25,19 @@ export class BlogsSqlRepository {
   }
   async createBlogs(blog: CreateBlogDTO) {
     //todo сделать свагер
-    const blogs = await new this.blogModel(blog);
-    await blogs.save();
-    return blog;
+    const banInfoId = new Date().toISOString();
+    const banInfo = await this.dataSource.query(`INSERT INTO "BanInfo"(
+"id", "isBanned", "banDate")
+    VALUES('${banInfoId}', '${blog.banInfo.isBanned}', '${blog.banInfo.banDate}',);`);
+    console.log('banInfo', banInfo);
+    const BlogOwnerInfoId = new Date().toISOString();
+    const BlogOwnerInfo = await this.dataSource
+      .query(`INSERT INTO "BlogOwnerInfo"(
+"id", "userId", "userLogin")
+    VALUES('${BlogOwnerInfoId}', '${blog.blogOwnerInfo.userId}', '${blog.blogOwnerInfo.userLogin}',);`);
+    console.log('BlogOwnerInfo', BlogOwnerInfo);
+
+    return;
   }
   async updateBlogs(blog: UpdateBlogInputModelType) {
     const result = await this.blogModel.updateOne(

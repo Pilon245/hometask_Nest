@@ -100,6 +100,12 @@ const userUseCase = [
     UsersSqlRepository,
     UsersSqlQueryRepository,
   ],
-  exports: [UsersService, UsersRepository, UsersQueryRepository],
+  exports: [
+    UsersService,
+    UsersRepository,
+    UsersQueryRepository,
+    UsersSqlQueryRepository,
+    UsersSqlRepository,
+  ],
 })
 export class UsersModule {}

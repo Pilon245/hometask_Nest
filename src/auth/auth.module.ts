@@ -32,6 +32,7 @@ import { RecoveryPasswordUserUseCase } from './application/use-cases/recovery.pa
 import { RegistrationUsersUseCase } from './application/use-cases/registration.users.use.cases';
 import { UpdateEmailCodeUseCase } from './application/use-cases/update.email.code.use.cases';
 import { UpdatePasswordCodeUseCase } from './application/use-cases/update.password.code.use.cases';
+import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 
 const authUseCase = [

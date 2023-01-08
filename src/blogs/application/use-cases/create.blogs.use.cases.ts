@@ -3,6 +3,8 @@ import { BlogsRepository } from '../../infrastructure/blogs.repository';
 import { CreateBlogsUseCaseDto } from '../../domain/dto/createBlogsDto';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { BlogsFactory } from '../../domain/dto/blogsFactory';
+import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
+import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
 
 export class CreateBlogsCommand {
   constructor(public createUseCaseDto: CreateBlogsUseCaseDto) {}
@@ -11,8 +13,8 @@ export class CreateBlogsCommand {
 @CommandHandler(CreateBlogsCommand)
 export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
   constructor(
-    private blogsRepository: BlogsRepository,
-    private usersRepository: UsersRepository,
+    private blogsRepository: BlogsSqlRepository,
+    private usersRepository: UsersSqlRepository,
   ) {}
 
   async execute(command: CreateBlogsCommand) {
@@ -27,7 +29,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       new Date().toISOString(),
       {
         userId: user.id,
-        userLogin: user.accountData.login,
+        userLogin: user.login,
       },
       {
         isBanned: false,
