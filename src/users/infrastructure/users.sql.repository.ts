@@ -19,19 +19,65 @@ export class UsersSqlRepository {
   ) {}
 
   async findUsersById(id: string) {
-    const result = await this.dataSource.query(
+    const users = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "id" = '${id}' `,
     );
-    return result[0];
+    return {
+      id: users[0].id,
+      accountData: {
+        login: users[0].login,
+        email: users[0].email,
+        passwordHash: users[0].passwordHash,
+        createdAt: users[0].createdAt,
+      },
+      emailConfirmation: {
+        confirmationCode: users[0].emailConfirmationCode,
+        expirationDate: users[0].emailExpirationDate,
+        isConfirmed: users[0].emailIsConfirmed,
+      },
+      passwordConfirmation: {
+        confirmationCode: users[0].passConfirmationCode,
+        expirationDate: users[0].passExpirationDate,
+        isConfirmed: users[0].passIsConfirmed,
+      },
+      banInfo: {
+        isBanned: users[0].isBanned,
+        banDate: users[0].banDate,
+        banReason: users[0].banReason,
+      },
+    };
   }
 
   async findLoginOrEmail(LoginOrEmailL: string) {
-    const result = await this.dataSource.query(
+    const users = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
     );
-    return result[0];
+    return {
+      id: users[0].id,
+      accountData: {
+        login: users[0].login,
+        email: users[0].email,
+        passwordHash: users[0].passwordHash,
+        createdAt: users[0].createdAt,
+      },
+      emailConfirmation: {
+        confirmationCode: users[0].emailConfirmationCode,
+        expirationDate: users[0].emailExpirationDate,
+        isConfirmed: users[0].emailIsConfirmed,
+      },
+      passwordConfirmation: {
+        confirmationCode: users[0].passConfirmationCode,
+        expirationDate: users[0].passExpirationDate,
+        isConfirmed: users[0].passIsConfirmed,
+      },
+      banInfo: {
+        isBanned: users[0].isBanned,
+        banDate: users[0].banDate,
+        banReason: users[0].banReason,
+      },
+    };
   }
 
   async findBanBloggerUsersDB(
@@ -88,19 +134,65 @@ export class UsersSqlRepository {
   }
 
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
-    const result = await this.dataSource.query(
+    const users = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "emailConfirmationCode" = '${emailConfirmationCode}' `,
     );
-    return result[0];
+    return {
+      id: users[0].id,
+      accountData: {
+        login: users[0].login,
+        email: users[0].email,
+        passwordHash: users[0].passwordHash,
+        createdAt: users[0].createdAt,
+      },
+      emailConfirmation: {
+        confirmationCode: users[0].emailConfirmationCode,
+        expirationDate: users[0].emailExpirationDate,
+        isConfirmed: users[0].emailIsConfirmed,
+      },
+      passwordConfirmation: {
+        confirmationCode: users[0].passConfirmationCode,
+        expirationDate: users[0].passExpirationDate,
+        isConfirmed: users[0].passIsConfirmed,
+      },
+      banInfo: {
+        isBanned: users[0].isBanned,
+        banDate: users[0].banDate,
+        banReason: users[0].banReason,
+      },
+    };
   }
 
   async findUserByConfirmationPasswordCode(passwordConfirmation: string) {
-    const result = await this.dataSource.query(
+    const users = await this.dataSource.query(
       `SELECT * FROM "Users" 
         WHERE "passConfirmationCode" = '${passwordConfirmation}' `,
     );
-    return result[0];
+    return {
+      id: users[0].id,
+      accountData: {
+        login: users[0].login,
+        email: users[0].email,
+        passwordHash: users[0].passwordHash,
+        createdAt: users[0].createdAt,
+      },
+      emailConfirmation: {
+        confirmationCode: users[0].emailConfirmationCode,
+        expirationDate: users[0].emailExpirationDate,
+        isConfirmed: users[0].emailIsConfirmed,
+      },
+      passwordConfirmation: {
+        confirmationCode: users[0].passConfirmationCode,
+        expirationDate: users[0].passExpirationDate,
+        isConfirmed: users[0].passIsConfirmed,
+      },
+      banInfo: {
+        isBanned: users[0].isBanned,
+        banDate: users[0].banDate,
+        banReason: users[0].banReason,
+      },
+    };
   }
 
   async createUsers(user: any) {
@@ -163,6 +255,7 @@ export class UsersSqlRepository {
 
   async deleteAllUsers() {
     await this.bloggerUsersBanModel.deleteMany();
-    return this.userModel.deleteMany();
+    return this.dataSource.query(`DELETE FROM "Users"
+	WHERE ${1} = '${1}';`);
   }
 }

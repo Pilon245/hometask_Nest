@@ -17,18 +17,13 @@ export class AuthService {
 
   async validateUser(LoginOrEmail: string, password: string): Promise<any> {
     const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
-    if (!user || user.isBanned) return false;
-    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!user || user.banInfo.isBanned) return false;
+    const isValid = await bcrypt.compare(
+      password,
+      user.accountData.passwordHash,
+    );
     if (!isValid) return false;
     return user;
-    // const user = await this.usersRepository.findLoginOrEmail(LoginOrEmail);
-    // if (!user || user.banInfo.isBanned) return false;
-    // const isValid = await bcrypt.compare(
-    //   password,
-    //   user.accountData.passwordHash,
-    // );
-    // if (!isValid) return false;
-    // return user;
   }
   async login(req: any) {
     const newSession: CreateSessionUseCaseDto = {

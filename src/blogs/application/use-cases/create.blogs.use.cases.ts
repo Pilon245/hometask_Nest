@@ -29,7 +29,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       new Date().toISOString(),
       {
         userId: user.id,
-        userLogin: user.login,
+        userLogin: user.accountData.login,
       },
       {
         isBanned: false,
