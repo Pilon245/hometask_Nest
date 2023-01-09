@@ -26,7 +26,7 @@ import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repos
 export class BlogsController {
   constructor(
     protected postsQueryRepository: PostsQueryRepository,
-    protected blogsQueryRepository: BlogsSqlQueryRepository,
+    protected blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get()
   getBlogs(@Query() query) {

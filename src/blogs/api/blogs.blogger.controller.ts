@@ -50,6 +50,7 @@ import { CreatePostCommand } from '../../posts/application/use-cases/create.post
 import { UpdatePostCommand } from '../../posts/application/use-cases/update.post.use.cases';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete.post.use.cases';
 import { Blog, BlogSchema } from '../domain/entities/blog.entity';
+import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 
 @ApiTags('blogger/blogs')
 @ApiSecurity('bearer')

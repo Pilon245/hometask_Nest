@@ -8,6 +8,7 @@ import { SessionRepository } from '../../../session/infrastructure/session.repos
 import { CommentsRepository } from '../../../comments/infrastructure/comments.repository';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
+import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
 
 export class BanAdminUserCommand {
   constructor(public banAdminUserUseCase: BanAdminUserUseCaseDto) {}
@@ -18,7 +19,7 @@ export class BanAdminUserUseCase
   implements ICommandHandler<BanAdminUserCommand>
 {
   constructor(
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersSqlRepository,
     private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,

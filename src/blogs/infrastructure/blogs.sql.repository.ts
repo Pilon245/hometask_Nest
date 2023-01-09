@@ -28,13 +28,14 @@ export class BlogsSqlRepository {
     const banInfoId = new Date().toISOString();
     const banInfo = await this.dataSource.query(`INSERT INTO "BanInfo"(
 "id", "isBanned", "banDate")
-    VALUES('${banInfoId}', '${blog.banInfo.isBanned}', '${blog.banInfo.banDate}',);`);
+    VALUES('${banInfoId}', '${blog.banInfo.isBanned}', '${blog.banInfo.banDate}');`);
     console.log('banInfo', banInfo);
+
     const BlogOwnerInfoId = new Date().toISOString();
     const BlogOwnerInfo = await this.dataSource
       .query(`INSERT INTO "BlogOwnerInfo"(
 "id", "userId", "userLogin")
-    VALUES('${BlogOwnerInfoId}', '${blog.blogOwnerInfo.userId}', '${blog.blogOwnerInfo.userLogin}',);`);
+    VALUES('${BlogOwnerInfoId}', '${blog.blogOwnerInfo.userId}', '${blog.blogOwnerInfo.userLogin}');`);
     console.log('BlogOwnerInfo', BlogOwnerInfo);
 
     return;

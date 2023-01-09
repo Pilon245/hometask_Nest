@@ -13,7 +13,7 @@ export class CreateBlogsCommand {
 @CommandHandler(CreateBlogsCommand)
 export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
   constructor(
-    private blogsRepository: BlogsSqlRepository,
+    private blogsRepository: BlogsRepository,
     private usersRepository: UsersSqlRepository,
   ) {}
 
@@ -36,6 +36,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
         banDate: null,
       },
     );
-    return this.blogsRepository.createBlogs(newBlog);
+    await this.blogsRepository.createBlogs(newBlog);
+    return newBlog;
   }
 }

@@ -95,14 +95,14 @@ export class UsersSqlQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
       `SELECT * FROM "Users" 
-        WHERE "login" like '%${searchLoginTerm}%' AND 
+        WHERE "login" like '%${searchLoginTerm}%' OR 
               "email" like '%${searchEmailTerm}%' 
               ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
       `SELECT count(*) FROM "Users" 
-        WHERE "login" like '%${searchLoginTerm}%' AND 
+        WHERE "login" like '%${searchLoginTerm}%' OR 
               "email" like '%${searchEmailTerm}%' `,
     );
     const totalCount = +valueCount[0].count;
