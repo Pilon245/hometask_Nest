@@ -17,6 +17,7 @@ import { CurrentPayload } from '../../auth/current-payload.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { DeleteDeviceByDeviceIdCommand } from '../application/use-cases/delete.device.id.session.use.cases';
 import { DeleteDevicesUseCase } from '../application/use-cases/delete.devices.session.use.cases';
+import { SessionSqlQueryRepository } from '../infrastructure/session.sql.query.repository';
 
 @ApiTags('security')
 @Controller({
@@ -26,7 +27,7 @@ import { DeleteDevicesUseCase } from '../application/use-cases/delete.devices.se
 export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,
-    private sessionsQueryRepository: SessionQueryRepository,
+    private sessionsQueryRepository: SessionSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @UseGuards(RefreshTokenGuard)

@@ -29,9 +29,10 @@ export class SessionSqlQueryRepository {
     const result = await this.dataSource.query(
       `SELECT * FROM "Sessions"  WHERE "deviceId" = '${deviceId}'`,
     );
-    if (!result) return false;
+    if (!result[0]) return false;
+    console.log('result', result);
+    console.log('deviceId', deviceId);
     return {
-      id: result[0].id,
       ip: result[0].ip,
       title: result[0].title,
       lastActiveDate: result[0].lastActiveDate,
@@ -48,7 +49,6 @@ export class SessionSqlQueryRepository {
     );
     if (!result) return false;
     return {
-      id: result[0].id,
       ip: result[0].ip,
       title: result[0].title,
       lastActiveDate: result[0].lastActiveDate,

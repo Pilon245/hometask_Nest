@@ -9,6 +9,7 @@ import { CommentsRepository } from '../../../comments/infrastructure/comments.re
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
+import { SessionSqlRepository } from '../../../session/infrastructure/session.sql.repository';
 
 export class BanAdminUserCommand {
   constructor(public banAdminUserUseCase: BanAdminUserUseCaseDto) {}
@@ -23,7 +24,7 @@ export class BanAdminUserUseCase
     private blogsRepository: BlogsRepository,
     private postsRepository: PostsRepository,
     private commentsRepository: CommentsRepository,
-    private sessionRepository: SessionRepository,
+    private sessionRepository: SessionSqlRepository,
   ) {}
 
   async execute(command: BanAdminUserCommand) {

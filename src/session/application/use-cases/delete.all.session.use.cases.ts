@@ -1,5 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SessionRepository } from '../../infrastructure/session.repository';
+import { SessionSqlRepository } from '../../infrastructure/session.sql.repository';
 
 export class DeleteSessionCommand {}
 
@@ -7,7 +8,7 @@ export class DeleteSessionCommand {}
 export class DeleteSessionUseCase
   implements ICommandHandler<DeleteSessionCommand>
 {
-  constructor(private sessionRepository: SessionRepository) {}
+  constructor(private sessionRepository: SessionSqlRepository) {}
 
   async execute() {
     return await this.sessionRepository.deleteAllSessions();

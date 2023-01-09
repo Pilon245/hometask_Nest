@@ -8,12 +8,14 @@ import { Request } from 'express';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { SessionQueryRepository } from '../../session/infrastructure/session.query.repository';
 import { JwtGenerate } from '../helper/generate.token';
+import { SessionSqlQueryRepository } from '../../session/infrastructure/session.sql.query.repository';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
-    private usersQueryRepository: UsersQueryRepository,
-    private sessionQueryRepository: SessionQueryRepository,
+    private usersQueryRepository: UsersSqlQueryRepository,
+    private sessionQueryRepository: SessionSqlQueryRepository,
     private jwtGenerate: JwtGenerate,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,8 +36,9 @@ export class RefreshTokenGuard implements CanActivate {
     ) {
       throw new UnauthorizedException();
     }
-    // req.user = user; //todo почему так не работает
-    req.user = await this.usersQueryRepository.findUsersById(user.id);
+    req.user = user;
+    // req.user = await this.usersQueryRepository.findUsersById(user.id);
+    console.log('req.user', req.user);
     return true;
   }
 }

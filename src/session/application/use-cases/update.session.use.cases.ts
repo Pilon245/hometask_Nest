@@ -2,6 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SessionRepository } from '../../infrastructure/session.repository';
 import { DeleteDevicesUseCaseDto } from '../../domain/dto/create-session.dto';
 import { JwtGenerate } from '../../../auth/helper/generate.token';
+import { SessionSqlRepository } from '../../infrastructure/session.sql.repository';
 
 export class UpdateSessionCommand {
   constructor(public updateUseCaseDto: DeleteDevicesUseCaseDto) {}
@@ -12,7 +13,7 @@ export class UpdateSessionUseCase
   implements ICommandHandler<UpdateSessionCommand>
 {
   constructor(
-    private sessionRepository: SessionRepository,
+    private sessionRepository: SessionSqlRepository,
     private jwtGenerate: JwtGenerate,
   ) {}
 
