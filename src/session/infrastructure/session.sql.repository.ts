@@ -56,7 +56,7 @@ export class SessionSqlRepository {
     };
   }
   async createSecurityDevices(device: CreateSessionInputModel) {
-    await this.dataSource.query(`INSERT INTO public."Sessions"(
+    await this.dataSource.query(`INSERT INTO "Sessions"(
 "ip", "title", "lastActiveDate", "expiresDate", "deviceId", "userId")
     VALUES('${device.ip}', '${device.title}', '${device.lastActiveDate}',
      '${device.expiresDate}','${device.deviceId}', '${device.userId}');`);
@@ -68,51 +68,34 @@ export class SessionSqlRepository {
     deviceId: string,
     lastActiveDate: string,
   ) {
-    const sessionInstance = await this.sessionModel.findOne({
-      userId: userId,
-      deviceId: deviceId,
-    });
-    if (!sessionInstance) return false;
-    sessionInstance.lastActiveDate = lastActiveDate;
-
-    await sessionInstance.save();
+    await this.dataSource.query(`UPDATE "Sessions"
+	SET "lastActiveDate"='${lastActiveDate}'
+	WHERE "deviceId" = '${deviceId}' AND "userId" = '${userId}';`);
 
     return true;
-    // return await SessionModelClass.updateOne({userId: userId, deviceId: deviceId},
-    //                     {$set: {lastActiveDate: lastActiveDate}})
   }
   async deleteDevices(userId: string, deviceId: string) {
-    // const sessionInstance = await SessionModelClass.find({userId: userId, deviceId: deviceId})
-    // if (!sessionInstance) return false
-    //
-    // await sessionInstance.deleteMany({userId: userId, deviceId: deviceId})
-
-    const result = await this.sessionModel.deleteMany({
-      userId: userId,
-      deviceId: { $ne: deviceId },
-    });
-    return result.deletedCount === 1;
-  }
-  async deleteUserDevices(userId: string) {
-    const result = await this.sessionModel.deleteMany({
-      userId: userId,
-    });
-    return result.deletedCount === 1;
-  }
-  async deleteDeviceById(deviceId: string) {
-    const sessionInstance = await this.sessionModel.findOne({
-      deviceId: deviceId,
-    });
-    if (!sessionInstance) return false;
-
-    await sessionInstance.deleteOne();
+    await this.dataSource.query(`DELETE FROM "Sessions"
+	WHERE NOT("deviceId" = '${deviceId})' AND "userId" = '${userId}';`);
 
     return true;
-    // const result = await SessionModelClass.deleteOne({deviceId: deviceId})
-    // return result.deletedCount === 1
+  }
+  async deleteUserDevices(userId: string) {
+    await this.dataSource.query(`DELETE FROM "Sessions"
+	WHERE "userId" = '${userId}';`);
+
+    return true;
+  }
+  async deleteDeviceById(deviceId: string) {
+    await this.dataSource.query(`DELETE FROM "Sessions"
+	WHERE "deviceId" = '${deviceId}';`);
+
+    return true;
   }
   async deleteAllSessions() {
-    await this.sessionModel.deleteMany({});
+    this.dataSource.query(`DELETE FROM "Sessions"
+	WHERE ${1} = '${1}';`);
+
     return true;
   }
 }
