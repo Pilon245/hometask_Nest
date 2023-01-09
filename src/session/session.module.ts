@@ -13,6 +13,8 @@ import { SessionQueryRepository } from './infrastructure/session.query.repositor
 import { JwtGenerate } from '../auth/helper/generate.token';
 import { CqrsModule } from '@nestjs/cqrs';
 import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
+import { SessionSqlQueryRepository } from './infrastructure/session.sql.query.repository';
+import { SessionSqlRepository } from './infrastructure/session.sql.repository';
 
 @Module({
   imports: [
@@ -30,7 +32,15 @@ import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository
     EmailManager,
     EmailAdapter,
     PasswordEmailAdapter,
+    SessionSqlQueryRepository,
+    SessionSqlRepository,
   ],
-  exports: [SessionService, SessionRepository, SessionQueryRepository],
+  exports: [
+    SessionService,
+    SessionRepository,
+    SessionQueryRepository,
+    SessionSqlRepository,
+    SessionSqlQueryRepository,
+  ],
 })
 export class SessionModule {}

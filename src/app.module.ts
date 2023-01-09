@@ -152,12 +152,15 @@ const deleteAll = [
       }),
       inject: [ConfigService],
     }),
+    // TypeOrmModule.forRootAsync(
+    //   'postgres://Pilon245:klX3GJZmyD1a@ep-odd-fire-350937.eu-central-1.aws.neon.tech/neondb',
+    // ),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'mel',
+      host: 'localhost',
       port: 5432,
-      username: 'rurmedrq',
-      password: 'c_iGdQrx2iAMjv3Nq0awO5ASN7tRV3-E',
+      username: 'postgres',
+      password: '1234',
       database: 'network',
       autoLoadEntities: false,
       synchronize: false,
