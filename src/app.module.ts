@@ -160,7 +160,6 @@ const deleteAll = [
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      url: 'postgres://Pilon245:klX3GJZmyD1a@ep-odd-fire-350937.eu-central-1.aws.neon.tech/neondb',
       username: 'postgres',
       password: '1234',
       database: 'network',

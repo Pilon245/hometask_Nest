@@ -17,10 +17,25 @@ export class UsersSqlRepository {
     private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
+  select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
+	email."confirmationCode" as emailConfirmationCode,
+	email."expirationDate" as emailExpirationDate,
+	email."isConfirmed" as emailIsConfirmed,
+	pass."confirmationCode" as passConfirmationCode,
+	pass."expirationDate" as passExpirationDate,
+	pass."isConfirmed" as passIsConfirmed,
+	ban."isBanned", ban."banDate", ban."banReason"
+	FROM "Users" AS users
+	LEFT JOIN "EmailConfirmation" AS email
+	ON email."userId" = users."id"
+	LEFT JOIN "PasswordConfirmation" AS pass
+	ON pass."userId" = users."id"
+	LEFT JOIN "UsersBanInfo" AS ban
+	ON ban."userId" = users."id"`;
 
   async findUsersById(id: string) {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
+      `${this.select}
         WHERE "id" = '${id}' `,
     );
     return {
@@ -51,7 +66,7 @@ export class UsersSqlRepository {
 
   async findLoginOrEmail(LoginOrEmailL: string) {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
+      `${this.select} 
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
     );
     return {
@@ -90,36 +105,36 @@ export class UsersSqlRepository {
   }
   async updateEmailConfirmation(id: string) {
     const result = await this.dataSource.query(
-      `UPDATE "Users"
-	SET "emailIsConfirmed"=True
-	WHERE "id" = '${id}';`,
+      `UPDATE "EmailConfirmed"
+	SET "isConfirmed"=True
+	WHERE "userId" = '${id}';`,
     );
     return result[0];
   }
 
   async updatePasswordConfirmation(id: string) {
     const result = await this.dataSource.query(
-      `UPDATE "Users"
-	SET "passIsConfirmed"=True
-	WHERE "id" = '${id}';`,
+      `UPDATE "PasswordConfirmed"
+	SET "isConfirmed"=True
+	WHERE "userId" = '${id}';`,
     );
     return result[0];
   }
 
   async updateEmailCode(id: string, code: any) {
     const result = await this.dataSource.query(
-      `UPDATE "Users"
-	SET "emailConfirmationCode"='${code}'
-	WHERE "id" = '${id}';`,
+      `UPDATE "EmailConfirmed"
+	SET "confirmationCode"='${code}'
+	WHERE "userId" = '${id}';`,
     );
     return result[0];
   }
 
   async updatePasswordCode(id: string, code: any) {
     const result = await this.dataSource.query(
-      `UPDATE "Users"
-	SET "passConfirmationCode"='${code}'
-	WHERE "id" = '${id}';`,
+      `UPDATE "PasswordConfirmed"
+	SET "confirmationCode"='${code}'
+	WHERE "userId" = '${id}';`,
     );
     return result[0];
   }
@@ -135,8 +150,8 @@ export class UsersSqlRepository {
 
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
-        WHERE "emailConfirmationCode" = '${emailConfirmationCode}' `,
+      `${this.select}
+        WHERE email."confirmationCode" = '${emailConfirmationCode}' `,
     );
     return {
       id: users[0].id,
@@ -166,8 +181,8 @@ export class UsersSqlRepository {
 
   async findUserByConfirmationPasswordCode(passwordConfirmation: string) {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
-        WHERE "passConfirmationCode" = '${passwordConfirmation}' `,
+      `${this.select}
+        WHERE pass."confirmationCode" = '${passwordConfirmation}' `,
     );
     return {
       id: users[0].id,
@@ -196,17 +211,26 @@ export class UsersSqlRepository {
   }
 
   async createUsers(user: any) {
-    const users = await this.dataSource.query(`INSERT INTO "Users"(
-"id", "login", "email", "passwordHash", "createdAt", "emailConfirmationCode", "emailExpirationDate",
- "emailIsConfirmed", "passConfirmationCode", "passExpirationDate", "passIsConfirmed", 
- "isBanned", "banDate", "banReason")
-    VALUES('${user.id}', '${user.accountData.login}', '${user.accountData.email}',
-     '${user.accountData.passwordHash}',
-      '${user.accountData.createdAt}', '${user.emailConfirmation.confirmationCode}',
-      '${user.emailConfirmation.expirationDate}', '${user.emailConfirmation.isConfirmed}', 
-      '${user.passwordConfirmation.confirmationCode}','${user.passwordConfirmation.expirationDate}', 
-      '${user.passwordConfirmation.isConfirmed}',
-       '${user.banInfo.isBanned}','${user.banInfo.banDate}', '${user.banInfo.banReason}');`);
+    const users = await this.dataSource.query(`
+    INSERT INTO "Users"(
+    "id", "login", "email", "passwordHash", "createdAt")
+    VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}',
+     '${user.accountData.passwordHash}', '${user.accountData.createdAt}');
+     
+    INSERT INTO "EmailConfirmation"(
+    "userId", "confirmationCode", "expirationDate", "isConfirmed")
+    VALUES ('${user.id}', '${user.emailConfirmation.confirmationCode}', 
+    '${user.emailConfirmation.expirationDate}', '${user.emailConfirmation.isConfirmed}');
+    
+    INSERT INTO "PasswordConfirmation"(
+    "userId", "confirmationCode", "expirationDate", "isConfirmed")
+    VALUES ('${user.id}', '${user.passwordConfirmation.confirmationCode}',
+     '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}');
+     
+    INSERT INTO "UsersBanInfo"(
+    "userId", "isBanned", "banDate", "banReason")
+    VALUES ('${user.id}', '${user.banInfo.isBanned}', '${user.banInfo.banDate}', 
+    '${user.banInfo.banReason}');`);
 
     return;
   }
@@ -218,10 +242,10 @@ export class UsersSqlRepository {
 
   async updateUsers(model: any) {
     const result = await this.dataSource.query(
-      `UPDATE "Users"
+      `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
 	 "banReason" = '${model.banReason}'
-	WHERE "id" = '${model.id}';`,
+	WHERE "userId" = '${model.id}';`,
     );
     return result[0];
   }

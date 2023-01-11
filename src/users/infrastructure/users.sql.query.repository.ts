@@ -28,10 +28,25 @@ export class UsersSqlQueryRepository {
     private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
+  select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
+	email."confirmationCode" as emailConfirmationCode,
+	email."expirationDate" as emailExpirationDate,
+	email."isConfirmed" as emailIsConfirmed,
+	pass."confirmationCode" as passConfirmationCode,
+	pass."expirationDate" as passExpirationDate,
+	pass."isConfirmed" as passIsConfirmed,
+	ban."isBanned", ban."banDate", ban."banReason"
+	FROM "Users" AS users
+	LEFT JOIN "EmailConfirmation" AS email
+	ON email."userId" = users."id"
+	LEFT JOIN "PasswordConfirmation" AS pass
+	ON pass."userId" = users."id"
+	LEFT JOIN "UsersBanInfo" AS ban
+	ON ban."userId" = users."id"`;
+
   async findUsersById(id: string) {
-    const users = await this.dataSource.query(
-      `SELECT * FROM "Users"  WHERE "id" = '${id}'`,
-    );
+    const users = await this.dataSource.query(`${this.select}
+    WHERE "id" = '${id}'`);
     if (!users) return false;
     return {
       id: users[0].id,
@@ -47,7 +62,7 @@ export class UsersSqlQueryRepository {
   }
   async findUsersByIdOnMyAccount(id: string) {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users"  WHERE "id" = '${id}'`,
+      `${this.select}  WHERE "id" = '${id}'`,
     );
     if (!users) return false;
     return {
@@ -70,32 +85,10 @@ export class UsersSqlQueryRepository {
     pageSize,
     pageNumber,
   }: FindUsersPayload) {
-    const filter = {
-      $or: [
-        {
-          'accountData.login': {
-            $regex: searchLoginTerm,
-            $options: '(?i)a(?-i)cme',
-          },
-        },
-        {
-          'accountData.email': {
-            $regex: searchEmailTerm,
-            $options: '(?i)a(?-i)cme',
-          },
-        },
-      ],
-    };
-    await this.userModel
-      .find(filter, { _id: false, __v: 0 })
-      .sort([[`accountData.${sortBy}`, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
-        WHERE "login" like '%${searchLoginTerm}%' OR 
+      `${this.select}
+      WHERE "login" like '%${searchLoginTerm}%' OR 
               "email" like '%${searchEmailTerm}%' 
               ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`,
@@ -123,7 +116,7 @@ export class UsersSqlQueryRepository {
   }
   async findUsersForDTO(id: string): Promise<User> {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
+      `${this.select}
         WHERE "id" = '${id}'`,
     );
     return {
@@ -153,7 +146,7 @@ export class UsersSqlQueryRepository {
   }
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
     const users = await this.dataSource.query(
-      `SELECT * FROM "Users" 
+      `${this.select}
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
     );
     return {
