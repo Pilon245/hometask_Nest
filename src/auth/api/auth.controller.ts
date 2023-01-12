@@ -49,6 +49,7 @@ import {
 } from '../application/use-cases/update.password.code.use.cases';
 import { RecoveryPasswordUserCommand } from '../application/use-cases/recovery.password.user.use.cases';
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 // @UseGuards(CustomThrottlerGuard)//todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
@@ -60,7 +61,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     protected usersRepository: UsersSqlRepository,
-    protected usersQueryRepository: UsersQueryRepository,
+    protected usersQueryRepository: UsersSqlQueryRepository,
     protected emailManager: EmailManager,
     private commandBus: CommandBus,
   ) {}

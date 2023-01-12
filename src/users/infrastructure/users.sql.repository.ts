@@ -154,6 +154,7 @@ export class UsersSqlRepository {
       `${this.select}
         WHERE email."confirmationCode" = '${emailConfirmationCode}' `,
     );
+    if (!users[0]) return false;
     return {
       id: users[0].id,
       accountData: {
@@ -271,9 +272,12 @@ export class UsersSqlRepository {
   }
 
   async deleteUsers(id: string) {
-    const result = await this.dataSource.query(
+    const user = await this.dataSource.query(`${this.select} 
+    WHERE "id" = '${id}'`);
+    if (!user[0]) return false;
+    await this.dataSource.query(
       `DELETE FROM "Users"
-	WHERE "id" = '${id}';`,
+	          WHERE "id" = '${id}';`,
     );
     return true;
   }
