@@ -170,27 +170,22 @@ export class BlogsSqlQueryRepository {
       pageNumber,
     }: FindBlogsPayload,
   ) {
-    const filter = {
-      $and: [
-        {
-          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-        },
-        {
-          'blogOwnerInfo.userId': userId,
-        },
-        {
-          'banInfo.isBanned': false,
-        },
-      ],
-    };
-    const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0, 'banInfo.isBanned': 0 }, {})
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCount = await this.blogModel.countDocuments(filter);
-
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false 
+      AND "userId" = '%${userId}%' 
+      ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) 
+                    FROM "Blogs" as blogs
+                    LEFT JOIN "BlogsBanInfo" as ban
+                    ON ban."blogId" = blogs."id"
+                    WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false`,
+    );
+    const totalCount = +valueCount[0].count;
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: blogs.map((b) => ({
@@ -203,17 +198,10 @@ export class BlogsSqlQueryRepository {
     };
   }
   async findBlogByIdOnBlogger(id: string) {
-    const blog = await this.dataSource
-      .query(`SELECT name, description, "websiteUrl", "createdAt", id, "userId"
-FROM public."Blogs";`);
-    await this.blogModel
-      .findOne(
-        { id, 'banInfo.isBanned': false },
-        { _id: false, __v: 0, 'banInfo.isBanned': 0 },
-        {},
-      )
-      .lean();
-
+    const blog = await this.dataSource.query(
+      `${this.select} 
+      WHERE "id" like '%${id}%' AND "isBanned" = false`,
+    );
     return {
       id: blog[0].id,
       name: blog[0].name,
