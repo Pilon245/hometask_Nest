@@ -36,11 +36,10 @@ export const pagination = (query: any): QueryValidationResult => {
     pageSize = defaultPageSize;
   pageSize = parseInt(pageSize, 10);
 
-  const result = query.banStatus;
-  let banStatus;
-  if (result == 'notBanned') {
+  let banStatus = query.banStatus;
+  if (banStatus == 'notBanned') {
     banStatus = banStatusEnum.notBanned;
-  } else if (result == 'banned') {
+  } else if (banStatus == 'banned') {
     banStatus = banStatusEnum.banned;
   } else {
     banStatus = banStatusEnum.all;
