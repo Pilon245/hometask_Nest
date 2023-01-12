@@ -244,14 +244,14 @@ export class UsersSqlRepository {
 
   async updateUsers(model: any) {
     if (model.isBanned) {
-      const result = await this.dataSource.query(
+      await this.dataSource.query(
         `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
 	 "banReason" = '${model.banReason}'
 	WHERE "userId" = '${model.id}';`,
       );
     } else {
-      const result = await this.dataSource.query(
+      await this.dataSource.query(
         `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
 	 "banReason" = ${model.banReason}
@@ -281,13 +281,11 @@ export class UsersSqlRepository {
   }
 
   async deleteUsers(id: string) {
-    const user = await this.dataSource.query(`${this.select} 
-    WHERE "id" = '${id}'`);
-    if (!user[0]) return false;
-    await this.dataSource.query(
+    const result = await this.dataSource.query(
       `DELETE FROM "Users"
 	          WHERE "id" = '${id}';`,
     );
+    if (!result[1]) return false;
     return true;
   }
 

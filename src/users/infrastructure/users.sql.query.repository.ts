@@ -3,7 +3,10 @@ import { User, UserDocument } from '../domain/entities/users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../../helper/helper.function';
-import { SortDirection } from '../../validation/query.validation';
+import {
+  banStatusEnum,
+  SortDirection,
+} from '../../validation/query.validation';
 import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
@@ -18,6 +21,7 @@ export type FindUsersPayload = {
   sortDirection: SortDirection;
   searchLoginTerm?: string;
   searchEmailTerm?: string;
+  banStatus?: banStatusEnum;
 };
 
 @Injectable({ scope: Scope.DEFAULT })
@@ -84,19 +88,22 @@ export class UsersSqlQueryRepository {
     sortBy,
     pageSize,
     pageNumber,
+    banStatus,
   }: FindUsersPayload) {
     const skip = getSkipNumber(pageNumber, pageSize);
+    console.log('banStatus', banStatus);
     const users = await this.dataSource.query(
       `${this.select}
-      WHERE "login" like '%${searchLoginTerm}%' OR 
-              "email" like '%${searchEmailTerm}%' 
+      WHERE (UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
+              UPPER("email") like UPPER('%${searchEmailTerm}%')) AND 
+              "isBanned" is ${banStatus}
               ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
       `SELECT count(*) FROM "Users" 
-        WHERE "login" like '%${searchLoginTerm}%' OR 
-              "email" like '%${searchEmailTerm}%' `,
+        WHERE UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
+              UPPER("email") like UPPER('%${searchEmailTerm}%')  `,
     );
     const totalCount = +valueCount[0].count;
     return {

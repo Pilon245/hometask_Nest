@@ -18,7 +18,7 @@ export enum SortDirection {
 }
 
 export enum banStatusEnum {
-  all = '',
+  all = 'NOT NULL',
   banned = 'true',
   notBanned = 'false',
 }
@@ -35,8 +35,25 @@ export const pagination = (query: any): QueryValidationResult => {
   if (!pageSize || !parsedPageSize || parsedPageSize <= 0)
     pageSize = defaultPageSize;
   pageSize = parseInt(pageSize, 10);
-
-  const banStatus = typeof query.banStatus === 'string' ? query.banStatus : '';
+  console.log('query.banStatus', query.banStatus);
+  const result = query.banStatus;
+  console.log('result', result);
+  let banStatus =
+    typeof query.banStatus === 'string'
+      ? (query.banStatus = 'banned'
+          ? banStatusEnum.banned
+          : banStatusEnum.notBanned)
+      : banStatusEnum.all;
+  if (result == 'notBanned') {
+    banStatus = banStatusEnum.notBanned;
+    console.log('if banStatus', banStatus);
+  } else if (result == 'banned') {
+    banStatus = banStatusEnum.banned;
+    console.log('else if banStatus', banStatus);
+  } else {
+    banStatus = banStatusEnum.all;
+  }
+  console.log('banStatus query', banStatus);
   const sortBy = typeof query.sortBy === 'string' ? query.sortBy : 'createdAt';
   const sortDirection =
     typeof query.sortDirection === 'string' ? query.sortDirection : 'desc';
