@@ -47,7 +47,7 @@ export class UsersSqlQueryRepository {
   async findUsersById(id: string) {
     const users = await this.dataSource.query(`${this.select}
     WHERE "id" = '${id}'`);
-    if (!users) return false;
+    if (!users[0]) return false;
     return {
       id: users[0].id,
       login: users[0].login,
@@ -144,11 +144,12 @@ export class UsersSqlQueryRepository {
       },
     };
   }
-  async findLoginOrEmail(LoginOrEmailL: string): Promise<User> {
+  async findLoginOrEmail(LoginOrEmailL: string): Promise<User | boolean> {
     const users = await this.dataSource.query(
       `${this.select}
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
     );
+    if (!users[0]) return false;
     return {
       id: users[0].id,
       accountData: {
