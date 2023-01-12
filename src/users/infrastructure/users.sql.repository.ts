@@ -212,7 +212,7 @@ export class UsersSqlRepository {
   }
 
   async createUsers(user: any) {
-    const users = await this.dataSource.query(`
+    await this.dataSource.query(`
     INSERT INTO "Users"(
     "id", "login", "email", "passwordHash", "createdAt")
     VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}',
