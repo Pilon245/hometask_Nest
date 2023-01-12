@@ -91,7 +91,6 @@ export class UsersSqlQueryRepository {
     banStatus,
   }: FindUsersPayload) {
     const skip = getSkipNumber(pageNumber, pageSize);
-    console.log('banStatus', banStatus);
     const users = await this.dataSource.query(
       `${this.select}
       WHERE (UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
@@ -102,8 +101,9 @@ export class UsersSqlQueryRepository {
     );
     const valueCount = await this.dataSource.query(
       `SELECT count(*) FROM "Users" 
-        WHERE UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
-              UPPER("email") like UPPER('%${searchEmailTerm}%')  `,
+        WHERE (UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
+              UPPER("email") like UPPER('%${searchEmailTerm}%')) AND 
+              "isBanned" is ${banStatus} `,
     );
     const totalCount = +valueCount[0].count;
     return {

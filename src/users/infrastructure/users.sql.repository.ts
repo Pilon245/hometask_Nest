@@ -230,9 +230,8 @@ export class UsersSqlRepository {
      '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}');
      
     INSERT INTO "UsersBanInfo"(
-    "userId", "isBanned", "banDate", "banReason")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}', ${user.banInfo.banDate}, 
-    ${user.banInfo.banReason});`);
+    "userId", "isBanned")
+    VALUES ('${user.id}', '${user.banInfo.isBanned}');`);
 
     return;
   }
