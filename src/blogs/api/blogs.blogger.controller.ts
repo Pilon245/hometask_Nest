@@ -62,7 +62,7 @@ import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repos
 export class BlogsBloggerController {
   constructor(
     protected postsQueryRepository: PostsQueryRepository,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
     private commandBus: CommandBus,
   ) {}

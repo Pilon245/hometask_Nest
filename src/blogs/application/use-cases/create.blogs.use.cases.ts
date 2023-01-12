@@ -13,7 +13,7 @@ export class CreateBlogsCommand {
 @CommandHandler(CreateBlogsCommand)
 export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
   constructor(
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: BlogsSqlRepository,
     private usersRepository: UsersSqlRepository,
   ) {}
 

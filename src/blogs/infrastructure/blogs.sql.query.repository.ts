@@ -21,6 +21,15 @@ export class BlogsSqlQueryRepository {
     @InjectModel(Blog.name) private blogModel: Model<BlogDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
+  select = `SELECT blogs."id", blogs."name", blogs."description", blogs."websiteUrl",
+    blogs."createdAt",  blogs."userId", users."login", 
+    ban."isBanned",ban."banDate"
+    FROM "Blogs" as blogs
+    LEFT JOIN "Users" as users
+    ON users."id" = blogs."userId"
+    LEFT JOIN "BlogsBanInfo" as ban
+    ON ban."blogId" = blogs."id"`;
+
   async findBlogs({
     searchNameTerm,
     sortDirection,
@@ -28,29 +37,21 @@ export class BlogsSqlQueryRepository {
     pageSize,
     pageNumber,
   }: FindBlogsPayload) {
-    // const filter = {} as any;
-    // if (searchNameTerm) {
-    //   filter.name = { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' };
-    // }
-    const filter = {
-      $and: [
-        {
-          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-        },
-        {
-          'banInfo.isBanned': false,
-        },
-      ],
-    };
-    const blogsOld = await this.blogModel
-      .find(filter, { _id: false, __v: 0, 'banInfo.isBanned': 0 }, {})
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCountOld = await this.blogModel.countDocuments(filter);
-    const blogs = await this.dataSource.query('SELECT * FROM "Blogs"');
-    const totalCount = await this.blogModel.countDocuments(filter);
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false 
+      ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) 
+                    FROM "Blogs" as blogs
+                    LEFT JOIN "BlogsBanInfo" as ban
+                    ON ban."blogId" = blogs."id"
+                    WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false`,
+    );
+    const totalCount = +valueCount[0].count;
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: blogs.map((b) => ({
@@ -62,23 +63,64 @@ export class BlogsSqlQueryRepository {
       })),
     };
   }
-  async findBlogById(id: string): Promise<Blog> {
-    return this.blogModel.findOne(
-      { id: id, 'banInfo.isBanned': false },
-      { _id: false, __v: 0, blogOwnerInfo: false, 'banInfo.isBanned': 0 },
+  async findBlogById(id: string) {
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "id" like '%${id}%' AND "isBanned" = false`,
     );
+    return {
+      id: blogs[0].id,
+      name: blogs[0].name,
+      description: blogs[0].description,
+      websiteUrl: blogs[0].websiteUrl,
+      createdAt: blogs[0].createdAt,
+      banInfo: {
+        isBanned: blogs[0].isBanned,
+        banDate: blogs[0].banDate,
+      },
+    };
   }
   async findBlogBD(id: string): Promise<Blog> {
-    return this.blogModel.findOne(
-      { id, 'banInfo.isBanned': false },
-      { _id: false, __v: 0 },
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "id" like '%${id}%' AND "isBanned" = false`,
     );
+    return {
+      id: blogs[0].id,
+      name: blogs[0].name,
+      description: blogs[0].description,
+      websiteUrl: blogs[0].websiteUrl,
+      createdAt: blogs[0].createdAt,
+      blogOwnerInfo: {
+        userId: blogs[0].userId,
+        userLogin: blogs[0].login,
+      },
+      banInfo: {
+        isBanned: blogs[0].isBanned,
+        banDate: blogs[0].banDate,
+      },
+    };
   }
   async findBlogByUserId(id: string): Promise<Blog> {
-    return this.blogModel.findOne(
-      { 'blogOwnerInfo.userId': id, 'banInfo.isBanned': false },
-      { _id: false, __v: 0, 'banInfo.isBanned': 0 },
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "userId" like '%${id}%' AND "isBanned" = false`,
     );
+    return {
+      id: blogs[0].id,
+      name: blogs[0].name,
+      description: blogs[0].description,
+      websiteUrl: blogs[0].websiteUrl,
+      createdAt: blogs[0].createdAt,
+      blogOwnerInfo: {
+        userId: blogs[0].userId,
+        userLogin: blogs[0].login,
+      },
+      banInfo: {
+        isBanned: blogs[0].isBanned,
+        banDate: blogs[0].banDate,
+      },
+    };
   }
   async findBlogsOnSuperAdmin({
     searchNameTerm,
@@ -87,21 +129,18 @@ export class BlogsSqlQueryRepository {
     pageSize,
     pageNumber,
   }: FindBlogsPayload) {
-    const filter = {
-      $and: [
-        {
-          name: { $regex: searchNameTerm, $options: '(?i)a(?-i)cme' },
-        },
-      ],
-    };
-    const blogs = await this.blogModel
-      .find(filter, { _id: false, __v: 0 }, {})
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCount = await this.blogModel.countDocuments(filter);
-
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const blogs = await this.dataSource.query(
+      `${this.select} 
+      WHERE "name" like '%${searchNameTerm}%'
+      ORDER BY "${sortBy}" ${sortDirection}
+    LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) FROM "Blogs" as blogs
+                    WHERE "name" like '%${searchNameTerm}%'`,
+    );
+    const totalCount = +valueCount[0].count;
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: blogs.map((b) => ({
@@ -111,12 +150,12 @@ export class BlogsSqlQueryRepository {
         websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
         blogOwnerInfo: {
-          userId: b.blogOwnerInfo.userId,
-          userLogin: b.blogOwnerInfo.userLogin,
+          userId: b.userId,
+          userLogin: b.login,
         },
         banInfo: {
-          isBanned: b.banInfo.isBanned,
-          banDate: b.banInfo.banDate,
+          isBanned: b.isBanned,
+          banDate: b.banDate,
         },
       })),
     };
@@ -164,7 +203,10 @@ export class BlogsSqlQueryRepository {
     };
   }
   async findBlogByIdOnBlogger(id: string) {
-    const blog = await this.blogModel
+    const blog = await this.dataSource
+      .query(`SELECT name, description, "websiteUrl", "createdAt", id, "userId"
+FROM public."Blogs";`);
+    await this.blogModel
       .findOne(
         { id, 'banInfo.isBanned': false },
         { _id: false, __v: 0, 'banInfo.isBanned': 0 },
@@ -173,11 +215,11 @@ export class BlogsSqlQueryRepository {
       .lean();
 
     return {
-      id: blog.id,
-      name: blog.name,
-      description: blog.description,
-      websiteUrl: blog.websiteUrl,
-      createdAt: blog.createdAt,
+      id: blog[0].id,
+      name: blog[0].name,
+      description: blog[0].description,
+      websiteUrl: blog[0].websiteUrl,
+      createdAt: blog[0].createdAt,
     };
   }
 }
