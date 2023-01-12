@@ -248,7 +248,7 @@ export class UsersSqlRepository {
 	 "banReason" = '${model.banReason}'
 	WHERE "userId" = '${model.id}';`,
     );
-    return result[0];
+    return true;
   }
 
   async updateBanBloggerUsers(
@@ -267,7 +267,7 @@ export class UsersSqlRepository {
         'banInfo.banReason': banReason,
       },
     );
-    return result.matchedCount === 1;
+    return true;
   }
 
   async deleteUsers(id: string) {
@@ -275,7 +275,7 @@ export class UsersSqlRepository {
       `DELETE FROM "Users"
 	WHERE "id" = '${id}';`,
     );
-    return result[0];
+    return true;
   }
 
   async deleteAllUsers() {

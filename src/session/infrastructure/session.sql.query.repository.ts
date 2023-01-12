@@ -30,8 +30,6 @@ export class SessionSqlQueryRepository {
       `SELECT * FROM "Sessions"  WHERE "deviceId" = '${deviceId}'`,
     );
     if (!result[0]) return false;
-    console.log('result', result);
-    console.log('deviceId', deviceId);
     return {
       ip: result[0].ip,
       title: result[0].title,

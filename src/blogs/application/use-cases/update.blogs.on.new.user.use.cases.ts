@@ -5,6 +5,7 @@ import {
   UpdateBlogOnNewUserCommandUseCaseDto,
   UpdateBlogOnNewUserRepo,
 } from '../../domain/dto/update.blogs.dto';
+import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 
 export class UpdateBlogOnNewUserCommand {
   constructor(public updateUseCaseDto: UpdateBlogOnNewUserCommandUseCaseDto) {}
@@ -16,7 +17,7 @@ export class UpdateBlogOnNewUserUseCase
 {
   constructor(
     private blogsRepository: BlogsRepository,
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersSqlRepository,
   ) {}
 
   async execute(command: UpdateBlogOnNewUserCommand) {

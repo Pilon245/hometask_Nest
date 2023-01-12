@@ -17,11 +17,27 @@ export class BlogsSqlRepository {
     @InjectModel(Blog.name) private blogModel: Model<BlogDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
+  select = `SELECT blogs."id", blogs."name", blogs."description", blogs."websiteUrl",
+    blogs."createdAt",  blogs."userId", users."login", 
+    ban."isBanned",ban."banDate"
+    FROM "Blogs" as blogs
+    LEFT JOIN "Users" as users
+    ON users."id" = blogs."userId"
+    LEFT JOIN "BlogsBanInfo" as ban
+    ON ban."blogId" = blogs."id"`;
+
   async findBlogById(id: string) {
-    return this.blogModel.findOne(
-      { id: id, 'banInfo.isBanned': false },
-      { _id: false, __v: 0, blogOwnerInfo: false, 'banInfo.isBanned': 0 },
+    const blog = await this.dataSource.query(
+      `${this.select} 
+      WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
+    return {
+      id: blog[0].id,
+      name: blog[0].name,
+      description: blog[0].description,
+      websiteUrl: blog[0].websiteUrl,
+      createdAt: blog[0].createdAt,
+    };
   }
   async createBlogs(blog: CreateBlogDTO) {
     //todo сделать свагер
@@ -37,53 +53,48 @@ export class BlogsSqlRepository {
     return;
   }
   async updateBlogs(blog: UpdateBlogInputModelType) {
-    const result = await this.blogModel.updateOne(
-      { id: blog.id },
-      {
-        name: blog.name,
-        description: blog.description,
-        websiteUrl: blog.websiteUrl,
-      },
+    await this.dataSource.query(
+      `UPDATE "Blogs"
+	      SET "name"='${blog.name}', "description" = '${blog.description}',
+	      "websiteUrl" = '${blog.websiteUrl}'
+        WHERE "id" = '${blog.id}';`,
     );
-    return;
+    return true;
   }
   async updateBlogsOnNewUser(model: UpdateBlogOnNewUserRepo) {
-    const result = await this.blogModel.updateOne(
-      { id: model.id },
-      {
-        blogOwnerInfo: {
-          userId: model.userId,
-          userLogin: model.userLogin,
-        },
-      },
+    await this.dataSource.query(
+      `UPDATE "Blogs"
+	      SET "userId"='${model.userId}'
+        WHERE "id" = '${model.id}';`,
     );
-    return;
+    return true;
   }
   async banUsers(userId: string, value: boolean) {
-    const result = await this.blogModel.updateMany(
-      { 'blogOwnerInfo.userId': userId },
-      {
-        'banInfo.isBanned': value,
-      },
+    const blogs = await this.dataSource.query(`${this.select}
+     WHERE "userId" = '${userId}' `);
+
+    await this.dataSource.query(
+      `UPDATE "BlogsBanInfo"
+	      SET "isBanned"='${value}'
+        WHERE "blogId" = '${blogs[0].id}';`,
     );
-    return;
+    return true;
   }
   async banBlogs(banBlogs: BanBlogsRepo) {
-    const result = await this.blogModel.updateOne(
-      { id: banBlogs.id },
-      {
-        'banInfo.isBanned': banBlogs.isBanned,
-        'banInfo.banDate': banBlogs.banDate,
-      },
+    await this.dataSource.query(
+      `UPDATE "BlogsBanInfo"
+	      SET "isBanned"='${banBlogs.isBanned}', "banDate"='${banBlogs.banDate}'
+        WHERE "blogId" = '${banBlogs.id}';`,
     );
-    return;
+    return true;
   }
   async deleteBlogs(id: string) {
-    const result = await this.blogModel.deleteOne({ id });
-    return result.deletedCount === 1;
+    await this.dataSource.query(`DELETE FROM "Blogs"
+	      WHERE "id" = '${id}';`);
+    return true;
   }
   async deleteAllBlogs() {
-    await this.blogModel.deleteMany({});
+    await this.dataSource.query(`DELETE FROM "Blogs"`);
     return true;
   }
 }

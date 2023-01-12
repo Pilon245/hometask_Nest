@@ -88,6 +88,7 @@ import { BlogsSqlQueryRepository } from './blogs/infrastructure/blogs.sql.query.
 import { UsersSqlRepository } from './users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { BlogsSqlRepository } from './blogs/infrastructure/blogs.sql.repository';
+import * as process from 'process';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -141,6 +142,9 @@ const deleteAll = [
   DeleteCommentsUseCase,
 ];
 
+const user = new ConfigService().get<string>('PGUSER');
+console.log('user', user);
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -152,19 +156,16 @@ const deleteAll = [
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   url: 'postgres://Pilon245:klX3GJZmyD1a@ep-odd-fire-350937.eu-central-1.aws.neon.tech/neondb',
-    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.PG_HOST || 'localhost',
       port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'network',
-      autoLoadEntities: false,
-      synchronize: false,
+      username: process.env.PG_USER || 'postgres',
+      password: process.env.PG_PASSWORD || '1234',
+      database: process.env.PG_DATABASE || 'network',
+      ssl: true,
+      //   autoLoadEntities: false,
+      //   synchronize: false,
     }),
     MongooseModule.forFeature(schemas),
     SessionModule,

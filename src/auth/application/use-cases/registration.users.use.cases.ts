@@ -6,6 +6,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { EmailManager } from '../../../managers/email.manager';
 import { RegistrationUsersUseCaseDto } from '../../domain/dto/create-auth.dto';
+import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 
 export class RegistrationUsersCommand {
   constructor(public registrationUseCaseDto: RegistrationUsersUseCaseDto) {}
@@ -17,7 +18,7 @@ export class RegistrationUsersUseCase
 {
   constructor(
     private emailManager: EmailManager,
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersSqlRepository,
   ) {}
 
   async execute(command: RegistrationUsersCommand) {

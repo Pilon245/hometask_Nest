@@ -20,12 +20,13 @@ import { Observable } from 'rxjs';
 import { _generatePasswordForDb } from './auth.function';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../users/infrastructure/users.repository';
+import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     protected usersService: UsersService,
-    protected userRepository: UsersRepository,
+    protected userRepository: UsersSqlRepository,
   ) {}
   async canActivate(
     context: ExecutionContext,

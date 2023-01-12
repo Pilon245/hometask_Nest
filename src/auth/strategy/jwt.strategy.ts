@@ -4,13 +4,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtGenerate } from '../helper/generate.token';
 import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private jwtGenerate: JwtGenerate,
     private configService: ConfigService,
-    private usersRepository: UsersRepository,
+    private usersRepository: UsersSqlRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

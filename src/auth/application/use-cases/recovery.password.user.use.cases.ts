@@ -2,6 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { _generatePasswordForDb } from '../../../helper/auth.function';
 import { RecoveryPasswordUserUseCaseDto } from '../../domain/dto/registration.dto';
+import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 
 export class RecoveryPasswordUserCommand {
   constructor(public recoveryUseCaseDto: RecoveryPasswordUserUseCaseDto) {}
@@ -11,7 +12,7 @@ export class RecoveryPasswordUserCommand {
 export class RecoveryPasswordUserUseCase
   implements ICommandHandler<RecoveryPasswordUserCommand>
 {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private usersRepository: UsersSqlRepository) {}
 
   async execute(command: RecoveryPasswordUserCommand) {
     const user = await this.usersRepository.findUserByConfirmationPasswordCode(

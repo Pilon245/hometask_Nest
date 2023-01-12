@@ -55,3 +55,7 @@ async function bootstrap() {
   });
 }
 bootstrap();
+// Do not expose your Neon credentials to the browser
+// .env
+
+// app.js

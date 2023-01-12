@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { randomUUID } from 'crypto';
+import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 
 export class UpdatePasswordCodeCommand {
   constructor(public email: string) {}
@@ -10,7 +11,7 @@ export class UpdatePasswordCodeCommand {
 export class UpdatePasswordCodeUseCase
   implements ICommandHandler<UpdatePasswordCodeCommand>
 {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private usersRepository: UsersSqlRepository) {}
 
   async execute(command: UpdatePasswordCodeCommand) {
     const user = await this.usersRepository.findLoginOrEmail(command.email);
