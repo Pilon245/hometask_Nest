@@ -100,7 +100,9 @@ export class UsersSqlQueryRepository {
              LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
-      `SELECT count(*) FROM "Users" 
+      `SELECT count(*) FROM "Users" AS users
+               LEFT JOIN "UsersBanInfo" AS ban
+               ON  ban."userId" = users."id"
         WHERE (UPPER("login") like UPPER('%${searchLoginTerm}%') OR 
               UPPER("email") like UPPER('%${searchEmailTerm}%')) AND 
               "isBanned" is ${banStatus} `,
