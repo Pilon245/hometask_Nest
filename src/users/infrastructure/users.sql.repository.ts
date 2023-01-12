@@ -106,7 +106,7 @@ export class UsersSqlRepository {
   }
   async updateEmailConfirmation(id: string) {
     const result = await this.dataSource.query(
-      `UPDATE "EmailConfirmed"
+      `UPDATE "EmailConfirmation"
 	SET "isConfirmed"=True
 	WHERE "userId" = '${id}';`,
     );
@@ -115,7 +115,7 @@ export class UsersSqlRepository {
 
   async updatePasswordConfirmation(id: string) {
     const result = await this.dataSource.query(
-      `UPDATE "PasswordConfirmed"
+      `UPDATE "PasswordConfirmation"
 	SET "isConfirmed"=True
 	WHERE "userId" = '${id}';`,
     );
@@ -124,7 +124,7 @@ export class UsersSqlRepository {
 
   async updateEmailCode(id: string, code: any) {
     const result = await this.dataSource.query(
-      `UPDATE "EmailConfirmed"
+      `UPDATE "EmailConfirmation"
 	SET "confirmationCode"='${code}'
 	WHERE "userId" = '${id}';`,
     );
@@ -133,7 +133,7 @@ export class UsersSqlRepository {
 
   async updatePasswordCode(id: string, code: any) {
     const result = await this.dataSource.query(
-      `UPDATE "PasswordConfirmed"
+      `UPDATE "PasswordConfirmation"
 	SET "confirmationCode"='${code}'
 	WHERE "userId" = '${id}';`,
     );
@@ -230,9 +230,8 @@ export class UsersSqlRepository {
      '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}');
      
     INSERT INTO "UsersBanInfo"(
-    "userId", "isBanned", "banDate", "banReason")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}', '${user.banInfo.banDate}', 
-    '${user.banInfo.banReason}');`);
+    "userId", "isBanned")
+    VALUES ('${user.id}', '${user.banInfo.isBanned}');`);
 
     return;
   }
