@@ -69,6 +69,7 @@ export class UsersSqlRepository {
       `${this.select} 
         WHERE "login" = '${LoginOrEmailL}' OR "email" = '${LoginOrEmailL}'`,
     );
+    if (!users[0]) return false;
     return {
       id: users[0].id,
       accountData: {
@@ -279,7 +280,6 @@ export class UsersSqlRepository {
 
   async deleteAllUsers() {
     await this.bloggerUsersBanModel.deleteMany();
-    return this.dataSource.query(`DELETE FROM "Users"
-	WHERE ${1} = '${1}';`);
+    return this.dataSource.query(`DELETE FROM "Users"`);
   }
 }

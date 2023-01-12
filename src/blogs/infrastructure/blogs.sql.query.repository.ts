@@ -66,7 +66,7 @@ export class BlogsSqlQueryRepository {
   async findBlogById(id: string) {
     const blogs = await this.dataSource.query(
       `${this.select} 
-      WHERE "id" like '%${id}%' AND "isBanned" = false`,
+      WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
     return {
       id: blogs[0].id,
@@ -83,7 +83,7 @@ export class BlogsSqlQueryRepository {
   async findBlogBD(id: string): Promise<Blog> {
     const blogs = await this.dataSource.query(
       `${this.select} 
-      WHERE "id" like '%${id}%' AND "isBanned" = false`,
+      WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
     return {
       id: blogs[0].id,
@@ -200,7 +200,7 @@ export class BlogsSqlQueryRepository {
   async findBlogByIdOnBlogger(id: string) {
     const blog = await this.dataSource.query(
       `${this.select} 
-      WHERE "id" like '%${id}%' AND "isBanned" = false`,
+      WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
     return {
       id: blog[0].id,
