@@ -142,9 +142,6 @@ const deleteAll = [
   DeleteCommentsUseCase,
 ];
 
-const user = new ConfigService().get<string>('PGUSER');
-console.log('user', user);
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),

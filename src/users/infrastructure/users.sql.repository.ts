@@ -230,8 +230,9 @@ export class UsersSqlRepository {
      '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}');
      
     INSERT INTO "UsersBanInfo"(
-    "userId", "isBanned")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}');`);
+    "userId", "isBanned", "banDate", "banReason")
+    VALUES ('${user.id}', '${user.banInfo.isBanned}', ${user.banInfo.banDate}, 
+    ${user.banInfo.banReason});`);
 
     return;
   }
@@ -242,12 +243,21 @@ export class UsersSqlRepository {
   }
 
   async updateUsers(model: any) {
-    const result = await this.dataSource.query(
-      `UPDATE "UsersBanInfo"
+    if (model.isBanned) {
+      const result = await this.dataSource.query(
+        `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
 	 "banReason" = '${model.banReason}'
 	WHERE "userId" = '${model.id}';`,
-    );
+      );
+    } else {
+      const result = await this.dataSource.query(
+        `UPDATE "UsersBanInfo"
+	SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
+	 "banReason" = ${model.banReason}
+	WHERE "userId" = '${model.id}';`,
+      );
+    }
     return true;
   }
 
