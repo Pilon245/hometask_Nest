@@ -16,7 +16,6 @@ export class ConfirmationEmailUseCase
     const user = await this.usersRepository.findUserByConfirmationEmailCode(
       command.code,
     );
-    console.log('user', user);
     if (!user) return false;
     return this.usersRepository.updateEmailConfirmation(user.id);
   }
