@@ -15,11 +15,10 @@ export class EmailAdapter {
       from: 'Elshad <khanakhmedov.elshad@gmail.com>',
       to: email,
       subject: `Back-end`,
-      html:
-        ' <h1>Thank for your registration</h1>\n' +
-        '       <p>To finish registration please follow the link below:\n' +
-        `<a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>\n` +
-        '      </p>',
+      html: `<h1>Thank for your registration</h1>
+        <p>To finish registration please follow the link below:
+        <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
+        </p>`,
     });
     const infos = await transporter.sendMail({
       from: 'Said', // sender address
