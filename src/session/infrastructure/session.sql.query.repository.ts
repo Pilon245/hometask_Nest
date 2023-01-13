@@ -45,7 +45,7 @@ export class SessionSqlQueryRepository {
       `SELECT * FROM "Sessions"  WHERE "deviceId" = '${deviceId}' AND 
         "userId" = '${userId}'`,
     );
-    if (!result) return false;
+    if (!result[0]) return false;
     return {
       ip: result[0].ip,
       title: result[0].title,
