@@ -11,8 +11,17 @@ export class EmailAdapter {
         pass: 'kofignlwgnictwgn',
       },
     });
-
     const info = await transporter.sendMail({
+      from: 'Elshad <khanakhmedov.elshad@gmail.com>',
+      to: email,
+      subject: `Back-end`,
+      html:
+        ' <h1>Thank for your registration</h1>\n' +
+        '       <p>To finish registration please follow the link below:\n' +
+        `<a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>\n` +
+        '      </p>',
+    });
+    const infos = await transporter.sendMail({
       from: 'Said', // sender address
       to: email, // list of receivers
       subject: 'Registration', // Subject line
