@@ -9,10 +9,16 @@ export class EmailManager {
     protected passwordEmailAdapter: PasswordEmailAdapter,
   ) {}
   async sendPasswordRecoveryMessage(user: any) {
-    await this.emailAdapter.sendEmail(
-      user.accountData.email,
-      user.emailConfirmation.confirmationCode,
-    );
+    try {
+      await this.emailAdapter.sendEmail(
+        user.accountData.email,
+        user.emailConfirmation.confirmationCode,
+      );
+      return true;
+    } catch (e) {
+      console.log('sendPasswordRecoveryMessage => e', e);
+      return false;
+    }
   }
   async sendNewPasswordMessage(user: any) {
     await this.passwordEmailAdapter.sendPasswordOnEmail(
