@@ -55,12 +55,11 @@ export class SessionController {
   ) {
     const foundDevice =
       await this.sessionsQueryRepository.findDevicesByDeviceId(deviceId);
-    console.log('foundDevice', foundDevice);
 
     if (!foundDevice) {
       throw new HttpException('Incorrect Not Found', 404);
     }
-    if (!foundDevice.userId != currentUserId) {
+    if (foundDevice.userId != currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
     return this.commandBus.execute(new DeleteDeviceByDeviceIdCommand(deviceId));
