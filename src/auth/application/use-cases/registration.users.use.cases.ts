@@ -22,6 +22,7 @@ export class RegistrationUsersUseCase
   ) {}
 
   async execute(command: RegistrationUsersCommand) {
+    console.log('RegistrationUsersUseCase');
     const passwordHash = await _generatePasswordForDb(
       command.registrationUseCaseDto.password,
     );
@@ -49,7 +50,9 @@ export class RegistrationUsersUseCase
         banReason: 'string',
       },
     );
-    await this.emailManager.sendPasswordRecoveryMessage(newUser);
+    console.log('RegistrationUsersUseCase => newUser', newUser);
+    const email = await this.emailManager.sendPasswordRecoveryMessage(newUser);
+    console.log('RegistrationUsersUseCase => send email result', email);
     await this.usersRepository.createUsers(newUser);
     return newUser;
   }
