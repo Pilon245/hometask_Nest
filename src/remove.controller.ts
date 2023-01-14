@@ -11,12 +11,12 @@ export class RemoveController {
   constructor(private commandBus: CommandBus) {}
   @Delete()
   @HttpCode(204)
-  deleteAllData() {
-    this.commandBus.execute(new DeleteBlogsCommand());
-    this.commandBus.execute(new DeletePostsCommand());
-    this.commandBus.execute(new DeleteUsersCommand());
-    this.commandBus.execute(new DeleteCommentsCommand());
-    this.commandBus.execute(new DeleteSessionCommand());
+  async deleteAllData() {
+    await this.commandBus.execute(new DeleteBlogsCommand());
+    await this.commandBus.execute(new DeletePostsCommand());
+    await this.commandBus.execute(new DeleteUsersCommand());
+    await this.commandBus.execute(new DeleteCommentsCommand());
+    await this.commandBus.execute(new DeleteSessionCommand());
     return;
   }
 }
