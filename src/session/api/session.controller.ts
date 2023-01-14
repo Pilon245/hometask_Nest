@@ -1,8 +1,10 @@
 import {
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
+  HttpException,
   Param,
   Scope,
   UnauthorizedException,
@@ -16,7 +18,10 @@ import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { CurrentPayload } from '../../auth/current-payload.param.decorator';
 import { CommandBus } from '@nestjs/cqrs';
 import { DeleteDeviceByDeviceIdCommand } from '../application/use-cases/delete.device.id.session.use.cases';
-import { DeleteDevicesUseCase } from '../application/use-cases/delete.devices.session.use.cases';
+import {
+  DeleteDevicesCommand,
+  DeleteDevicesUseCase,
+} from '../application/use-cases/delete.devices.session.use.cases';
 import { SessionSqlQueryRepository } from '../infrastructure/session.sql.query.repository';
 
 @ApiTags('security')
@@ -39,26 +44,24 @@ export class SessionController {
   @Delete('devices')
   @HttpCode(204)
   async deleteAllSessionsExceptOne(@CurrentPayload() currentPayload) {
-    return this.commandBus.execute(new DeleteDevicesUseCase(currentPayload));
+    return this.commandBus.execute(new DeleteDevicesCommand(currentPayload));
   }
   @UseGuards(RefreshTokenGuard)
   @Delete('devices/:deviceId')
+  @HttpCode(204)
   async deleteSessionsByDeviceId(
     @Param('deviceId') deviceId: string,
     @CurrentUserId() currentUserId,
   ) {
     const foundDevice =
       await this.sessionsQueryRepository.findDevicesByDeviceId(deviceId);
+    console.log('foundDevice', foundDevice);
+
     if (!foundDevice) {
-      throw new UnauthorizedException();
+      throw new HttpException('Incorrect Not Found', 404);
     }
-    const foundUser =
-      await this.sessionsQueryRepository.findDevicesByDeviceIdAndUserId(
-        currentUserId,
-        deviceId,
-      );
-    if (!foundUser) {
-      throw new UnauthorizedException();
+    if (!foundDevice.userId != currentUserId) {
+      throw new ForbiddenException();
     }
     return this.commandBus.execute(new DeleteDeviceByDeviceIdCommand(deviceId));
   }
