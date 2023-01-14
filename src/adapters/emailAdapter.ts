@@ -19,9 +19,10 @@ export class EmailAdapter {
         text: "Hello friends, I'am five age!", // plain text body
         html: `<h1>Thank for your registration</h1>
                <p>To finish registration please follow the link below:
-                  <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
+                  <a href='https://hometask-nest.vercel.app/auth/email-confirmation?code=${code}'>complete registration</a>
               </p>`, // html body
       });
+      console.log('info', info);
       return info;
     } catch (e) {
       console.log('email adapter, sendEmail => e', e);
