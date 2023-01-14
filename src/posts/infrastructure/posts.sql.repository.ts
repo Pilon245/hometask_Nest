@@ -25,11 +25,6 @@ export class PostsSqlRepository {
       $and: [{ userId: id }, { postId: postId }, { isBanned: false }],
     });
   }
-  async findPostById(id: string) {
-    return this.postModel
-      .findOne({ id, isBanned: false }, { _id: false, __v: 0, isBanned: 0 })
-      .exec();
-  }
   async createPosts(post: CreatePostRepo) {
     await this.dataSource.query(` INSERT INTO "Posts"(
       "id", "title", "shortDescription", "content", "blogId", "createdAt", "isBanned", "userId")
@@ -65,24 +60,16 @@ export class PostsSqlRepository {
     return result.matchedCount === 1;
   }
   async updatePosts(post: UpdatePostDTO) {
-    const result = await this.postModel.updateOne(
-      { id: post.id },
-      {
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        blogId: post.blogId,
-      },
-    );
+    await this.dataSource.query(`UPDATE "Posts" 
+    SET  "title"='${post.title}', "shortDescription"='${post.shortDescription}',
+     "content"='${post.content}', "blogId"='${post.blogId}',
+    WHERE "id" = '${post.id}'`);
     return;
   }
   async banUsers(userId: string, value: boolean) {
-    await this.postModel.updateMany(
-      { userId: userId },
-      {
-        isBanned: value,
-      },
-    );
+    await this.dataSource.query(`UPDATE "Posts" 
+    SET "isBanned" = ${value}
+    WHERE "userId" = '${userId}'`);
     await this.likePostModel.updateMany(
       { userId: userId },
       {
@@ -92,8 +79,10 @@ export class PostsSqlRepository {
     return;
   }
   async deletePosts(id: string) {
-    const result = await this.postModel.deleteOne({ id });
-    return result.deletedCount === 1;
+    const result = await this.dataSource.query(
+      `DELETE FROM "Posts" WHERE "id" = '${id}'`,
+    );
+    return result[1] === 1;
   }
   async deleteAllPost() {
     await this.dataSource.query(`DELETE FROM "Posts"`);

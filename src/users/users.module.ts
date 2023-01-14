@@ -64,6 +64,7 @@ import { SessionSqlRepository } from '../session/infrastructure/session.sql.repo
 import { SessionSqlQueryRepository } from '../session/infrastructure/session.sql.query.repository';
 import { BlogsSqlQueryRepository } from '../blogs/infrastructure/blogs.sql.query.repository';
 import { BlogsSqlRepository } from '../blogs/infrastructure/blogs.sql.repository';
+import { PostsSqlRepository } from '../posts/infrastructure/posts.sql.repository';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -100,6 +101,7 @@ const userUseCase = [
     BlogsRepository,
     BlogsSqlRepository,
     PostsRepository,
+    PostsSqlRepository,
     CommentsRepository,
     BlogsQueryRepository,
     BlogsSqlQueryRepository,

@@ -51,6 +51,7 @@ import { UpdatePostCommand } from '../../posts/application/use-cases/update.post
 import { DeletePostCommand } from '../../posts/application/use-cases/delete.post.use.cases';
 import { Blog, BlogSchema } from '../domain/entities/blog.entity';
 import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
+import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
 
 @ApiTags('blogger/blogs')
 @ApiSecurity('bearer')
@@ -61,7 +62,7 @@ import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repos
 })
 export class BlogsBloggerController {
   constructor(
-    protected postsQueryRepository: PostsQueryRepository,
+    protected postsQueryRepository: PostsSqlQueryRepository,
     protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
     private commandBus: CommandBus,

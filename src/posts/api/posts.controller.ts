@@ -35,6 +35,7 @@ import { CreateCommentUseCaseDto } from '../../comments/domain/dto/commentsFacto
 import { CreateCommentCommand } from '../../comments/application/use-cases/create.comment.use.cases';
 import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
+import { PostsSqlQueryRepository } from '../infrastructure/posts.sql.query.repository';
 
 @ApiTags('posts')
 @Controller({
@@ -43,7 +44,7 @@ import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.qu
 })
 export class PostsController {
   constructor(
-    protected postsQueryRepository: PostsQueryRepository,
+    protected postsQueryRepository: PostsSqlQueryRepository,
     protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
     protected usersQueryRepository: UsersSqlQueryRepository,

@@ -11,6 +11,7 @@ import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository'
 import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
 import { SessionSqlRepository } from '../../../session/infrastructure/session.sql.repository';
 import { BlogsSqlRepository } from '../../../blogs/infrastructure/blogs.sql.repository';
+import { PostsSqlRepository } from '../../../posts/infrastructure/posts.sql.repository';
 
 export class BanAdminUserCommand {
   constructor(public banAdminUserUseCase: BanAdminUserUseCaseDto) {}
@@ -23,7 +24,7 @@ export class BanAdminUserUseCase
   constructor(
     private usersRepository: UsersSqlRepository,
     private blogsRepository: BlogsSqlRepository,
-    private postsRepository: PostsRepository,
+    private postsRepository: PostsSqlRepository,
     private commentsRepository: CommentsRepository,
     private sessionRepository: SessionSqlRepository,
   ) {}

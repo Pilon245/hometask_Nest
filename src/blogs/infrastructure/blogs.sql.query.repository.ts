@@ -84,11 +84,12 @@ export class BlogsSqlQueryRepository {
       },
     };
   }
-  async findBlogBD(id: string): Promise<Blog> {
+  async findBlogBD(id: string) {
     const blogs = await this.dataSource.query(
       `${this.select} 
       WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
+    if (!blogs[0]) return false;
     return {
       id: blogs[0].id,
       name: blogs[0].name,
@@ -178,7 +179,7 @@ export class BlogsSqlQueryRepository {
     const blogs = await this.dataSource.query(
       `${this.select} 
       WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false 
-      AND "userId" = '%${userId}%' 
+      AND "userId" = '${userId}' 
       ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET  ${skip}`,
     );
@@ -187,7 +188,8 @@ export class BlogsSqlQueryRepository {
                     FROM "Blogs" as blogs
                     LEFT JOIN "BlogsBanInfo" as ban
                     ON ban."blogId" = blogs."id"
-                    WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false`,
+                    WHERE "name" like '%${searchNameTerm}%' AND
+                     "isBanned" = false AND "userId" = '${userId}' `,
     );
     const totalCount = +valueCount[0].count;
     return {

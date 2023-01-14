@@ -1,6 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
-import { CreatePostUseCaseDto, PostsFactory } from '../../domain/dto/postsFactory';
+import {
+  CreatePostUseCaseDto,
+  PostsFactory,
+} from '../../domain/dto/postsFactory';
 import { LikeValuePost } from '../../domain/entities/likes.posts.entity';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
@@ -8,6 +11,7 @@ import {
   UpdatePostDTO,
   UpdatePostUseCaseDTO,
 } from '../../domain/dto/update.posts.dto';
+import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
 
 export class UpdatePostCommand {
   constructor(public updateUseCaseDto: UpdatePostUseCaseDTO) {}
@@ -15,7 +19,7 @@ export class UpdatePostCommand {
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(private postsRepository: PostsSqlRepository) {}
 
   async execute(command: UpdatePostCommand) {
     const updatePost: UpdatePostDTO = {

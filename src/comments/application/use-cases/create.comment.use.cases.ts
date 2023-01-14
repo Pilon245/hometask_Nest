@@ -6,6 +6,7 @@ import {
 } from '../../domain/dto/commentsFactory';
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { PostsSqlRepository } from '../../../posts/infrastructure/posts.sql.repository';
 
 export class CreateCommentCommand {
   constructor(public createUseCaseDto: CreateCommentUseCaseDto) {}
@@ -16,7 +17,7 @@ export class CreateCommentUseCase
   implements ICommandHandler<CreateCommentCommand>
 {
   constructor(
-    private postsRepository: PostsRepository,
+    private postsRepository: PostsSqlRepository,
     private commentsRepository: CommentsRepository,
   ) {}
 

@@ -13,6 +13,7 @@ import {
   UpdatePostDTO,
   UpdatePostUseCaseDTO,
 } from '../../domain/dto/update.posts.dto';
+import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
 
 export class UpdateLikePostCommand {
   constructor(public updateUseCaseDto: UpdateLikePostUseCaseDTO) {}
@@ -22,7 +23,7 @@ export class UpdateLikePostCommand {
 export class UpdateLikePostUseCase
   implements ICommandHandler<UpdateLikePostCommand>
 {
-  constructor(private postsRepository: PostsRepository) {}
+  constructor(private postsRepository: PostsSqlRepository) {}
 
   async execute(command: UpdateLikePostCommand) {
     const user = await this.postsRepository.findLikeByIdAndPostId(

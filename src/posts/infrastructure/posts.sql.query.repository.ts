@@ -26,8 +26,25 @@ export class PostsSqlQueryRepository {
     @InjectModel(LikePost.name) private likePostModel: Model<LikePostDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
-  async findPostDB(id: string, userId?: string) {
-    return this.postModel.findOne({ id, isBanned: false }).lean();
+  async findPostDB(id: string) {
+    const post = await this.dataSource.query(
+      `SELECT posts.*, blogs."name"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE "id" = '${id}' AND "isBanned" = false`,
+    );
+    if (post[0]) return false;
+    return {
+      id: post[0].id,
+      title: post[0].title,
+      shortDescription: post[0].shortDescription,
+      content: post[0].content,
+      blogId: post[0].blogId,
+      blogName: post[0].name,
+      createdAt: post[0].createdAt,
+      userId: post[0].userId,
+    };
   }
   async findPosts(
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
@@ -106,7 +123,7 @@ export class PostsSqlQueryRepository {
              FROM "Posts" as posts
              INNER JOIN "Blogs" as blogs
              ON posts."blogId" = blogs."id"
-             WHERE "isBanned" = false AND "id" = '${id}'`,
+             WHERE "isBanned" = false AND posts."id" = '${id}'`,
     );
 
     const totalLike = await this.likePostModel.countDocuments({
@@ -158,12 +175,24 @@ export class PostsSqlQueryRepository {
     blogId: string,
     userId?: string,
   ) {
-    const posts = await this.postModel
-      .find({ blogId, isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const posts = await this.dataSource.query(
+      `SELECT posts.*, blogs."name"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE "blogId" = '${blogId}' AND "isBanned" = false
+             ORDER BY "${sortBy}" ${sortDirection}
+             LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) 
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE "blogId" = '${blogId}' AND "isBanned" = false`,
+    );
+    const totalCount = +valueCount[0].count;
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
@@ -206,11 +235,6 @@ export class PostsSqlQueryRepository {
       };
     });
     const items = await Promise.all(Promises);
-
-    const totalCount = await this.postModel.countDocuments({
-      blogId,
-      isBanned: false,
-    });
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
