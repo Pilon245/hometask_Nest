@@ -34,11 +34,12 @@ export class UsersSqlRepository {
 	LEFT JOIN "UsersBanInfo" AS ban
 	ON ban."userId" = users."id"`;
 
-  async findUsersById(id: string) {
+  async findUsersById(id: string): Promise<any> {
     const users = await this.dataSource.query(
       `${this.select}
         WHERE "id" = '${id}' `,
     );
+    if (!users[0]) return false;
     return {
       id: users[0].id,
       accountData: {

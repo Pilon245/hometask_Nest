@@ -130,13 +130,13 @@ export class BlogsSqlQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const blogs = await this.dataSource.query(
       `${this.select} 
-      WHERE "name" like '%${searchNameTerm}%'
+      WHERE UPPER("name") like UPPER('%${searchNameTerm}%')
       ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
       `SELECT count(*) FROM "Blogs" as blogs
-                    WHERE "name" like '%${searchNameTerm}%'`,
+                    WHERE UPPER("name") like UPPER('%${searchNameTerm}%')`,
     );
     const totalCount = +valueCount[0].count;
     return {
