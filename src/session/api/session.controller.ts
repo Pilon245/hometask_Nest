@@ -61,7 +61,7 @@ export class SessionController {
       throw new HttpException('Incorrect Not Found', 404);
     }
     if (!foundDevice.userId != currentUserId) {
-      throw new ForbiddenException();
+      throw new HttpException('Forbidden', 403);
     }
     return this.commandBus.execute(new DeleteDeviceByDeviceIdCommand(deviceId));
   }

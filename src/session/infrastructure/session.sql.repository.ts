@@ -76,7 +76,7 @@ export class SessionSqlRepository {
   }
   async deleteDevices(userId: string, deviceId: string) {
     await this.dataSource.query(`DELETE FROM "Sessions"
-	WHERE NOT("deviceId" = '${deviceId})' AND "userId" = '${userId}';`);
+	WHERE NOT("deviceId" = '${deviceId}') AND "userId" = '${userId}';`);
 
     return true;
   }
