@@ -212,16 +212,16 @@ export class UsersSqlQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
       `SELECT ban."blogId", ban."userId" as banUserId,
-        ban."isBanned", ban."banDate", ban"banReason",
-        users."login", blogs."userId" as ownerUserId
+        ban."isBanned", ban."banDate", ban."banReason",
+        users."login", blogs."userId" 
         FROM "BloggerUsersBan" as ban
         INNER JOIN  "Users" as users
         ON users."id" = ban."userId"
         INNER JOIN "Blogs" as blogs
         ON blogs."id" = ban."blogId"
-        WHERE "ownerUserId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
+        WHERE blogs."userId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
         UPPER("login") like UPPER('%${searchLoginTerm}%')
-        ORDER BY "${sortBy}" ${sortDirection}
+        ORDER BY "banDate" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip} `,
     );
     const valueCount = await this.dataSource.query(
@@ -231,8 +231,8 @@ export class UsersSqlQueryRepository {
         ON users."id" = ban."userId"
         INNER JOIN "Blogs" as blogs
         ON blogs."id" = ban."blogId"
-        WHERE "ownerUserId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
-        UPPER("login") like UPPER('%{searchLoginTerm}%') `,
+        WHERE blogs."userId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
+        UPPER("login") like UPPER('%${searchLoginTerm}%') `,
     );
     const totalCount = +valueCount[0].count;
 
@@ -242,9 +242,9 @@ export class UsersSqlQueryRepository {
         id: u.userid,
         login: u.login,
         banInfo: {
-          isBanned: u.banInfo.isBanned,
-          banDate: u.banInfo.banDate,
-          banReason: u.banInfo.banReason,
+          isBanned: u.isBanned,
+          banDate: u.banDate,
+          banReason: u.banReason,
         },
       })),
     };
