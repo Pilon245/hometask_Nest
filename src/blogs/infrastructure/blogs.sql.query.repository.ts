@@ -78,6 +78,10 @@ export class BlogsSqlQueryRepository {
         isBanned: blogs[0].isBanned,
         banDate: blogs[0].banDate,
       },
+      blogOwnerInfo: {
+        userId: blogs[0].userId,
+        userLogin: blogs[0].login,
+      },
     };
   }
   async findBlogBD(id: string): Promise<Blog> {

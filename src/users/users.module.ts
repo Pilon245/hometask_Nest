@@ -62,6 +62,8 @@ import { UsersSqlRepository } from './infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from './infrastructure/users.sql.query.repository';
 import { SessionSqlRepository } from '../session/infrastructure/session.sql.repository';
 import { SessionSqlQueryRepository } from '../session/infrastructure/session.sql.query.repository';
+import { BlogsSqlQueryRepository } from '../blogs/infrastructure/blogs.sql.query.repository';
+import { BlogsSqlRepository } from '../blogs/infrastructure/blogs.sql.repository';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -96,9 +98,11 @@ const userUseCase = [
     SessionSqlQueryRepository,
     JwtGenerate,
     BlogsRepository,
+    BlogsSqlRepository,
     PostsRepository,
     CommentsRepository,
     BlogsQueryRepository,
+    BlogsSqlQueryRepository,
     BloggerExistsRule,
     ...userUseCase,
     UsersSqlRepository,

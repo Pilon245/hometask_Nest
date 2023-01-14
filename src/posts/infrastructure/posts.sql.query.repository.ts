@@ -35,16 +35,19 @@ export class PostsSqlQueryRepository {
   ) {
     const skip = getSkipNumber(pageNumber, pageSize);
     const posts = await this.dataSource.query(
-      `SELECT "id", "title", "shortDescription", "content", "blogId", 
-            "createdAt", "isBanned", "userId"
-             FROM "Posts"
+      `SELECT posts.*, blogs."name"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
              WHERE "isBanned" = false
              ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
       `SELECT count(*) 
-        FROM "Posts"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
              WHERE "isBanned" = false `,
     );
     const totalCount = +valueCount[0].count;
@@ -75,7 +78,7 @@ export class PostsSqlQueryRepository {
         shortDescription: p.shortDescription,
         content: p.content,
         blogId: p.blogId,
-        blogName: p.blogName,
+        blogName: p.name,
         createdAt: p.createdAt,
         extendedLikesInfo: {
           likesCount: totalLike,
@@ -99,9 +102,10 @@ export class PostsSqlQueryRepository {
 
   async findPostById(id: string, userId?: string) {
     const post = await this.dataSource.query(
-      `SELECT "id", "title", "shortDescription", "content", "blogId", 
-            "createdAt", "isBanned", "userId"
-             FROM "Posts"
+      `SELECT posts.*, blogs."name"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
              WHERE "isBanned" = false AND "id" = '${id}'`,
     );
 
@@ -133,7 +137,7 @@ export class PostsSqlQueryRepository {
         shortDescription: post[0].shortDescription,
         content: post[0].content,
         blogId: post[0].blogId,
-        blogName: post[0].blogName,
+        blogName: post[0].name,
         createdAt: post[0].createdAt,
         extendedLikesInfo: {
           likesCount: totalLike,
