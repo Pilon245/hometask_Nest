@@ -19,6 +19,7 @@ import { UpdateBlogOnNewUserCommand } from '../application/use-cases/update.blog
 import { CommandBus } from '@nestjs/cqrs';
 import { BanBlogUseCaseDto } from '../domain/dto/update.blogs.dto';
 import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
+import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 
 @ApiTags('sa/blogs')
 @Controller({
@@ -27,7 +28,7 @@ import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
 })
 export class BlogsSaController {
   constructor(
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @Get()

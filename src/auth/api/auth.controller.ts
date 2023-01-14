@@ -51,7 +51,7 @@ import { RecoveryPasswordUserCommand } from '../application/use-cases/recovery.p
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
-@UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
+// @UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
 @Controller({
   path: 'auth',

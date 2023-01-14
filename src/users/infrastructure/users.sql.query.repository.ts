@@ -75,11 +75,25 @@ export class UsersSqlQueryRepository {
       email: users[0].email,
     };
   }
-  async findBanBloggerUsers(banUserId: string, blogId: string): Promise<User> {
-    return this.bloggerUsersBanModel.findOne(
-      { banUserId, blogId, 'banInfo.isBanned': true },
-      { _id: false, __v: 0 },
+  async findBanBloggerUsers(banUserId: string, blogId: string) {
+    const banUser = await this.dataSource.query(
+      `SELECT ban."blogId", ban."userId" as banUserId,
+        ban."isBanned", ban."banDate", ban"banReason",
+        users."login"
+        FROM "BloggerUsersBan" as ban
+        INNER JOIN  "Users" as users
+        ON users."id" = ban."userId"
+        WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}' AND "isBanned" = true`,
     );
+    return {
+      id: banUser[0].userid,
+      login: banUser[0].login,
+      banInfo: {
+        isBanned: banUser[0].isBanned,
+        banDate: banUser[0].banDate,
+        banReason: banUser[0].banReason,
+      },
+    };
   }
   async findUsers({
     searchLoginTerm,
@@ -195,30 +209,37 @@ export class UsersSqlQueryRepository {
       pageNumber,
     }: FindUsersPayload,
   ) {
-    const filter = {
-      $and: [
-        {
-          login: {
-            $regex: searchLoginTerm,
-            $options: '(?i)a(?-i)cme',
-          },
-        },
-        { blogId: blogId },
-        { 'banInfo.isBanned': true },
-      ],
-    };
-    const users = await this.bloggerUsersBanModel
-      .find(filter, { _id: false, __v: 0 })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-    const totalCount = await this.bloggerUsersBanModel.countDocuments(filter);
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const users = await this.dataSource.query(
+      `SELECT ban."blogId", ban."userId" as banUserId,
+        ban."isBanned", ban."banDate", ban"banReason",
+        users."login", blogs."userId" as ownerUserId
+        FROM "BloggerUsersBan" as ban
+        INNER JOIN  "Users" as users
+        ON users."id" = ban."userId"
+        INNER JOIN "Blogs" as blogs
+        ON blogs."id" = ban."blogId"
+        WHERE "ownerUserId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
+        UPPER("login") like UPPER('%${searchLoginTerm}%')
+        ORDER BY "${sortBy}" ${sortDirection}
+             LIMIT ${pageSize} OFFSET  ${skip} `,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) 
+        FROM "BloggerUsersBan" as ban
+        INNER JOIN  "Users" as users
+        ON users."id" = ban."userId"
+        INNER JOIN "Blogs" as blogs
+        ON blogs."id" = ban."blogId"
+        WHERE "ownerUserId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
+        UPPER("login") like UPPER('%{searchLoginTerm}%') `,
+    );
+    const totalCount = +valueCount[0].count;
 
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: users.map((u) => ({
-        id: u.id,
+        id: u.userid,
         login: u.login,
         banInfo: {
           isBanned: u.banInfo.isBanned,

@@ -4,6 +4,7 @@ import {
   BanBlogsFactory,
   BanBlogUseCaseDto,
 } from '../../domain/dto/update.blogs.dto';
+import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
 
 export class BanBlogCommand {
   constructor(public banUseCaseDto: BanBlogUseCaseDto) {}
@@ -11,7 +12,7 @@ export class BanBlogCommand {
 
 @CommandHandler(BanBlogCommand)
 export class BanBlogUseCase implements ICommandHandler<BanBlogCommand> {
-  constructor(private blogsRepository: BlogsRepository) {}
+  constructor(private blogsRepository: BlogsSqlRepository) {}
 
   async execute(command: BanBlogCommand) {
     const banBlogs = new BanBlogsFactory(

@@ -4,6 +4,7 @@ import {
   UpdateBlogUseCaseDto,
   UpdateBlogInputModelType,
 } from '../../domain/dto/update.blogs.dto';
+import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
 
 export class UpdateBlogCommand {
   constructor(public updateUseCaseDto: UpdateBlogUseCaseDto) {}
@@ -11,7 +12,7 @@ export class UpdateBlogCommand {
 
 @CommandHandler(UpdateBlogCommand)
 export class UpdateBlogUseCase implements ICommandHandler<UpdateBlogCommand> {
-  constructor(private blogsRepository: BlogsRepository) {}
+  constructor(private blogsRepository: BlogsSqlRepository) {}
 
   async execute(command: UpdateBlogCommand) {
     const updateBlog: UpdateBlogInputModelType = {

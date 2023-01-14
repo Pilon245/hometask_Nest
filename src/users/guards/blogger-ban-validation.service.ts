@@ -5,11 +5,12 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
 
 @ValidatorConstraint({ name: 'BloggerExists', async: true })
 @Injectable()
 export class BloggerExistsRule implements ValidatorConstraintInterface {
-  constructor(private blogsQueryRepository: BlogsQueryRepository) {}
+  constructor(private blogsQueryRepository: BlogsSqlQueryRepository) {}
   async validate(value: string) {
     try {
       const result = await this.blogsQueryRepository.findBlogById(value);

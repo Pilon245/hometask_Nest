@@ -89,6 +89,8 @@ import { UsersSqlRepository } from './users/infrastructure/users.sql.repository'
 import { UsersSqlQueryRepository } from './users/infrastructure/users.sql.query.repository';
 import { BlogsSqlRepository } from './blogs/infrastructure/blogs.sql.repository';
 import * as process from 'process';
+import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.repository';
+import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -209,6 +211,8 @@ const deleteAll = [
     UsersSqlRepository,
     UsersSqlQueryRepository,
     BlogsSqlRepository,
+    PostsSqlQueryRepository,
+    PostsSqlRepository,
   ],
 })
 export class AppModule {}

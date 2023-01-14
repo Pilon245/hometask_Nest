@@ -33,6 +33,8 @@ import { UpdateLikePostCommand } from '../application/use-cases/update.like.post
 import { UpdateLikePostUseCaseDTO } from '../domain/dto/update.posts.dto';
 import { CreateCommentUseCaseDto } from '../../comments/domain/dto/commentsFactory';
 import { CreateCommentCommand } from '../../comments/application/use-cases/create.comment.use.cases';
+import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 @ApiTags('posts')
 @Controller({
@@ -42,9 +44,9 @@ import { CreateCommentCommand } from '../../comments/application/use-cases/creat
 export class PostsController {
   constructor(
     protected postsQueryRepository: PostsQueryRepository,
-    protected blogsQueryRepository: BlogsQueryRepository,
+    protected blogsQueryRepository: BlogsSqlQueryRepository,
     protected commentsQueryRepository: CommentsQueryRepository,
-    protected usersQueryRepository: UsersQueryRepository,
+    protected usersQueryRepository: UsersSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @UseGuards(BearerAuthGuardOnGet)

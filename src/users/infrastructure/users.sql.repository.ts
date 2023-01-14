@@ -8,6 +8,7 @@ import {
 } from '../domain/entities/blogger.users.blogs.ban.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { BanBloggerUsersFactory } from '../domain/dto/usersFactory';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersSqlRepository {
@@ -96,13 +97,13 @@ export class UsersSqlRepository {
     };
   }
 
-  async findBanBloggerUsersDB(
-    banUserId: string,
-    blogId: string,
-  ): Promise<User> {
-    return this.bloggerUsersBanModel.findOne({
-      $and: [{ id: banUserId }, { blogId }],
-    });
+  async findBanBloggerUsersDB(banUserId: string, blogId: string) {
+    const banUser = await this.dataSource.query(
+      `SELECT * FROM "BloggerUsersBan"
+                WHERE "userId" = '${banUserId} AND "blogId" = '${blogId}'`,
+    );
+    if (!banUser[0]) return false;
+    return true;
   }
   async updateEmailConfirmation(id: string) {
     const result = await this.dataSource.query(
@@ -236,9 +237,12 @@ export class UsersSqlRepository {
     return;
   }
 
-  async banBloggerUsers(user: any) {
-    const banUsers = await new this.bloggerUsersBanModel(user);
-    return banUsers.save();
+  async banBloggerUsers(user: BanBloggerUsersFactory) {
+    await this.dataSource.query(`INSERT INTO "BloggerUsersBan"(
+	"blogId", "userId", "isBanned", "banDate", "banReason")
+    VALUES ('${user.blogId}', '${user.id}', '${user.banInfo.isBanned}'
+    , '${user.banInfo.banDate}', '${user.banInfo.banReason}');`);
+    return;
   }
 
   async updateUsers(model: any) {
@@ -268,14 +272,21 @@ export class UsersSqlRepository {
     banDate: string,
     banReason: string,
   ) {
-    const result = await this.bloggerUsersBanModel.updateOne(
-      { id: banUserId, bloggerId: bloggerId, blogId: blogId },
-      {
-        'banInfo.isBanned': isBanned,
-        'banInfo.banDate': banDate,
-        'banInfo.banReason': banReason,
-      },
-    );
+    if (isBanned) {
+      await this.dataSource.query(
+        `UPDATE "BloggerUsersBan"
+	SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
+	 "banReason" = '${banReason}'
+	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
+      );
+    } else {
+      await this.dataSource.query(
+        `UPDATE "BloggerUsersBan"
+	SET "isBanned"='${isBanned}', "banDate" = ${banDate},
+	 "banReason" = ${banReason}
+	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
+      );
+    }
     return true;
   }
 
@@ -289,7 +300,7 @@ export class UsersSqlRepository {
   }
 
   async deleteAllUsers() {
-    await this.bloggerUsersBanModel.deleteMany();
+    await this.dataSource.query(`DELETE FROM "BloggerUsersBan"`);
     return this.dataSource.query(`DELETE FROM "Users"`);
   }
 }

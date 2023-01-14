@@ -2,11 +2,12 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
 import { UsersQueryRepository } from '../../users/infrastructure/users.query.repository';
 import { JwtGenerate } from '../helper/generate.token';
+import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
 @Injectable()
 export class BearerAuthGuardOnGet implements CanActivate {
   constructor(
-    private userQueryRepository: UsersQueryRepository,
+    private userQueryRepository: UsersSqlQueryRepository,
     protected jwtGenerate: JwtGenerate,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
