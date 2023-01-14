@@ -131,7 +131,7 @@ export class PostsSqlQueryRepository {
       .lean();
 
     if (post[0]) {
-      const outPost = {
+      return {
         id: post[0].id,
         title: post[0].title,
         shortDescription: post[0].shortDescription,
@@ -150,7 +150,6 @@ export class PostsSqlQueryRepository {
           })),
         },
       };
-      return outPost;
     }
     return post;
   }
