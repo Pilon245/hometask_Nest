@@ -48,7 +48,7 @@ export class BlogsSqlRepository {
       '${blog.createdAt}', '${blog.blogOwnerInfo.userId}');
 
     INSERT INTO "BlogsBanInfo"("blogId", "isBanned", "banDate")
-    VALUES( '${blog.id}', '${blog.banInfo.isBanned}', '${blog.banInfo.banDate}');`);
+    VALUES( '${blog.id}', ${blog.banInfo.isBanned}, ${blog.banInfo.banDate});`);
 
     return;
   }
@@ -72,7 +72,7 @@ export class BlogsSqlRepository {
   async banUsers(userId: string, value: boolean) {
     const blogs = await this.dataSource.query(`${this.select}
      WHERE "userId" = '${userId}' `);
-
+    if (!blogs[0]) return true;
     await this.dataSource.query(
       `UPDATE "BlogsBanInfo"
 	      SET "isBanned"='${value}'

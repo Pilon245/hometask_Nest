@@ -256,8 +256,8 @@ export class UsersSqlRepository {
     } else {
       await this.dataSource.query(
         `UPDATE "UsersBanInfo"
-	SET "isBanned"='${model.isBanned}', "banDate" = null,
-	 "banReason" = null
+	SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
+	 "banReason" = ${model.banReason}
 	WHERE "userId" = '${model.id}';`,
       );
     }
