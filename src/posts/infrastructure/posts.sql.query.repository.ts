@@ -33,13 +33,21 @@ export class PostsSqlQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
     userId?: string,
   ) {
-    const posts = await this.postModel
-      .find({ isBanned: false })
-      .sort([[sortBy, sortDirection]])
-      .skip(getSkipNumber(pageNumber, pageSize))
-      .limit(pageSize)
-      .lean();
-
+    const skip = getSkipNumber(pageNumber, pageSize);
+    const posts = await this.dataSource.query(
+      `SELECT "id", "title", "shortDescription", "content", "blogId", 
+            "createdAt", "isBanned", "userId"
+             FROM "Posts"
+             WHERE "isBanned" = false
+             ORDER BY "${sortBy}" ${sortDirection}
+             LIMIT ${pageSize} OFFSET  ${skip}`,
+    );
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) 
+        FROM "Posts"
+             WHERE "isBanned" = false `,
+    );
+    const totalCount = +valueCount[0].count;
     const Promises = posts.map(async (p) => {
       const totalLike = await this.likePostModel.countDocuments({
         $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
@@ -83,8 +91,6 @@ export class PostsSqlQueryRepository {
     });
     const items = await Promise.all(Promises);
 
-    const totalCount = await this.postModel.countDocuments({ isBanned: false });
-
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: items,
@@ -92,7 +98,13 @@ export class PostsSqlQueryRepository {
   }
 
   async findPostById(id: string, userId?: string) {
-    const post = await this.postModel.findOne({ id, isBanned: false }).lean();
+    const post = await this.dataSource.query(
+      `SELECT "id", "title", "shortDescription", "content", "blogId", 
+            "createdAt", "isBanned", "userId"
+             FROM "Posts"
+             WHERE "isBanned" = false AND "id" = '${id}'`,
+    );
+
     const totalLike = await this.likePostModel.countDocuments({
       $and: [{ postId: id }, { likesStatus: 1 }, { isBanned: false }],
     });
@@ -114,15 +126,15 @@ export class PostsSqlQueryRepository {
       .sort({ addedAt: 'desc' })
       .lean();
 
-    if (post) {
+    if (post[0]) {
       const outPost = {
-        id: post.id,
-        title: post.title,
-        shortDescription: post.shortDescription,
-        content: post.content,
-        blogId: post.blogId,
-        blogName: post.blogName,
-        createdAt: post.createdAt,
+        id: post[0].id,
+        title: post[0].title,
+        shortDescription: post[0].shortDescription,
+        content: post[0].content,
+        blogId: post[0].blogId,
+        blogName: post[0].blogName,
+        createdAt: post[0].createdAt,
         extendedLikesInfo: {
           likesCount: totalLike,
           dislikesCount: totalDislike,
