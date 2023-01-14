@@ -100,7 +100,7 @@ export class UsersSqlRepository {
   async findBanBloggerUsersDB(banUserId: string, blogId: string) {
     const banUser = await this.dataSource.query(
       `SELECT * FROM "BloggerUsersBan"
-                WHERE "userId" = '${banUserId} AND "blogId" = '${blogId}'`,
+                WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}'`,
     );
     if (!banUser[0]) return false;
     return true;
@@ -272,21 +272,21 @@ export class UsersSqlRepository {
     banDate: string,
     banReason: string,
   ) {
-    if (isBanned) {
-      await this.dataSource.query(
-        `UPDATE "BloggerUsersBan"
+    // if (isBanned) {
+    await this.dataSource.query(
+      `UPDATE "BloggerUsersBan"
 	SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
 	 "banReason" = '${banReason}'
 	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-      );
-    } else {
-      await this.dataSource.query(
-        `UPDATE "BloggerUsersBan"
-	SET "isBanned"='${isBanned}', "banDate" = ${banDate},
-	 "banReason" = ${banReason}
-	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-      );
-    }
+    );
+    //   } else {
+    //     await this.dataSource.query(
+    //       `UPDATE "BloggerUsersBan"
+    // SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
+    //  "banReason" = '${banReason}'
+    // WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
+    //     );
+    //   }
     return true;
   }
 
