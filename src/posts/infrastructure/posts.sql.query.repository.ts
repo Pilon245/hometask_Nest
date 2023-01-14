@@ -125,7 +125,6 @@ export class PostsSqlQueryRepository {
              ON posts."blogId" = blogs."id"
              WHERE "isBanned" = false AND posts."id" = '${id}'`,
     );
-
     const totalLike = await this.likePostModel.countDocuments({
       $and: [{ postId: id }, { likesStatus: 1 }, { isBanned: false }],
     });
@@ -168,7 +167,7 @@ export class PostsSqlQueryRepository {
         },
       };
     }
-    return post;
+    return false;
   }
   async findPostByBlogId(
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,

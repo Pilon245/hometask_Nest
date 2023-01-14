@@ -68,20 +68,13 @@ export class BlogsSqlQueryRepository {
       `${this.select} 
       WHERE blogs."id" like '%${id}%' AND "isBanned" = false`,
     );
+    if (!blogs[0]) return false;
     return {
       id: blogs[0].id,
       name: blogs[0].name,
       description: blogs[0].description,
       websiteUrl: blogs[0].websiteUrl,
       createdAt: blogs[0].createdAt,
-      banInfo: {
-        isBanned: blogs[0].isBanned,
-        banDate: blogs[0].banDate,
-      },
-      blogOwnerInfo: {
-        userId: blogs[0].userId,
-        userLogin: blogs[0].login,
-      },
     };
   }
   async findBlogBD(id: string) {
@@ -178,7 +171,7 @@ export class BlogsSqlQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const blogs = await this.dataSource.query(
       `${this.select} 
-      WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false 
+      WHERE UPPER("name") like UPPER('%${searchNameTerm}%') AND "isBanned" = false 
       AND "userId" = '${userId}' 
       ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET  ${skip}`,
@@ -188,7 +181,7 @@ export class BlogsSqlQueryRepository {
                     FROM "Blogs" as blogs
                     LEFT JOIN "BlogsBanInfo" as ban
                     ON ban."blogId" = blogs."id"
-                    WHERE "name" like '%${searchNameTerm}%' AND
+                    WHERE UPPER("name") like UPPER('%${searchNameTerm}%') AND
                      "isBanned" = false AND "userId" = '${userId}' `,
     );
     const totalCount = +valueCount[0].count;

@@ -62,7 +62,7 @@ export class PostsSqlRepository {
   async updatePosts(post: UpdatePostDTO) {
     await this.dataSource.query(`UPDATE "Posts" 
     SET  "title"='${post.title}', "shortDescription"='${post.shortDescription}',
-     "content"='${post.content}', "blogId"='${post.blogId}',
+     "content"='${post.content}', "blogId"='${post.blogId}'
     WHERE "id" = '${post.id}'`);
     return;
   }
