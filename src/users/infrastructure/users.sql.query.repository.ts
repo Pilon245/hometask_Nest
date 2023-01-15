@@ -223,7 +223,7 @@ export class UsersSqlQueryRepository {
         INNER JOIN "Blogs" as blogs
         ON blogs."id" = ban."blogId"
         WHERE blogs."userId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
-        UPPER("login") like UPPER('%${searchLoginTerm}%')
+        UPPER("login") like UPPER('%${searchLoginTerm}%') AND ban."isBanned" = true
         ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip} `,
     );
@@ -235,7 +235,8 @@ export class UsersSqlQueryRepository {
         INNER JOIN "Blogs" as blogs
         ON blogs."id" = ban."blogId"
         WHERE blogs."userId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
-        UPPER("login") like UPPER('%${searchLoginTerm}%') `,
+        UPPER("login") like UPPER('%${searchLoginTerm}%') AND 
+        ban."isBanned" = true `,
     );
     const totalCount = +valueCount[0].count;
 
