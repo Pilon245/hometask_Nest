@@ -221,7 +221,7 @@ export class UsersSqlQueryRepository {
         ON blogs."id" = ban."blogId"
         WHERE blogs."userId" = '${bloggerId}' AND "blogId" = '${blogId}' AND
         UPPER("login") like UPPER('%${searchLoginTerm}%')
-        ORDER BY "banDate" ${sortDirection}
+        ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip} `,
     );
     const valueCount = await this.dataSource.query(
