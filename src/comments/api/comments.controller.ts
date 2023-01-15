@@ -30,6 +30,7 @@ import { UpdateLikeCommentCommand } from '../application/use-cases/update.like.c
 import { UpdateCommentUseCaseDto } from '../domain/dto/commentsFactory';
 import { DeleteCommentCommand } from '../application/use-cases/delete.comment.use.cases';
 import { Response } from 'express';
+import { CommentsSqlQueryRepository } from '../infrastructure/comments.sql.query.repository';
 
 @ApiTags('comments')
 @Controller({
@@ -38,7 +39,7 @@ import { Response } from 'express';
 })
 export class CommentsController {
   constructor(
-    protected commentsQueryRepository: CommentsQueryRepository,
+    protected commentsQueryRepository: CommentsSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @UseGuards(BearerAuthGuardOnGet)

@@ -3,6 +3,7 @@ import { LikesFactory } from '../../domain/dto/commentsFactory';
 import { LikeValueComment } from '../../domain/entities/likes.comments.entity';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { UpdateLikeCommentUseCaseDto } from '../../domain/dto/update.comments.dto';
+import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';
 
 export class UpdateLikeCommentCommand {
   constructor(public updateUseCaseDto: UpdateLikeCommentUseCaseDto) {}
@@ -12,7 +13,7 @@ export class UpdateLikeCommentCommand {
 export class UpdateLikeCommentUseCase
   implements ICommandHandler<UpdateLikeCommentCommand>
 {
-  constructor(private commentsRepository: CommentsRepository) {}
+  constructor(private commentsRepository: CommentsSqlRepository) {}
 
   async execute(command: UpdateLikeCommentCommand) {
     const user = await this.commentsRepository.findLikeByIdAndCommentId(

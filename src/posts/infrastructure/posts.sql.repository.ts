@@ -1,5 +1,5 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel, Prop } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDocument } from '../domain/entities/posts.entity';
 import { CreateLikeInputDTO, CreatePostRepo } from '../domain/dto/postsFactory';
@@ -20,10 +20,20 @@ export class PostsSqlRepository {
     private likePostModel: Model<LikePostDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
-  async findLikeByIdAndPostId(id: string, postId: string) {
-    return this.likePostModel.findOne({
-      $and: [{ userId: id }, { postId: postId }, { isBanned: false }],
-    });
+  async findLikeByIdAndPostId(id: string, postId: string): Promise<any> {
+    const like = await this.dataSource.query(`SELECT * FROM "LikePosts"
+            WHERE "userId" = '${id}' AND "postId" = '${postId}'
+            AND "isBanned" = false`);
+    if (!like[0]) return false;
+    return {
+      likesStatus: like[0].likesStatus,
+      dislikesStatus: like[0].dislikesStatus,
+      myStatus: like[0].myStatus,
+      userId: like[0].userId,
+      postId: like[0].postId,
+      addedAt: like[0].addedAt,
+      isBanned: like[0].isBanned,
+    };
   }
   async createPosts(post: CreatePostRepo) {
     await this.dataSource.query(` INSERT INTO "Posts"(
@@ -33,8 +43,10 @@ export class PostsSqlRepository {
     return post;
   }
   async createLike(like: CreateLikeInputDTO) {
-    const likeInstance = await new this.likePostModel(like);
-    await likeInstance.save();
+    await this.dataSource.query(`INSERT INTO "LikePosts"(
+        "likesStatus", "dislikesStatus", "myStatus", "userId", "postId", "addedAt")
+        VALUES ('${like.likesStatus}', '${like.dislikesStatus}', '${like.myStatus}',
+         '${like.userId}','${like.postId}', '${like.addedAt}');`);
 
     return like;
   }
@@ -47,17 +59,11 @@ export class PostsSqlRepository {
     login: string,
     addedAt: string,
   ) {
-    const result = await this.likePostModel.updateOne(
-      { $and: [{ postId: postId }, { userId: userId }] },
-      {
-        likesStatus,
-        dislikesStatus,
-        myStatus,
-        login,
-        addedAt,
-      },
-    );
-    return result.matchedCount === 1;
+    await this.dataSource.query(`UPDATE public."LikePosts"
+        SET "likesStatus"='${likesStatus}', "dislikesStatus"='${dislikesStatus}',
+         "myStatus"='${myStatus}'
+        WHERE "postId" = '${postId}' AND "userId" = '${userId}';`);
+    return true;
   }
   async updatePosts(post: UpdatePostDTO) {
     await this.dataSource.query(`UPDATE "Posts" 
@@ -79,14 +85,12 @@ export class PostsSqlRepository {
     return;
   }
   async deletePosts(id: string) {
-    const result = await this.dataSource.query(
-      `DELETE FROM "Posts" WHERE "id" = '${id}'`,
-    );
-    return result[1] === 1;
+    await this.dataSource.query(`DELETE FROM "Posts" WHERE "id" = '${id}'`);
+    return true;
   }
   async deleteAllPost() {
     await this.dataSource.query(`DELETE FROM "Posts"`);
-    await this.likePostModel.deleteMany();
+    await this.dataSource.query(`DELETE FROM "LikePosts"`);
     return true;
   }
 }

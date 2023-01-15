@@ -7,6 +7,7 @@ import {
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsSqlRepository } from '../../../posts/infrastructure/posts.sql.repository';
+import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';
 
 export class CreateCommentCommand {
   constructor(public createUseCaseDto: CreateCommentUseCaseDto) {}
@@ -18,7 +19,7 @@ export class CreateCommentUseCase
 {
   constructor(
     private postsRepository: PostsSqlRepository,
-    private commentsRepository: CommentsRepository,
+    private commentsRepository: CommentsSqlRepository,
   ) {}
 
   async execute(command: CreateCommentCommand) {

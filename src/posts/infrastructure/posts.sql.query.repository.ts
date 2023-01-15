@@ -69,25 +69,35 @@ export class PostsSqlQueryRepository {
     );
     const totalCount = +valueCount[0].count;
     const Promises = posts.map(async (p) => {
-      const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
-      });
-      const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBanned: false }],
-      });
+      const valueCount = await this.dataSource.query(
+        `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false`,
+      );
+      const totalLike = +valueCount[0].count;
+      const valueCountDislike = await this.dataSource.query(
+        `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "dislikesStatus" = '${1}'
+            AND "isBanned" = false`,
+      );
+      const totalDislike = +valueCountDislike[0].count;
       let likeStatus = LikeValuePost.none;
       if (userId) {
-        const status = await this.likePostModel.findOne({
-          $and: [{ postId: p.id }, { userId: userId }, { isBanned: false }],
-        });
-        likeStatus = status?.myStatus || LikeValuePost.none;
+        const status = await this.dataSource.query(
+          `SELECT * FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "userId" = '${userId}'
+            AND "isBanned" = false`,
+        );
+        likeStatus = status[0]?.myStatus || LikeValuePost.none;
       }
-      const lastLikes = await this.likePostModel
-        .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
-        })
-        .sort({ addedAt: 'desc' })
-        .lean();
+      const lastLikes = await this.dataSource.query(
+        `SELECT like.*, users."login" FROM "LikePosts" as like
+            INNER JOIN "Users" as users 
+            ON users."id" = like."userId" 
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false
+            ORDER BY "addedAt" desc`,
+      );
 
       return {
         id: p.id,
@@ -125,26 +135,36 @@ export class PostsSqlQueryRepository {
              ON posts."blogId" = blogs."id"
              WHERE "isBanned" = false AND posts."id" = '${id}'`,
     );
-    const totalLike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { likesStatus: 1 }, { isBanned: false }],
-    });
-    const totalDislike = await this.likePostModel.countDocuments({
-      $and: [{ postId: id }, { dislikesStatus: 1 }, { isBanned: false }],
-    });
 
+    const valueCount = await this.dataSource.query(
+      `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false`,
+    );
+    const totalLike = +valueCount[0].count;
+    const valueCountDislike = await this.dataSource.query(
+      `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${id}' AND "dislikesStatus" = '${1}'
+            AND "isBanned" = false`,
+    );
+    const totalDislike = +valueCountDislike[0].count;
     let likeStatus = LikeValuePost.none;
     if (userId) {
-      const status = await this.likePostModel.findOne({
-        $and: [{ postId: id }, { userId: userId }, { isBanned: false }],
-      });
-      likeStatus = status?.myStatus || LikeValuePost.none;
+      const status = await this.dataSource.query(
+        `SELECT * FROM "LikePosts"
+            WHERE "postId" = '${id}' AND "userId" = '${userId}'
+            AND "isBanned" = false`,
+      );
+      likeStatus = status[0]?.myStatus || LikeValuePost.none;
     }
-    const lastLikes = await this.likePostModel
-      .find({
-        $and: [{ postId: id }, { likesStatus: 1 }, { isBanned: false }],
-      })
-      .sort({ addedAt: 'desc' })
-      .lean();
+    const lastLikes = await this.dataSource.query(
+      `SELECT like.*, users."login" FROM "LikePosts" as like
+            INNER JOIN "Users" as users 
+            ON users."id" = like."userId" 
+            WHERE "postId" = '${id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false
+            ORDER BY "addedAt" desc`,
+    );
 
     if (post[0]) {
       return {
@@ -193,26 +213,35 @@ export class PostsSqlQueryRepository {
     );
     const totalCount = +valueCount[0].count;
     const Promises = posts.map(async (p) => {
-      const totalLike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
-      });
-      const totalDislike = await this.likePostModel.countDocuments({
-        $and: [{ postId: p.id }, { dislikesStatus: 1 }, { isBanned: false }],
-      });
-
+      const valueCount = await this.dataSource.query(
+        `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false`,
+      );
+      const totalLike = +valueCount[0].count;
+      const valueCountDislike = await this.dataSource.query(
+        `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "dislikesStatus" = '${1}'
+            AND "isBanned" = false`,
+      );
+      const totalDislike = +valueCountDislike[0].count;
       let likeStatus = LikeValuePost.none;
       if (userId) {
-        const status = await this.likePostModel.findOne({
-          $and: [{ postId: p.id }, { userId: userId }, { isBanned: false }],
-        });
-        likeStatus = status?.myStatus || LikeValuePost.none;
+        const status = await this.dataSource.query(
+          `SELECT * FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "userId" = '${userId}'
+            AND "isBanned" = false`,
+        );
+        likeStatus = status[0]?.myStatus || LikeValuePost.none;
       }
-      const lastLikes = await this.likePostModel
-        .find({
-          $and: [{ postId: p.id }, { likesStatus: 1 }, { isBanned: false }],
-        })
-        .sort({ addedAt: 'desc' })
-        .lean();
+      const lastLikes = await this.dataSource.query(
+        `SELECT like.*, users."login" FROM "LikePosts" as like
+            INNER JOIN "Users" as users 
+            ON users."id" = like."userId" 
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false
+            ORDER BY "addedAt" desc`,
+      );
       return {
         id: p.id,
         title: p.title,
