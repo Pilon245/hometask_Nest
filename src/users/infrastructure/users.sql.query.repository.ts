@@ -239,7 +239,7 @@ export class UsersSqlQueryRepository {
     return {
       ...outputModel(totalCount, pageSize, pageNumber),
       items: users.map((u) => ({
-        id: u.userid,
+        id: u.userId,
         login: u.login,
         banInfo: {
           isBanned: u.isBanned,
