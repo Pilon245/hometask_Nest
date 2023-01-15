@@ -239,11 +239,18 @@ export class UsersSqlRepository {
   }
 
   async banBloggerUsers(user: BanBloggerUsersFactory) {
-    await this.dataSource.query(`INSERT INTO "BloggerUsersBan"(
+    if (user.banInfo.isBanned) {
+      await this.dataSource.query(`INSERT INTO "BloggerUsersBan"(
 	"blogId", "userId", "isBanned", "banDate", "banReason")
     VALUES ('${user.blogId}', '${user.id}', '${user.banInfo.isBanned}'
     , '${user.banInfo.banDate}', '${user.banInfo.banReason}');`);
-    return;
+    } else {
+      await this.dataSource.query(`INSERT INTO "BloggerUsersBan"(
+	"blogId", "userId", "isBanned", "banDate", "banReason")
+    VALUES ('${user.blogId}', '${user.id}', '${user.banInfo.isBanned}'
+    , null, null);`);
+    }
+    return true;
   }
 
   async updateUsers(model: any) {

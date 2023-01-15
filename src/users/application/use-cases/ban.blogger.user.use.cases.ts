@@ -41,7 +41,6 @@ export class BanBloggerUserUseCase
           banReason: command.banBloggerUserUseCase.banReason,
         },
       );
-
       await this.usersRepository.banBloggerUsers(newBanUser);
 
       return newBanUser;
