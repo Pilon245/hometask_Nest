@@ -32,9 +32,9 @@ export class PostsSqlQueryRepository {
              FROM "Posts" as posts
              INNER JOIN "Blogs" as blogs
              ON posts."blogId" = blogs."id"
-             WHERE "id" = '${id}' AND "isBanned" = false`,
+             WHERE posts."id" = '${id}' AND "isBanned" = false`,
     );
-    if (post[0]) return false;
+    if (!post[0]) return false;
     return {
       id: post[0].id,
       title: post[0].title,
@@ -158,9 +158,9 @@ export class PostsSqlQueryRepository {
       likeStatus = status[0]?.myStatus || LikeValuePost.none;
     }
     const lastLikes = await this.dataSource.query(
-      `SELECT like.*, users."login" FROM "LikePosts" as like
+      `SELECT likes.*, users."login" FROM "LikePosts" as likes
             INNER JOIN "Users" as users 
-            ON users."id" = like."userId" 
+            ON users."id" = likes."userId" 
             WHERE "postId" = '${id}' AND "likesStatus" = '${1}'
             AND "isBanned" = false
             ORDER BY "addedAt" desc`,
