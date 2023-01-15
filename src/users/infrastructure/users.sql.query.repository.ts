@@ -68,7 +68,7 @@ export class UsersSqlQueryRepository {
     const users = await this.dataSource.query(
       `${this.select}  WHERE "id" = '${id}'`,
     );
-    if (!users) return false;
+    if (!users[0]) return false;
     return {
       userId: users[0].id,
       login: users[0].login,
@@ -85,8 +85,9 @@ export class UsersSqlQueryRepository {
         ON users."id" = ban."userId"
         WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}' AND "isBanned" = true`,
     );
+    if (!banUser[0]) return false;
     return {
-      id: banUser[0].userid,
+      id: banUser[0].userId,
       login: banUser[0].login,
       banInfo: {
         isBanned: banUser[0].isBanned,
