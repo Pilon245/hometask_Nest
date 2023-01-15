@@ -39,10 +39,12 @@ export class CommentsSqlQueryRepository {
   }
   async findCommentById(id: string, userId?: string) {
     const comments = await this.dataSource.query(` 
-            SELECT * , (SELECT "login" FROM "Users"
-                        WHERE "id" = '${id}') FROM "Comments"
-                     
-            WHERE "id" = '${id}' AND "isBanned" = false`);
+           SELECT comments.* , users."login" FROM "Comments" as comments
+              INNER JOIN "Posts" as posts
+            ON posts."id" = comments."postId"
+            INNER JOIN "Users" as users
+            ON users."id" = posts."userId"
+            WHERE comments."id" = '${id}' AND comments."isBanned" = false`);
     const valueCount = await this.dataSource.query(
       `SELECT count(*) FROM "LikeComments"
             WHERE "commentId" = '${id}' AND "likesStatus" = '${1}'
