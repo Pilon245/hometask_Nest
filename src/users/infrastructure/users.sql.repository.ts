@@ -273,21 +273,21 @@ export class UsersSqlRepository {
     banDate: string,
     banReason: string,
   ) {
-    // if (isBanned) {
-    await this.dataSource.query(
-      `UPDATE "BloggerUsersBan"
+    if (isBanned) {
+      await this.dataSource.query(
+        `UPDATE "BloggerUsersBan"
 	SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
 	 "banReason" = '${banReason}'
 	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-    );
-    //   } else {
-    //     await this.dataSource.query(
-    //       `UPDATE "BloggerUsersBan"
-    // SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
-    //  "banReason" = '${banReason}'
-    // WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-    //     );
-    //   }
+      );
+    } else {
+      await this.dataSource.query(
+        `UPDATE "BloggerUsersBan"
+    SET "isBanned"='${isBanned}', "banDate" = null,
+     "banReason" = null
+    WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
+      );
+    }
     return true;
   }
 
