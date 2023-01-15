@@ -209,6 +209,9 @@ export class UsersSqlQueryRepository {
       pageNumber,
     }: FindUsersPayload,
   ) {
+    if (sortBy === 'createdAt') {
+      sortBy = 'banDate';
+    }
     const skip = getSkipNumber(pageNumber, pageSize);
     const users = await this.dataSource.query(
       `SELECT ban."blogId", ban."userId" as banUserId,
