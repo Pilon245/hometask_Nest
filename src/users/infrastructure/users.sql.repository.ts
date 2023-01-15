@@ -254,21 +254,21 @@ export class UsersSqlRepository {
   }
 
   async updateUsers(model: any) {
-    if (model.isBanned) {
-      await this.dataSource.query(
-        `UPDATE "UsersBanInfo"
+    // if (model.isBanned) {
+    await this.dataSource.query(
+      `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
 	 "banReason" = '${model.banReason}'
 	WHERE "userId" = '${model.id}';`,
-      );
-    } else {
-      await this.dataSource.query(
-        `UPDATE "UsersBanInfo"
-	SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
-	 "banReason" = ${model.banReason}
-	WHERE "userId" = '${model.id}';`,
-      );
-    }
+    );
+    //   } else {
+    //     await this.dataSource.query(
+    //       `UPDATE "UsersBanInfo"
+    // SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
+    //  "banReason" = ${model.banReason}
+    // WHERE "userId" = '${model.id}';`,
+    //     );
+    //   }
     return true;
   }
 
@@ -280,21 +280,21 @@ export class UsersSqlRepository {
     banDate: string,
     banReason: string,
   ) {
-    if (isBanned) {
-      await this.dataSource.query(
-        `UPDATE "BloggerUsersBan"
+    // if (isBanned) {
+    await this.dataSource.query(
+      `UPDATE "BloggerUsersBan"
 	SET "isBanned"='${isBanned}', "banDate" = '${banDate}',
 	 "banReason" = '${banReason}'
 	WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-      );
-    } else {
-      await this.dataSource.query(
-        `UPDATE "BloggerUsersBan"
-    SET "isBanned"='${isBanned}', "banDate" = null,
-     "banReason" = null
-    WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
-      );
-    }
+    );
+    // } else {
+    //   await this.dataSource.query(
+    //     `UPDATE "BloggerUsersBan"
+    // SET "isBanned"='${isBanned}', "banDate" = null,
+    //  "banReason" = null
+    // WHERE "userId" = '${banUserId}' AND "blogId" = '${blogId}';`,
+    //   );
+    // }
     return true;
   }
 
