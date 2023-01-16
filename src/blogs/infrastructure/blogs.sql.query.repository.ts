@@ -99,11 +99,12 @@ export class BlogsSqlQueryRepository {
       },
     };
   }
-  async findBlogByUserId(id: string): Promise<Blog> {
+  async findBlogByUserId(id: string): Promise<any> {
     const blogs = await this.dataSource.query(
       `${this.select} 
       WHERE "userId" like '%${id}%' AND "isBanned" = false`,
     );
+    if (!blogs[0]) return false;
     return {
       id: blogs[0].id,
       name: blogs[0].name,

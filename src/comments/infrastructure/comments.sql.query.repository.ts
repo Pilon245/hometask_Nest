@@ -158,7 +158,10 @@ export class CommentsSqlQueryRepository {
   ) {
     const skip = getSkipNumber(pageNumber, pageSize);
     const comments = await this.dataSource.query(` 
-            SELECT comments.*,posts."userId", users."login", posts.* , blogs.* 
+            SELECT comments."id", comments."content",
+            comments."createdAt", comments."commentatorUserId",
+            comments."postId", comments."isBanned",
+            posts."userId", users."login", posts."title",posts."blogId" , blogs."name"
             FROM "Comments" as comments
             INNER JOIN "Users" as users
             ON users."id" = comments."commentatorUserId"
@@ -222,7 +225,7 @@ export class CommentsSqlQueryRepository {
             : LikeValueComment.none,
         },
         postInfo: {
-          id: c.posts.id,
+          id: c.postId,
           title: c.title,
           blogId: c.blogId,
           blogName: c.name,
