@@ -93,7 +93,9 @@ export class CommentsSqlQueryRepository {
             SELECT comments.*,posts."userId", users."login"  FROM "Comments" as comments
             INNER JOIN "Users" as users
             ON users."id" = comments."commentatorUserId"
-            WHERE "postId" = '${postId}' AND "isBanned" = false
+            INNER JOIN "Posts" as posts
+            ON posts."id" = comments."postId"
+            WHERE "postId" = '${postId}' AND comments."isBanned" = false
             ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`);
 
@@ -102,7 +104,9 @@ export class CommentsSqlQueryRepository {
              FROM "Comments" as comments
             INNER JOIN "Users" as users
             ON users."id" = comments."commentatorUserId"
-            WHERE "postId" = '${postId}' AND "isBanned" = false`,
+            INNER JOIN "Posts" as posts
+            ON posts."id" = comments."postId"
+            WHERE "postId" = '${postId}' AND comments."isBanned" = false`,
     );
     const totalCount = +valueCount[0].count;
 
@@ -162,7 +166,7 @@ export class CommentsSqlQueryRepository {
             ON posts."id" = comments."postId"
             INNER JOIN "Blogs" as blogs
             ON blogs."id" = posts."blogId"
-            WHERE posts."userId" = '${ownerUserId}' AND "isBanned" = false
+            WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false
             ORDER BY "${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`);
 
@@ -175,7 +179,7 @@ export class CommentsSqlQueryRepository {
             ON posts."id" = comments."postId"
             INNER JOIN "Blogs" as blogs
             ON blogs."id" = posts."blogId"
-            WHERE posts."userId" = '${ownerUserId}' AND "isBanned" = false`,
+            WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false`,
     );
     const totalCount = +valueCount[0].count;
 
@@ -199,7 +203,7 @@ export class CommentsSqlQueryRepository {
             ON users."id" = comments."commentatorUserId"
             INNER JOIN "Posts" as posts
             ON posts."id" = comments."postId"
-            WHERE posts."userId" = '${ownerUserId}' AND "isBanned" = false'`,
+            WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false'`,
       );
       const likeStatus = status[0]?.myStatus;
       return {

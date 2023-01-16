@@ -133,7 +133,7 @@ export class PostsSqlQueryRepository {
              FROM "Posts" as posts
              INNER JOIN "Blogs" as blogs
              ON posts."blogId" = blogs."id"
-             WHERE "isBanned" = false AND posts."id" = '${id}'`,
+             WHERE posts."isBanned" = false AND posts."id" = '${id}'`,
     );
 
     const valueCount = await this.dataSource.query(
