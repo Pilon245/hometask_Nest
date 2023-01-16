@@ -127,7 +127,7 @@ export class CommentsSqlQueryRepository {
       if (userId) {
         const status = await this.dataSource.query(
           `SELECT * FROM "LikeComments"
-            WHERE "commentId" = '${c.id}' AND "commentatorUserId" = '${userId}'
+            WHERE "commentId" = '${c.id}' AND "userId" = '${userId}'
             AND "isBanned" = false`,
         );
         likeStatus = status[0]?.myStatus || LikeValueComment.none;
