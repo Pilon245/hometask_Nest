@@ -56,8 +56,8 @@ export class PostsSqlQueryRepository {
              FROM "Posts" as posts
              INNER JOIN "Blogs" as blogs
              ON posts."blogId" = blogs."id"
-             WHERE "isBanned" = false
-             ORDER BY "${sortBy}" ${sortDirection}
+             WHERE posts."isBanned" = false
+             ORDER BY posts."${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`,
     );
     const valueCount = await this.dataSource.query(
@@ -91,9 +91,9 @@ export class PostsSqlQueryRepository {
         likeStatus = status[0]?.myStatus || LikeValuePost.none;
       }
       const lastLikes = await this.dataSource.query(
-        `SELECT like.*, users."login" FROM "LikePosts" as like
+        `SELECT likes.*, users."login" FROM "LikePosts" as likes
             INNER JOIN "Users" as users 
-            ON users."id" = like."userId" 
+            ON users."id" = likes."userId" 
             WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
             AND "isBanned" = false
             ORDER BY "addedAt" desc`,
@@ -235,9 +235,9 @@ export class PostsSqlQueryRepository {
         likeStatus = status[0]?.myStatus || LikeValuePost.none;
       }
       const lastLikes = await this.dataSource.query(
-        `SELECT like.*, users."login" FROM "LikePosts" as like
+        `SELECT likes.*, users."login" FROM "LikePosts" as likes
             INNER JOIN "Users" as users 
-            ON users."id" = like."userId" 
+            ON users."id" = likes."userId" 
             WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
             AND "isBanned" = false
             ORDER BY "addedAt" desc`,

@@ -39,7 +39,7 @@ export class CommentsSqlQueryRepository {
   }
   async findCommentById(id: string, userId?: string) {
     const comments = await this.dataSource.query(` 
-           SELECT comments.* , users."login" FROM "Comments" as comments
+           SELECT comments.*,posts."userId" , users."login" FROM "Comments" as comments
               INNER JOIN "Posts" as posts
             ON posts."id" = comments."postId"
             INNER JOIN "Users" as users
@@ -61,7 +61,7 @@ export class CommentsSqlQueryRepository {
     if (userId) {
       const status = await this.dataSource.query(
         `SELECT * FROM "LikeComments"
-            WHERE "commentId" = '${id}' AND "commentatorUserId" = '${userId}'
+            WHERE "commentId" = '${id}' AND "userId" = '${userId}'
             AND "isBanned" = false`,
       );
       likeStatus = status[0]?.myStatus || LikeValueComment.none;
@@ -81,7 +81,7 @@ export class CommentsSqlQueryRepository {
       };
       return outComment;
     }
-    return comments;
+    return false;
   }
   async findCommentByPostId(
     { sortDirection, sortBy, pageSize, pageNumber }: FindCommentsPayload,
