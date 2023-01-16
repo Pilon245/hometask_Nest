@@ -76,12 +76,9 @@ export class PostsSqlRepository {
     await this.dataSource.query(`UPDATE "Posts" 
     SET "isBanned" = ${value}
     WHERE "userId" = '${userId}'`);
-    await this.likePostModel.updateMany(
-      { userId: userId },
-      {
-        isBanned: value,
-      },
-    );
+    await this.dataSource.query(`UPDATE "LikePosts" 
+    SET "isBanned" = ${value}
+    WHERE "userId" = '${userId}'`);
     return;
   }
   async deletePosts(id: string) {

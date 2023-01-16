@@ -1,5 +1,5 @@
 import { Injectable, Scope } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectModel, Prop } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment, CommentDocument } from '../domain/entities/comments.entity';
 import {
@@ -13,6 +13,7 @@ import {
 } from '../domain/entities/likes.comments.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import * as fs from 'fs';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class CommentsSqlRepository {
@@ -31,10 +32,18 @@ export class CommentsSqlRepository {
     );
     return model;
   }
-  async findLikeByIdAndCommentId(id: string, commentId: string) {
-    return this.likeCommentModel.findOne({
-      $and: [{ userId: id }, { commentId: commentId }],
-    });
+  async findLikeByIdAndCommentId(id: string, commentId: string): Promise<any> {
+    const like = await this.dataSource.query(`SELECT * FROM "LikeComments"
+                    WHERE "userId" = '${id}' AND "commentId" = '${commentId}'`);
+    if (!like[0]) return false;
+    return {
+      likesStatus: like[0].likesStatus,
+      dislikesStatus: like[0].dislikesStatus,
+      myStatus: like[0].myStatus,
+      userId: like[0].userId,
+      commentId: like[0].commentId,
+      isBanned: like[0].isBanned,
+    };
   }
   async createLike(like: CreateLikeInputDTO) {
     await this.dataSource.query(`INSERT INTO "LikeComments"(
