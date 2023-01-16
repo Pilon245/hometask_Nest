@@ -51,7 +51,81 @@ export class PostsSqlQueryRepository {
     userId?: string,
   ) {
     if (sortBy === 'blogName') {
-      sortBy = 'blogId';
+      const skip = getSkipNumber(pageNumber, pageSize);
+      const posts = await this.dataSource.query(
+        `SELECT posts.*, blogs."name"
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE posts."isBanned" = false
+             ORDER BY blogs."name" ${sortDirection}
+             LIMIT ${pageSize} OFFSET  ${skip}`,
+      );
+      const valueCount = await this.dataSource.query(
+        `SELECT count(*) 
+             FROM "Posts" as posts
+             INNER JOIN "Blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE "isBanned" = false `,
+      );
+      const totalCount = +valueCount[0].count;
+      const Promises = posts.map(async (p) => {
+        const valueCount = await this.dataSource.query(
+          `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false`,
+        );
+        const totalLike = +valueCount[0].count;
+        const valueCountDislike = await this.dataSource.query(
+          `SELECT count(*) FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "dislikesStatus" = '${1}'
+            AND "isBanned" = false`,
+        );
+        const totalDislike = +valueCountDislike[0].count;
+        let likeStatus = LikeValuePost.none;
+        if (userId) {
+          const status = await this.dataSource.query(
+            `SELECT * FROM "LikePosts"
+            WHERE "postId" = '${p.id}' AND "userId" = '${userId}'
+            AND "isBanned" = false`,
+          );
+          likeStatus = status[0]?.myStatus || LikeValuePost.none;
+        }
+        const lastLikes = await this.dataSource.query(
+          `SELECT likes.*, users."login" FROM "LikePosts" as likes
+            INNER JOIN "Users" as users 
+            ON users."id" = likes."userId" 
+            WHERE "postId" = '${p.id}' AND "likesStatus" = '${1}'
+            AND "isBanned" = false
+            ORDER BY "addedAt" desc`,
+        );
+
+        return {
+          id: p.id,
+          title: p.title,
+          shortDescription: p.shortDescription,
+          content: p.content,
+          blogId: p.blogId,
+          blogName: p.name,
+          createdAt: p.createdAt,
+          extendedLikesInfo: {
+            likesCount: totalLike,
+            dislikesCount: totalDislike,
+            myStatus: likeStatus,
+            newestLikes: lastLikes.slice(0, 3).map((l) => ({
+              addedAt: l.addedAt,
+              userId: l.userId,
+              login: l.login,
+            })),
+          },
+        };
+      });
+      const items = await Promise.all(Promises);
+
+      return {
+        ...outputModel(totalCount, pageSize, pageNumber),
+        items: items,
+      };
     }
     const skip = getSkipNumber(pageNumber, pageSize);
     const posts = await this.dataSource.query(
