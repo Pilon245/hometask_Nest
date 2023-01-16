@@ -167,7 +167,7 @@ export class CommentsSqlQueryRepository {
             INNER JOIN "Blogs" as blogs
             ON blogs."id" = posts."blogId"
             WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false
-            ORDER BY "${sortBy}" ${sortDirection}
+            ORDER BY comments."${sortBy}" ${sortDirection}
              LIMIT ${pageSize} OFFSET  ${skip}`);
 
     const valueCount = await this.dataSource.query(
