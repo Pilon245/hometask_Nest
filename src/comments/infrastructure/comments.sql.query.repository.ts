@@ -214,7 +214,7 @@ export class CommentsSqlQueryRepository {
         content: c.content,
         createdAt: c.createdAt,
         commentatorInfo: {
-          userId: c.userId,
+          userId: c.commentatorUserId,
           userLogin: c.login,
         },
         likesInfo: {
