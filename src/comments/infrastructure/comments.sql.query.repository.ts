@@ -203,7 +203,7 @@ export class CommentsSqlQueryRepository {
             ON users."id" = comments."commentatorUserId"
             INNER JOIN "Posts" as posts
             ON posts."id" = comments."postId"
-            WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false'`,
+            WHERE posts."userId" = '${ownerUserId}' AND comments."isBanned" = false`,
       );
       const likeStatus = status[0]?.myStatus;
       return {
