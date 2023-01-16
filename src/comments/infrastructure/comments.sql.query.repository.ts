@@ -90,7 +90,7 @@ export class CommentsSqlQueryRepository {
   ) {
     const skip = getSkipNumber(pageNumber, pageSize);
     const comments = await this.dataSource.query(` 
-            SELECT comments.*, users."login"  FROM "Comments" as comments
+            SELECT comments.*,posts."userId", users."login"  FROM "Comments" as comments
             INNER JOIN "Users" as users
             ON users."id" = comments."commentatorUserId"
             WHERE "postId" = '${postId}' AND "isBanned" = false
@@ -154,7 +154,7 @@ export class CommentsSqlQueryRepository {
   ) {
     const skip = getSkipNumber(pageNumber, pageSize);
     const comments = await this.dataSource.query(` 
-            SELECT comments.*, users."login", posts.* , blogs.* 
+            SELECT comments.*,posts."userId", users."login", posts.* , blogs.* 
             FROM "Comments" as comments
             INNER JOIN "Users" as users
             ON users."id" = comments."commentatorUserId"

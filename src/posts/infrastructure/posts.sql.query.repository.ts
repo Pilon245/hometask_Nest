@@ -248,7 +248,7 @@ export class PostsSqlQueryRepository {
         shortDescription: p.shortDescription,
         content: p.content,
         blogId: p.blogId,
-        blogName: p.blogName,
+        blogName: p.name,
         createdAt: p.createdAt,
         extendedLikesInfo: {
           likesCount: totalLike,

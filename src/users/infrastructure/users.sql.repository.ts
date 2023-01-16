@@ -254,21 +254,21 @@ export class UsersSqlRepository {
   }
 
   async updateUsers(model: any) {
-    // if (model.isBanned) {
-    await this.dataSource.query(
-      `UPDATE "UsersBanInfo"
+    if (model.isBanned) {
+      await this.dataSource.query(
+        `UPDATE "UsersBanInfo"
 	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
 	 "banReason" = '${model.banReason}'
 	WHERE "userId" = '${model.id}';`,
-    );
-    //   } else {
-    //     await this.dataSource.query(
-    //       `UPDATE "UsersBanInfo"
-    // SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
-    //  "banReason" = ${model.banReason}
-    // WHERE "userId" = '${model.id}';`,
-    //     );
-    //   }
+      );
+    } else {
+      await this.dataSource.query(
+        `UPDATE "UsersBanInfo"
+    SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
+     "banReason" = ${model.banReason}
+    WHERE "userId" = '${model.id}';`,
+      );
+    }
     return true;
   }
 

@@ -44,10 +44,10 @@ export class CommentsSqlRepository {
     return like;
   }
   async updateComment(id: string, content: string) {
-    await this.dataSource.query(`UPDATE "Comments"
+    const result = await this.dataSource.query(`UPDATE "Comments"
         SET "content"= '${content}'
         WHERE "id" = '${id}'`);
-    return true;
+    return result[1];
   }
   async updateLike(
     authUserId: string,
