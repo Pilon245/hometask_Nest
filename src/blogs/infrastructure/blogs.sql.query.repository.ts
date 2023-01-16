@@ -40,7 +40,7 @@ export class BlogsSqlQueryRepository {
     const skip = getSkipNumber(pageNumber, pageSize);
     const blogs = await this.dataSource.query(
       `${this.select} 
-      WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false 
+      WHERE UPPER("name") like UPPER('%${searchNameTerm}%') AND "isBanned" = false 
       ORDER BY "${sortBy}" ${sortDirection}
     LIMIT ${pageSize} OFFSET  ${skip}`,
     );
@@ -49,7 +49,7 @@ export class BlogsSqlQueryRepository {
                     FROM "Blogs" as blogs
                     LEFT JOIN "BlogsBanInfo" as ban
                     ON ban."blogId" = blogs."id"
-                    WHERE "name" like '%${searchNameTerm}%' AND "isBanned" = false`,
+                    WHERE UPPER("name") like UPPER('%${searchNameTerm}%') AND "isBanned" = false`,
     );
     const totalCount = +valueCount[0].count;
     return {

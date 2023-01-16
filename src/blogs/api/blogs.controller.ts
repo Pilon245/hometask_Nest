@@ -31,7 +31,6 @@ export class BlogsController {
   ) {}
   @Get()
   getBlogs(@Query() query) {
-    console.log();
     return this.blogsQueryRepository.findBlogs(pagination(query));
   }
   @Get(':id')

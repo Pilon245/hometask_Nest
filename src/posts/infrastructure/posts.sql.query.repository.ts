@@ -50,6 +50,9 @@ export class PostsSqlQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
     userId?: string,
   ) {
+    if (sortBy === 'blogName') {
+      sortBy = 'blogId';
+    }
     const skip = getSkipNumber(pageNumber, pageSize);
     const posts = await this.dataSource.query(
       `SELECT posts.*, blogs."name"
