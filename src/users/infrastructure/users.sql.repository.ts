@@ -81,13 +81,13 @@ export class UsersSqlRepository {
         createdAt: users[0].createdAt,
       },
       emailConfirmation: {
-        confirmationCode: users[0].emailconfirmationCode,
-        expirationDate: users[0].emailexpirationDate,
+        confirmationCode: users[0].emailconfirmationcode,
+        expirationDate: users[0].emailexpirationdate,
         isConfirmed: users[0].emailisconfirmed,
       },
       passwordConfirmation: {
         confirmationCode: users[0].passconfirmationcode,
-        expirationDate: users[0].passexpirationDate,
+        expirationDate: users[0].passexpirationdate,
         isConfirmed: users[0].passisconfirmed,
       },
       banInfo: {
