@@ -63,7 +63,7 @@ export class UsersBloggerController {
     @Body() inputModel: BanBloggerUsersInputModel,
     @CurrentUserId() currentUserId,
   ) {
-    const resultFound = await this.blogsQueryRepository.findBlogBD(
+    const  = await this.blogsQueryRepository.findBlogBD(
       inputModel.blogId,
     );
     if (!resultFound) {
@@ -72,6 +72,7 @@ export class UsersBloggerController {
     if (resultFound.blogOwnerInfo.userId !== currentUserId) {
       throw new HttpException('Forbidden', 403);
     }
+    console.log("resultFound", resultFound)
     const banUser: BanBloggerUserUseCaseDto = {
       banUserId: id,
       bloggerId: currentUserId,
