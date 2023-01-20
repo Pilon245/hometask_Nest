@@ -46,6 +46,8 @@ export class UsersSaController {
   }
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
+    console.trace('dama');
+    console.debug('father');
     const created = await this.commandBus.execute(
       new CreateUserCommand(inputModel),
     );
