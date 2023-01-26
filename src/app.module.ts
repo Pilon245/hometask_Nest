@@ -165,8 +165,8 @@ const deleteAll = [
       password: process.env.PG_PASSWORD || '1234',
       database: process.env.PG_DATABASE || 'network',
       ssl: true,
-      //   autoLoadEntities: false,
-      //   synchronize: false,
+      //   autoLoadEntities: true,   // автоматически делает изменения
+      //   synchronize: true,       // true  во время разработки
     }),
     MongooseModule.forFeature(schemas),
     SessionModule,
