@@ -31,7 +31,7 @@ export class UsersSqlQueryRepository {
     @InjectModel(BloggerUsersBan.name)
     private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
     @InjectDataSource() protected dataSource: DataSource,
-  ) {}
+  ) {} //todo sql инъекции не сделал
   select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
 	email."confirmationCode" as emailConfirmationCode,
 	email."expirationDate" as emailExpirationDate,
