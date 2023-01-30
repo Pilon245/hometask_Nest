@@ -93,6 +93,7 @@ import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.
 import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
 import { CommentsSqlQueryRepository } from './comments/infrastructure/comments.sql.query.repository';
 import { CommentsSqlRepository } from './comments/infrastructure/comments.sql.repository';
+import { AvatarsModule } from './avatars/avatars.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -173,6 +174,7 @@ const deleteAll = [
     UsersModule,
     AuthModule,
     CqrsModule,
+    AvatarsModule,
   ],
   controllers: [
     BlogsController,
