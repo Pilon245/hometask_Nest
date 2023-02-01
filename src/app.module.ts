@@ -94,6 +94,8 @@ import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository'
 import { CommentsSqlQueryRepository } from './comments/infrastructure/comments.sql.query.repository';
 import { CommentsSqlRepository } from './comments/infrastructure/comments.sql.repository';
 import { AvatarsModule } from './avatars/avatars.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -149,6 +151,9 @@ const deleteAll = [
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
+    }),
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule,
     MongooseModule.forRootAsync({
