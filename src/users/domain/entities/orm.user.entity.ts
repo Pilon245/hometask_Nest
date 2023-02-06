@@ -1,3 +1,3 @@
-import { Entity } from "typeorm";
-
-@Entity()
+// import { Entity } from "typeorm";
+//
+// @Entity()
