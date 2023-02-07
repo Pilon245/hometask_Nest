@@ -66,6 +66,8 @@ import { BlogsSqlQueryRepository } from '../blogs/infrastructure/blogs.sql.query
 import { BlogsSqlRepository } from '../blogs/infrastructure/blogs.sql.repository';
 import { PostsSqlRepository } from '../posts/infrastructure/posts.sql.repository';
 import { CommentsSqlRepository } from '../comments/infrastructure/comments.sql.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailConfirmation } from './domain/entities/orm.email.confirmation.entity';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -87,6 +89,7 @@ const userUseCase = [
       { name: LikeComment.name, schema: LikeCommentSchema },
       { name: BloggerUsersBan.name, schema: BloggerUsersBanSchema },
     ]),
+    // TypeOrmModule.forFeature([User, EmailConfirmation]),
     CqrsModule,
   ],
   controllers: [UsersSaController, UsersBloggerController],
