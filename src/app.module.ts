@@ -93,7 +93,7 @@ import { PostsSqlQueryRepository } from './posts/infrastructure/posts.sql.query.
 import { PostsSqlRepository } from './posts/infrastructure/posts.sql.repository';
 import { CommentsSqlQueryRepository } from './comments/infrastructure/comments.sql.query.repository';
 import { CommentsSqlRepository } from './comments/infrastructure/comments.sql.repository';
-import { AvatarsModule } from './avatars/avatars.module';
+// import { AvatarsModule } from './avatars/avatars.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 
@@ -171,15 +171,15 @@ const deleteAll = [
       password: process.env.PG_PASSWORD || '1234',
       database: process.env.PG_DATABASE || 'network',
       ssl: true,
-      //   autoLoadEntities: true,   // автоматически делает изменения
-      //   synchronize: true,       // true  во время разработки
+      autoLoadEntities: true, // автоматически делает изменения
+      synchronize: true, // true  во время разработки
     }),
     MongooseModule.forFeature(schemas),
     SessionModule,
     UsersModule,
     AuthModule,
     CqrsModule,
-    AvatarsModule,
+    // AvatarsModule,
   ],
   controllers: [
     BlogsController,
