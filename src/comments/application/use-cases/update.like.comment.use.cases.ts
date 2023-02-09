@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LikesFactory } from '../../domain/dto/commentsFactory';
-import { LikeValueComment } from '../../domain/entities/likes.comments.entity';
+import { LikeValueComment } from '../../domain/entities/nosql/likes.comments.entity';
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { UpdateLikeCommentUseCaseDto } from '../../domain/dto/update.comments.dto';
 import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';

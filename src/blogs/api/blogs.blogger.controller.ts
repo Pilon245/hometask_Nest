@@ -49,7 +49,7 @@ import { DeleteBlogCommand } from '../application/use-cases/delete.blogs.use.cas
 import { CreatePostCommand } from '../../posts/application/use-cases/create.post.use.cases';
 import { UpdatePostCommand } from '../../posts/application/use-cases/update.post.use.cases';
 import { DeletePostCommand } from '../../posts/application/use-cases/delete.post.use.cases';
-import { Blog, BlogSchema } from '../domain/entities/blog.entity';
+import { Blog, BlogSchema } from '../domain/entities/nosql/blog.entity';
 import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
 import { CommentsSqlQueryRepository } from '../../comments/infrastructure/comments.sql.query.repository';

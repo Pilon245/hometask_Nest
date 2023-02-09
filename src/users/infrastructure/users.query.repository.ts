@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../domain/entities/users.entity';
+import { User, UserDocument } from '../domain/entities/nosql/users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../../helper/helper.function';
@@ -7,7 +7,7 @@ import { SortDirection } from '../../validation/query.validation';
 import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
-} from '../domain/entities/blogger.users.blogs.ban.entity';
+} from '../domain/entities/nosql/blogger.users.blogs.ban.entity';
 
 export type FindUsersPayload = {
   pageSize: number;

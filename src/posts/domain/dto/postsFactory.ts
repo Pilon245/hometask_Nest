@@ -5,7 +5,7 @@ import {
   Length,
   Validate,
 } from 'class-validator';
-import { LikeValuePost } from '../entities/likes.posts.entity';
+import { LikeValuePost } from '../entities/nosql/likes.posts.entity';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { BlogExistsRule } from '../../guards/blog-id-validation.service';
 

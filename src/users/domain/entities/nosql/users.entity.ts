@@ -5,7 +5,7 @@ import {
   EmailConfirmationType,
   PasswordConfirmationType,
   UsersAccountDataType,
-} from '../dto/entity.dto';
+} from '../../dto/entity.dto';
 
 export type UserDocument = HydratedDocument<User>;
 

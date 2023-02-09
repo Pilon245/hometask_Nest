@@ -6,33 +6,50 @@ import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
 } from '../domain/entities/nosql/blogger.users.blogs.ban.entity';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
-import { BanBloggerUsersFactory } from '../domain/dto/usersFactory';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import {
+  BanBloggerUsersFactory,
+  UsersFactory,
+} from '../domain/dto/usersFactory';
+import { Users } from '../domain/entities/sql/user.entity';
+import { EmailConfirmation } from '../domain/entities/sql/email.confirmation.entity';
+import { PasswordConfirmation } from '../domain/entities/sql/password.confirmation.entity';
+import { UsersBanInfo } from '../domain/entities/sql/users.ban.info.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable({ scope: Scope.DEFAULT })
-export class UsersSqlRepository {
+export class UsersOrmRepository {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectRepository(Users)
+    private readonly usersRepository: Repository<Users>,
+    @InjectRepository(EmailConfirmation)
+    private readonly emailConfirmationRepository: Repository<EmailConfirmation>,
+    @InjectRepository(PasswordConfirmation)
+    private readonly passwordConfirmationRepository: Repository<PasswordConfirmation>,
+    @InjectRepository(UsersBanInfo)
+    private readonly usersBanInfoRepository: Repository<UsersBanInfo>,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
     @InjectModel(BloggerUsersBan.name)
     private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
     @InjectDataSource() protected dataSource: DataSource,
   ) {}
   select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
-	email."confirmationCode" as emailConfirmationCode,
-	email."expirationDate" as emailExpirationDate,
-	email."isConfirmed" as emailIsConfirmed,
-	pass."confirmationCode" as passConfirmationCode,
-	pass."expirationDate" as passExpirationDate,
-	pass."isConfirmed" as passIsConfirmed,
-	ban."isBanned", ban."banDate", ban."banReason"
-	FROM "Users" AS users
-	LEFT JOIN "EmailConfirmation" AS email
-	ON email."userId" = users."id"
-	LEFT JOIN "PasswordConfirmation" AS pass
-	ON pass."userId" = users."id"
-	LEFT JOIN "UsersBanInfo" AS ban
-	ON ban."userId" = users."id"`;
+  email."confirmationCode" as emailConfirmationCode,
+  email."expirationDate" as emailExpirationDate,
+  email."isConfirmed" as emailIsConfirmed,
+  pass."confirmationCode" as passConfirmationCode,
+  pass."expirationDate" as passExpirationDate,
+  pass."isConfirmed" as passIsConfirmed,
+  ban."isBanned", ban."banDate", ban."banReason"
+  FROM "Users" AS users
+  LEFT JOIN "EmailConfirmation" AS email
+  ON email."userId" = users."id"
+  LEFT JOIN "PasswordConfirmation" AS pass
+  ON pass."userId" = users."id"
+  LEFT JOIN "UsersBanInfo" AS ban
+  ON ban."userId" = users."id"`;
 
   async findUsersById(id: string): Promise<any> {
     const users = await this.dataSource.query(
@@ -65,7 +82,6 @@ export class UsersSqlRepository {
       },
     };
   }
-
   async findLoginOrEmail(LoginOrEmailL: string) {
     const users = await this.dataSource.query(
       `${this.select} 
@@ -97,7 +113,6 @@ export class UsersSqlRepository {
       },
     };
   }
-
   async findBanBloggerUsersDB(banUserId: string, blogId: string) {
     const banUser = await this.dataSource.query(
       `SELECT * FROM "BloggerUsersBan"
@@ -114,7 +129,6 @@ export class UsersSqlRepository {
     );
     return result[0];
   }
-
   async updatePasswordConfirmation(id: string) {
     const result = await this.dataSource.query(
       `UPDATE "PasswordConfirmation"
@@ -123,7 +137,6 @@ export class UsersSqlRepository {
     );
     return result[0];
   }
-
   async updateEmailCode(id: string, code: any) {
     const result = await this.dataSource.query(
       `UPDATE "EmailConfirmation"
@@ -132,7 +145,6 @@ export class UsersSqlRepository {
     );
     return result[0];
   }
-
   async updatePasswordCode(id: string, code: any) {
     const result = await this.dataSource.query(
       `UPDATE "PasswordConfirmation"
@@ -141,7 +153,6 @@ export class UsersSqlRepository {
     );
     return result[0];
   }
-
   async updatePasswordUsers(id: string, password: string) {
     const result = await this.dataSource.query(
       `UPDATE "Users"
@@ -150,7 +161,6 @@ export class UsersSqlRepository {
     );
     return result[0];
   }
-
   async findUserByConfirmationEmailCode(emailConfirmationCode: string) {
     const users = await this.dataSource.query(
       `${this.select}
@@ -182,7 +192,6 @@ export class UsersSqlRepository {
       },
     };
   }
-
   async findUserByConfirmationPasswordCode(passwordConfirmation: string) {
     const users = await this.dataSource.query(
       `${this.select}
@@ -214,27 +223,14 @@ export class UsersSqlRepository {
     };
   }
 
-  async createUsers(user: any) {
-    await this.dataSource.query(`
-    INSERT INTO "Users"(
-    "id", "login", "email", "passwordHash", "createdAt")
-    VALUES ('${user.id}', '${user.accountData.login}', '${user.accountData.email}',
-     '${user.accountData.passwordHash}', '${user.accountData.createdAt}');
-     
-    INSERT INTO "EmailConfirmation"(
-    "userId", "confirmationCode", "expirationDate", "isConfirmed")
-    VALUES ('${user.id}', '${user.emailConfirmation.confirmationCode}', 
-    '${user.emailConfirmation.expirationDate}', '${user.emailConfirmation.isConfirmed}');
-    
-    INSERT INTO "PasswordConfirmation"(
-    "userId", "confirmationCode", "expirationDate", "isConfirmed")
-    VALUES ('${user.id}', '${user.passwordConfirmation.confirmationCode}',
-     '${user.passwordConfirmation.expirationDate}', '${user.passwordConfirmation.isConfirmed}');
-     
-    INSERT INTO "UsersBanInfo"(
-    "userId", "isBanned")
-    VALUES ('${user.id}', '${user.banInfo.isBanned}');`);
-
+  async createUsers(user: UsersFactory) {
+    const newUser = new Users();
+    newUser.id = user.id;
+    newUser.login = user.accountData.login;
+    newUser.email = user.accountData.email;
+    newUser.passwordHash = user.accountData.passwordHash;
+    newUser.createdAt = user.accountData.createdAt;
+    await this.usersRepository.save(newUser);
     return;
   }
 

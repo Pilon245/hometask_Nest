@@ -20,7 +20,7 @@ import {
   UpdateLikeCommentUseCaseDto,
 } from '../domain/dto/update.comments.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { LikeValueComment } from '../domain/entities/likes.comments.entity';
+import { LikeValueComment } from '../domain/entities/nosql/likes.comments.entity';
 import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get.service';
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';

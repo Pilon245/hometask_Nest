@@ -51,7 +51,7 @@ export class UsersSaController {
     if (!created) {
       throw new HttpException('invalid blog', 404);
     }
-    return this.usersQueryRepository.findUsersById(created.id);
+    return 'this.usersQueryRepository.findUsersById(created.id);';
   }
   @Put(':id/ban')
   @HttpCode(204)

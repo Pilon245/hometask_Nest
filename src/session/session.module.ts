@@ -3,7 +3,7 @@ import { SessionService } from './application/session.service';
 import { SessionController } from './api/session.controller';
 import { SessionRepository } from './infrastructure/session.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Session, SessionSchema } from './domain/entities/session.entity';
+import { Session, SessionSchema } from './domain/entities/nosql/session.entity';
 import { AuthService } from '../auth/application/auth.service';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
@@ -15,10 +15,13 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
 import { SessionSqlQueryRepository } from './infrastructure/session.sql.query.repository';
 import { SessionSqlRepository } from './infrastructure/session.sql.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Sessions } from './domain/entities/sql/session.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    TypeOrmModule.forFeature([Sessions]),
     UsersModule,
     CqrsModule,
   ],

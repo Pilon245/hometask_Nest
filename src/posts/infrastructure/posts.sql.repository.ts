@@ -1,13 +1,13 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel, Prop } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post, PostDocument } from '../domain/entities/posts.entity';
+import { Post, PostDocument } from '../domain/entities/nosql/posts.entity';
 import { CreateLikeInputDTO, CreatePostRepo } from '../domain/dto/postsFactory';
 import {
   LikePost,
   LikePostDocument,
   LikeValuePost,
-} from '../domain/entities/likes.posts.entity';
+} from '../domain/entities/nosql/likes.posts.entity';
 import { UpdatePostDTO } from '../domain/dto/update.posts.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';

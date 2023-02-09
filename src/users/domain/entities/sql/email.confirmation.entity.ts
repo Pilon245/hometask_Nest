@@ -4,24 +4,25 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
-import { User } from './orm.user.entity';
+import { Users } from './user.entity';
 
 @Entity()
 export class EmailConfirmation {
-  @Column()
+  @Column({ nullable: true, default: null })
   confirmationCode: string;
 
-  @Column()
+  @Column({ nullable: true, default: null })
   expirationDate: string;
 
-  @Column()
+  @Column({ default: false })
   isConfirmed: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => Users)
   @JoinColumn()
-  user: User;
+  user: Users;
 
-  @Column()
+  @PrimaryColumn()
   userId: string;
 }

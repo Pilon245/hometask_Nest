@@ -27,7 +27,7 @@ import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get
 import { CurrentUserId } from '../../auth/current-user.param.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdatePostLikeInputModel } from '../domain/dto/postsFactory';
-import { LikeValuePost } from '../domain/entities/likes.posts.entity';
+import { LikeValuePost } from '../domain/entities/nosql/likes.posts.entity';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateLikePostCommand } from '../application/use-cases/update.like.post.use.cases';
 import { UpdateLikePostUseCaseDTO } from '../domain/dto/update.posts.dto';

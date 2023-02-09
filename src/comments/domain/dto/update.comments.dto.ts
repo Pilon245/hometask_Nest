@@ -1,4 +1,4 @@
-import { LikeValueComment } from '../entities/likes.comments.entity';
+import { LikeValueComment } from '../entities/nosql/likes.comments.entity';
 import { IsEnum, IsNotEmpty, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';

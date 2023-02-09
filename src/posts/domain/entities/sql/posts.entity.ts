@@ -1,0 +1,42 @@
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Users } from '../../../../users/domain/entities/sql/user.entity';
+import { Blogs } from '../../../../blogs/domain/entities/sql/blog.entity';
+
+@Entity()
+export class Posts {
+  @PrimaryColumn()
+  id: string;
+
+  @Column()
+  createdAt: string;
+
+  @Column()
+  content: string;
+
+  @Column({ default: false })
+  isBanned: boolean;
+
+  @Column()
+  shortDescription: string;
+
+  @OneToOne(() => Users)
+  @JoinColumn()
+  user: Users;
+
+  @Column()
+  userId: string;
+
+  @OneToOne(() => Blogs)
+  @JoinColumn()
+  blog: Blogs;
+
+  @Column()
+  blogId: string;
+}

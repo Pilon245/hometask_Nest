@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import {
   Comment,
   CommentDocument,
-} from '../comments/domain/entities/comments.entity';
+} from '../comments/domain/entities/nosql/comments.entity';
 import { Model } from 'mongoose';
 import { AvatarDocument, Avatars } from './avatars.entity';
 import * as path from 'path';

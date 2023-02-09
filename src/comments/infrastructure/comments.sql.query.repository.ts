@@ -1,17 +1,20 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Comment, CommentDocument } from '../domain/entities/comments.entity';
+import {
+  Comment,
+  CommentDocument,
+} from '../domain/entities/nosql/comments.entity';
 import {
   LikeComment,
   LikeCommentDocument,
   LikeValueComment,
-} from '../domain/entities/likes.comments.entity';
+} from '../domain/entities/nosql/likes.comments.entity';
 import { SortDirection } from '../../validation/query.validation';
 import { getSkipNumber, outputModel } from '../../helper/helper.function';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { LikeValuePost } from '../../posts/domain/entities/likes.posts.entity';
+import { LikeValuePost } from '../../posts/domain/entities/nosql/likes.posts.entity';
 
 export type FindCommentsPayload = {
   pageSize: number;

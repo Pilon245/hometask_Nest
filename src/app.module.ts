@@ -205,6 +205,7 @@ console.log('result', result);
       // ssl: true,
       autoLoadEntities: true, // автоматически делает изменения
       synchronize: true, // true  во время разработки
+      // entities: sqlSchemas,
     }),
     MongooseModule.forFeature(schemas),
     TypeOrmModule.forFeature(sqlSchemas),

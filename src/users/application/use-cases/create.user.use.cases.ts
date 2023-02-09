@@ -8,6 +8,7 @@ import {
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
+import { UsersOrmRepository } from '../../infrastructure/users.orm.repository';
 
 export class CreateUserCommand {
   constructor(public createUseCase: CreateUserUseCaseDto) {}
@@ -15,7 +16,7 @@ export class CreateUserCommand {
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
-  constructor(private usersRepository: UsersSqlRepository) {}
+  constructor(private usersRepository: UsersOrmRepository) {}
 
   async execute(command: CreateUserCommand) {
     const passwordHash = await _generatePasswordForDb(
