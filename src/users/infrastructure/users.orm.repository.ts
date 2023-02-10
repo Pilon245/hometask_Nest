@@ -231,6 +231,28 @@ export class UsersOrmRepository {
     newUser.passwordHash = user.accountData.passwordHash;
     newUser.createdAt = user.accountData.createdAt;
     await this.usersRepository.save(newUser);
+    const newEmailConfirmation = new EmailConfirmation();
+    newEmailConfirmation.userId = user.id;
+    newEmailConfirmation.isConfirmed = user.emailConfirmation.isConfirmed;
+    newEmailConfirmation.confirmationCode =
+      user.emailConfirmation.confirmationCode;
+    newEmailConfirmation.expirationDate =
+      user.emailConfirmation.expirationDate.toString();
+    await this.emailConfirmationRepository.save(newEmailConfirmation);
+    const newPasswordConfirmation = new PasswordConfirmation();
+    newPasswordConfirmation.userId = user.id;
+    newPasswordConfirmation.isConfirmed = user.passwordConfirmation.isConfirmed;
+    newPasswordConfirmation.confirmationCode =
+      user.passwordConfirmation.confirmationCode;
+    newPasswordConfirmation.expirationDate =
+      user.passwordConfirmation.expirationDate.toString();
+    await this.passwordConfirmationRepository.save(newPasswordConfirmation);
+    const newBanInfo = new UsersBanInfo();
+    newBanInfo.userId = user.id;
+    newBanInfo.isBanned = user.banInfo.isBanned;
+    newBanInfo.banDate = user.banInfo.banDate;
+    newBanInfo.banReason = user.banInfo.banReason;
+    await this.usersBanInfoRepository.save(newBanInfo);
     return;
   }
 
@@ -250,21 +272,28 @@ export class UsersOrmRepository {
   }
 
   async updateUsers(model: any) {
-    if (model.isBanned) {
-      await this.dataSource.query(
-        `UPDATE "UsersBanInfo"
-	SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
-	 "banReason" = '${model.banReason}'
-	WHERE "userId" = '${model.id}';`,
-      );
-    } else {
-      await this.dataSource.query(
-        `UPDATE "UsersBanInfo"
-    SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
-     "banReason" = ${model.banReason}
-    WHERE "userId" = '${model.id}';`,
-      );
-    }
+    const user = await this.usersBanInfoRepository.findOneBy({
+      userId: model.id,
+    });
+    user.banDate = model.banDate;
+    user.banReason = model.banReason;
+    user.isBanned = model.isBanned;
+    return this.usersBanInfoRepository.save(user);
+    //   if (model.isBanned) {
+    //     await this.dataSource.query(
+    //       `UPDATE "UsersBanInfo"
+    // SET "isBanned"='${model.isBanned}', "banDate" = '${model.banDate}',
+    //  "banReason" = '${model.banReason}'
+    // WHERE "userId" = '${model.id}';`,
+    //     );
+    //   } else {
+    //     await this.dataSource.query(
+    //       `UPDATE "UsersBanInfo"
+    //   SET "isBanned"='${model.isBanned}', "banDate" = ${model.banDate},
+    //    "banReason" = ${model.banReason}
+    //   WHERE "userId" = '${model.id}';`,
+    //     );
+    //   }
     return true;
   }
 

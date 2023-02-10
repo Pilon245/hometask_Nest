@@ -162,9 +162,6 @@ const deleteAll = [
   DeleteSessionUseCase,
   DeleteCommentsUseCase,
 ];
-console.log('process.env.PG_DATABASE', process.env.PG_DATABASE);
-const result = new ConfigService().get<any>('PG_DATABASE');
-console.log('result', result);
 
 @Module({
   imports: [

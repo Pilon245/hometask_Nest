@@ -73,6 +73,7 @@ import { PasswordConfirmation } from './domain/entities/sql/password.confirmatio
 import { UsersBanInfo } from './domain/entities/sql/users.ban.info.entity';
 import { BloggersUsersBlogsBan } from './domain/entities/sql/bloggers.users.blogs.ban.entity';
 import { UsersOrmRepository } from './infrastructure/users.orm.repository';
+import { UsersOrmQueryRepository } from './infrastructure/users.orm.query.repository';
 
 const userUseCase = [
   CreateUserUseCase,
@@ -126,6 +127,7 @@ const userUseCase = [
     UsersSqlQueryRepository,
     CommentsSqlRepository,
     UsersOrmRepository,
+    UsersOrmQueryRepository,
   ],
   exports: [
     UsersService,
@@ -134,6 +136,7 @@ const userUseCase = [
     UsersSqlQueryRepository,
     UsersSqlRepository,
     UsersOrmRepository,
+    UsersOrmQueryRepository,
   ],
 })
 export class UsersModule {}

@@ -27,6 +27,7 @@ import { CreateUserCommand } from '../application/use-cases/create.user.use.case
 import { BanAdminUserCommand } from '../application/use-cases/ban.admin.user.use.cases';
 import { DeleteUserCommand } from '../application/use-cases/delete.user.use.cases';
 import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repository';
+import { UsersOrmQueryRepository } from '../infrastructure/users.orm.query.repository';
 
 @UseGuards(BasicAdminGuard)
 @ApiTags('sa/users')
@@ -36,7 +37,7 @@ import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repos
 })
 export class UsersSaController {
   constructor(
-    protected usersQueryRepository: UsersSqlQueryRepository,
+    protected usersQueryRepository: UsersOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @Get()

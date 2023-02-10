@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
@@ -23,14 +24,14 @@ export class BloggersUsersBlogsBan {
   @Column({ nullable: true, default: null })
   banReason: string;
 
-  @OneToOne(() => Blogs)
+  @ManyToOne(() => Blogs)
   @JoinColumn()
   blog: Blogs;
 
   @Column()
   blogId: string;
 
-  @OneToOne(() => Users)
+  @ManyToOne(() => Users)
   @JoinColumn()
   user: Users;
 

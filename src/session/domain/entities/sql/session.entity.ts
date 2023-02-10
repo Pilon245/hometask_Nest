@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
@@ -25,7 +26,7 @@ export class Sessions {
   @Column()
   title: string;
 
-  @OneToOne(() => Users)
+  @ManyToOne(() => Users)
   @JoinColumn()
   user: Users;
 

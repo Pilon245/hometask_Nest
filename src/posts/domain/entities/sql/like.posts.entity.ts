@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
@@ -30,14 +31,14 @@ export class LikePosts {
   @Column()
   myStatus: string;
 
-  @OneToOne(() => Users)
+  @ManyToOne(() => Users)
   @JoinColumn()
   user: Users;
 
   @Column()
   userId: string;
 
-  @OneToOne(() => Posts)
+  @ManyToOne(() => Posts)
   @JoinColumn()
   post: Posts;
 

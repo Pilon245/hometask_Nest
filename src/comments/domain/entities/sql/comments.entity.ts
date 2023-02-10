@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
@@ -23,14 +24,14 @@ export class Comments {
   @Column({ default: false })
   isBanned: boolean;
 
-  @OneToOne(() => Users)
+  @ManyToOne(() => Users)
   @JoinColumn()
   user: Users;
 
   @Column()
   commentatorUserId: string;
 
-  @OneToOne(() => Posts)
+  @ManyToOne(() => Posts)
   @JoinColumn()
   post: Posts;
 

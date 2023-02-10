@@ -17,7 +17,7 @@ export class EmailConfirmation {
   expirationDate: string;
 
   @Column({ default: false })
-  isConfirmed: string;
+  isConfirmed: boolean;
 
   @OneToOne(() => Users)
   @JoinColumn()
