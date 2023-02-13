@@ -48,9 +48,30 @@ export class UsersSqlQueryRepository {
 	LEFT JOIN "UsersBanInfo" AS ban
 	ON ban."userId" = users."id"`;
 
+  sql = `SELECT "id", "login", "email", "passwordHash", "createdAt",
+	email."confirmationCode" as emailConfirmationCode,
+	email."expirationDate" as emailExpirationDate,
+	email."isConfirmed" as emailIsConfirmed,
+	pass."confirmationCode" as passConfirmationCode,
+	pass."expirationDate" as passExpirationDate,
+	pass."isConfirmed" as passIsConfirmed,
+	ban."isBanned", ban."banDate", ban."banReason"
+	FROM "Users" AS users
+	LEFT JOIN "EmailConfirmation" AS email
+	ON email."userId" = users.$1
+	LEFT JOIN "PasswordConfirmation" AS pass
+	ON pass."userId" = users.$1
+	LEFT JOIN "UsersBanInfo" AS ban
+	ON ban."userId" = users.$1
+	WHERE users.login  LIKE $2`;
   async findUsersById(id: string) {
-    const users = await this.dataSource.query(`${this.select}
-    WHERE "id" = '${id}'`);
+    //todo sql injection
+    const lastNameTerm = 'Tim';
+    const users = await this.dataSource.query(
+      `${this.sql}
+    WHERE "id" = $1`,
+      [id, `%${lastNameTerm}%`],
+    );
     if (!users[0]) return false;
     return {
       id: users[0].id,
