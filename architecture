@@ -1,0 +1,17 @@
+src
+    features
+        wallets
+            api
+                interfaces
+                query
+                controller.ts
+            application
+                dto
+                interfaces
+                service.ts
+            domain
+                entities
+                schema.ts
+            infrastructure
+
+
