@@ -58,18 +58,17 @@ export class UsersSqlQueryRepository {
 	ban."isBanned", ban."banDate", ban."banReason"
 	FROM "Users" AS users
 	LEFT JOIN "EmailConfirmation" AS email
-	ON email."userId" = users.$1
+	ON email."userId" = users."id"
 	LEFT JOIN "PasswordConfirmation" AS pass
-	ON pass."userId" = users.$1
+	ON pass."userId" = users."id"
 	LEFT JOIN "UsersBanInfo" AS ban
-	ON ban."userId" = users.$1
-	WHERE users.login  LIKE $2`;
+	ON ban."userId" = users."id"`;
   async findUsersById(id: string) {
     //todo sql injection
-    const lastNameTerm = 'Tim';
+    const lastNameTerm = '';
     const users = await this.dataSource.query(
       `${this.sql}
-    WHERE "id" = $1`,
+    WHERE "id" = $1 OR '' = $2`,
       [id, `%${lastNameTerm}%`],
     );
     if (!users[0]) return false;

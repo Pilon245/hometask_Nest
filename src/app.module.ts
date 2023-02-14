@@ -177,35 +177,35 @@ const deleteAll = [
       }),
       inject: [ConfigService],
     }),
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     type: 'postgres',
-    //     host: configService.get<string>('PG_HOST'),
-    //     port: 5432,
-    //     username: configService.get<string>('PG_USER'),
-    //     password: configService.get<string>('PG_PASSWORD'),
-    //     database: configService.get<string>('PG_DATABASE'),
-    //     ssl: true,
-    //     // autoLoadEntities: true, // автоматически делает изменения
-    //     // synchronize: true, // true  во время разработки
-    //   }),
-    //   inject: [ConfigService],
-    // }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'network',
-      // ssl: true,
-      autoLoadEntities: true, // автоматически делает изменения
-      synchronize: true, // true  во время разработки
-      // entities: sqlSchemas,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('PG_HOST'),
+        port: 5432,
+        username: configService.get<string>('PG_USER'),
+        password: configService.get<string>('PG_PASSWORD'),
+        database: configService.get<string>('PG_DATABASE'),
+        ssl: true,
+        // autoLoadEntities: true, // автоматически делает изменения
+        // synchronize: true, // true  во время разработки
+      }),
+      inject: [ConfigService],
     }),
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   host: 'localhost',
+    //   port: 5432,
+    //   username: 'postgres',
+    //   password: '1234',
+    //   database: 'network',
+    //   // ssl: true,
+    //   autoLoadEntities: true, // автоматически делает изменения
+    //   synchronize: true, // true  во время разработки
+    //   // entities: sqlSchemas,
+    // }),
     MongooseModule.forFeature(schemas),
-    TypeOrmModule.forFeature(sqlSchemas),
+    // TypeOrmModule.forFeature(sqlSchemas),
     SessionModule,
     UsersModule,
     AuthModule,

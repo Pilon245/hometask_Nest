@@ -37,7 +37,7 @@ import { UsersOrmQueryRepository } from '../infrastructure/users.orm.query.repos
 })
 export class UsersSaController {
   constructor(
-    protected usersQueryRepository: UsersOrmQueryRepository,
+    protected usersQueryRepository: UsersSqlQueryRepository,
     private commandBus: CommandBus,
   ) {}
   @Get()
@@ -53,7 +53,7 @@ export class UsersSaController {
     if (!created) {
       throw new HttpException('invalid blog', 404);
     }
-    return 'this.usersQueryRepository.findUsersById(created.id);';
+    return this.usersQueryRepository.findUsersById(created.id);
   }
   @Put(':id/ban')
   @HttpCode(204)
