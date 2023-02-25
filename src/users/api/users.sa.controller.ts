@@ -42,7 +42,6 @@ export class UsersSaController {
   ) {}
   @Get()
   async getUsers(@Query() query) {
-    console.log();
     return this.usersQueryRepository.findUsers(pagination(query));
   }
   @Post()
