@@ -1,0 +1,7 @@
+.git*
+Dockerfile
+.docker*
+.vscode*
+git*
+docker*
+.env*
