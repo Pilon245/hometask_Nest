@@ -51,7 +51,7 @@ import { RecoveryPasswordUserCommand } from '../application/use-cases/recovery.p
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 
-// @UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
+//@UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
 @Controller({
   path: 'auth',
@@ -65,6 +65,7 @@ export class AuthController {
     protected emailManager: EmailManager,
     private commandBus: CommandBus,
   ) {}
+
   @ApiOperation({ summary: 'Login Request' })
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -96,6 +97,7 @@ export class AuthController {
       })
       .send({ accessToken: tokens.accessToken });
   }
+
   @UseGuards(RefreshTokenGuard)
   @Post('refresh-token')
   async updateRefreshToken(
@@ -117,12 +119,14 @@ export class AuthController {
       })
       .send({ accessToken: tokens.accessToken });
   }
+
   @Throttle()
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async myAccount(@CurrentUserId() currentUserId) {
     return this.usersQueryRepository.findUsersByIdOnMyAccount(currentUserId);
   }
+
   @Post('registration')
   @HttpCode(204)
   async createRegistrationUser(
@@ -154,6 +158,7 @@ export class AuthController {
 
     return this.commandBus.execute(new RegistrationUsersCommand(inputModel));
   }
+
   @Post('registration-confirmation')
   @HttpCode(204)
   async confirmationEmail(@Body() inputModel: ConfirmationInputModel) {
@@ -167,6 +172,7 @@ export class AuthController {
     }
     return;
   }
+
   @Post('registration-email-resending')
   @HttpCode(204)
   async resendingEmail(@Body() inputModel: RegistrationEmailInputModel) {
@@ -182,6 +188,7 @@ export class AuthController {
     const user = await this.usersRepository.findLoginOrEmail(inputModel.email);
     return this.emailManager.sendPasswordRecoveryMessage(user);
   }
+
   @Post('password-recovery')
   @HttpCode(204)
   async recoveryPassword(@Body() inputModel: RegistrationEmailInputModel) {
@@ -197,6 +204,7 @@ export class AuthController {
 
     return this.emailManager.sendNewPasswordMessage(user);
   }
+
   @Post('new-password')
   @HttpCode(204)
   async confirmationRecoveryPassword(
@@ -216,6 +224,7 @@ export class AuthController {
     }
     return;
   }
+
   @UseGuards(RefreshTokenGuard)
   @Post('logout')
   @HttpCode(204)
