@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UsersRepository } from '../../infrastructure/users.repository';
-import { _generatePasswordForDb } from '../../../helper/auth.function';
 import {
   CreateUserUseCaseDto,
   UsersFactory,
@@ -9,6 +8,7 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
 import { UsersOrmRepository } from '../../infrastructure/users.orm.repository';
+import { _generatePasswordForDb } from 'src/helper/auth.function';
 
 export class CreateUserCommand {
   constructor(public createUseCase: CreateUserUseCaseDto) {}

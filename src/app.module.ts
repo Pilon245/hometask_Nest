@@ -194,10 +194,10 @@ const deleteAll = [
     }),
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
-    //   host: 'localhost',
+    //   host: 'db',
     //   port: 5432,
     //   username: 'postgres',
-    //   password: '1234',
+    //   password: 'postgres',
     //   database: 'network',
     //   // ssl: true,
     //   autoLoadEntities: true, // автоматически делает изменения
