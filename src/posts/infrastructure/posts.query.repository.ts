@@ -30,6 +30,7 @@ export class PostsQueryRepository {
     { sortDirection, sortBy, pageSize, pageNumber }: FindPostsPayload,
     userId?: string,
   ) {
+
     const posts = await this.postModel
       .find({ isBanned: false })
       .sort([[sortBy, sortDirection]])
