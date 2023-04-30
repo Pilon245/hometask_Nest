@@ -19,7 +19,7 @@ export class UsersBanInfo {
   @Column({ default: false })
   isBanned: boolean;
 
-  @OneToOne(() => Users)
+  @OneToOne(() => Users, (u) => u.banInfo)
   @JoinColumn()
   user: Users;
 

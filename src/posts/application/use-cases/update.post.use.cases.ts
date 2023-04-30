@@ -12,6 +12,7 @@ import {
   UpdatePostUseCaseDTO,
 } from '../../domain/dto/update.posts.dto';
 import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 export class UpdatePostCommand {
   constructor(public updateUseCaseDto: UpdatePostUseCaseDTO) {}
@@ -19,7 +20,7 @@ export class UpdatePostCommand {
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
-  constructor(private postsRepository: PostsSqlRepository) {}
+  constructor(private postsRepository: PostsOrmRepository) {}
 
   async execute(command: UpdatePostCommand) {
     const updatePost: UpdatePostDTO = {

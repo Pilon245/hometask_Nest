@@ -16,7 +16,7 @@ export class CreateUserCommand {
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserUseCase implements ICommandHandler<CreateUserCommand> {
-  constructor(private usersRepository: UsersSqlRepository) {}
+  constructor(private usersRepository: UsersOrmRepository) {}
 
   async execute(command: CreateUserCommand) {
     const passwordHash = await _generatePasswordForDb(

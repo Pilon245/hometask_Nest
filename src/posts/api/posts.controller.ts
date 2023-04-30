@@ -37,6 +37,10 @@ import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.qu
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
 import { PostsSqlQueryRepository } from '../infrastructure/posts.sql.query.repository';
 import { CommentsSqlQueryRepository } from '../../comments/infrastructure/comments.sql.query.repository';
+import { UsersOrmQueryRepository } from 'src/users/infrastructure/users.orm.query.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
+import { CommentsOrmQueryRepository } from 'src/comments/infrastructure/comments.orm.query.repository';
+import { PostsOrmQueryRepository } from 'src/posts/infrastructure/posts.orm.query.repository';
 
 @ApiTags('posts')
 @Controller({
@@ -45,12 +49,13 @@ import { CommentsSqlQueryRepository } from '../../comments/infrastructure/commen
 })
 export class PostsController {
   constructor(
-    protected postsQueryRepository: PostsSqlQueryRepository,
-    protected blogsQueryRepository: BlogsSqlQueryRepository,
-    protected commentsQueryRepository: CommentsSqlQueryRepository,
-    protected usersQueryRepository: UsersSqlQueryRepository,
+    protected postsQueryRepository: PostsOrmQueryRepository,
+    protected blogsQueryRepository: BlogsOrmQueryRepository,
+    protected commentsQueryRepository: CommentsOrmQueryRepository,
+    protected usersQueryRepository: UsersOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @UseGuards(BearerAuthGuardOnGet)
   @Get()
   async getPosts(@Query() query, @Req() req, @Res() res: Response) {
@@ -60,6 +65,7 @@ export class PostsController {
     );
     return res.status(200).send(posts);
   }
+
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getPost(@Param('id') id: string, @Req() req, @Res() res: Response) {
@@ -76,6 +82,7 @@ export class PostsController {
     const post = await this.postsQueryRepository.findPostById(id, req.user?.id);
     return res.status(200).send(post);
   }
+
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':postId/comments')
   async getCommentOnPostId(
@@ -95,6 +102,7 @@ export class PostsController {
     );
     return res.status(200).send(comments);
   }
+
   @UseGuards(JwtAuthGuard)
   @Post(':postId/comments')
   async createCommentOnPostId(

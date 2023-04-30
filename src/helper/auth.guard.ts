@@ -21,13 +21,15 @@ import { _generatePasswordForDb } from './auth.function';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from '../users/infrastructure/users.repository';
 import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     protected usersService: UsersService,
-    protected userRepository: UsersSqlRepository,
+    protected userRepository: UsersOrmRepository,
   ) {}
+
   async canActivate(
     context: ExecutionContext,
     // @Body() inputModel: { password: string },

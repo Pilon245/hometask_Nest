@@ -24,6 +24,8 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BanBloggerUserCommand } from '../application/use-cases/ban.blogger.user.use.cases';
 import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
 import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repository';
+import { UsersOrmQueryRepository } from 'src/users/infrastructure/users.orm.query.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
 
 @ApiTags('blogger/users')
 @UseGuards(JwtAuthGuard)
@@ -33,10 +35,11 @@ import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repos
 })
 export class UsersBloggerController {
   constructor(
-    protected usersQueryRepository: UsersSqlQueryRepository,
-    protected blogsQueryRepository: BlogsSqlQueryRepository,
+    protected usersQueryRepository: UsersOrmQueryRepository,
+    protected blogsQueryRepository: BlogsOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @Get('blog/:blogId')
   async getUsers(
     @Query() query,
@@ -56,6 +59,7 @@ export class UsersBloggerController {
       pagination(query),
     );
   }
+
   @Put(':id/ban')
   @HttpCode(204)
   async banBloggerUsers(

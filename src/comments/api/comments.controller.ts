@@ -31,6 +31,7 @@ import { UpdateCommentUseCaseDto } from '../domain/dto/commentsFactory';
 import { DeleteCommentCommand } from '../application/use-cases/delete.comment.use.cases';
 import { Response } from 'express';
 import { CommentsSqlQueryRepository } from '../infrastructure/comments.sql.query.repository';
+import { CommentsOrmQueryRepository } from 'src/comments/infrastructure/comments.orm.query.repository';
 
 @ApiTags('comments')
 @Controller({
@@ -39,9 +40,10 @@ import { CommentsSqlQueryRepository } from '../infrastructure/comments.sql.query
 })
 export class CommentsController {
   constructor(
-    protected commentsQueryRepository: CommentsSqlQueryRepository,
+    protected commentsQueryRepository: CommentsOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':id')
   async getCommentById(@Param('id') id: string, @Req() req) {
@@ -84,6 +86,7 @@ export class CommentsController {
 
     return isUpdate;
   }
+
   @UseGuards(JwtAuthGuard)
   @Put(':commentId/like-status')
   @HttpCode(204)
@@ -106,6 +109,7 @@ export class CommentsController {
     };
     return this.commandBus.execute(new UpdateLikeCommentCommand(likeComment));
   }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':commentId')
   @HttpCode(204)

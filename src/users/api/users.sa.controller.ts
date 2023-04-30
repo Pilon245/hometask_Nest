@@ -37,13 +37,15 @@ import { UsersOrmQueryRepository } from '../infrastructure/users.orm.query.repos
 })
 export class UsersSaController {
   constructor(
-    protected usersQueryRepository: UsersSqlQueryRepository,
+    protected usersQueryRepository: UsersOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @Get()
   async getUsers(@Query() query) {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
+
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
     const created = await this.commandBus.execute(
@@ -54,6 +56,7 @@ export class UsersSaController {
     }
     return this.usersQueryRepository.findUsersById(created.id);
   }
+
   @Put(':id/ban')
   @HttpCode(204)
   async updateUsers(
@@ -67,6 +70,7 @@ export class UsersSaController {
     };
     return this.commandBus.execute(new BanAdminUserCommand(banUser));
   }
+
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {

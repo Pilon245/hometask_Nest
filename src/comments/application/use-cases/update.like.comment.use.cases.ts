@@ -4,6 +4,7 @@ import { LikeValueComment } from '../../domain/entities/nosql/likes.comments.ent
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { UpdateLikeCommentUseCaseDto } from '../../domain/dto/update.comments.dto';
 import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';
+import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
 
 export class UpdateLikeCommentCommand {
   constructor(public updateUseCaseDto: UpdateLikeCommentUseCaseDto) {}
@@ -13,7 +14,7 @@ export class UpdateLikeCommentCommand {
 export class UpdateLikeCommentUseCase
   implements ICommandHandler<UpdateLikeCommentCommand>
 {
-  constructor(private commentsRepository: CommentsSqlRepository) {}
+  constructor(private commentsRepository: CommentsOrmRepository) {}
 
   async execute(command: UpdateLikeCommentCommand) {
     const user = await this.commentsRepository.findLikeByIdAndCommentId(

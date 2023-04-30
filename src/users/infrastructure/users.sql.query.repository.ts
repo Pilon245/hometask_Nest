@@ -26,12 +26,6 @@ export type FindUsersPayload = {
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersSqlQueryRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(BloggerUsersBan.name)
-    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
-    @InjectDataSource() protected dataSource: DataSource,
-  ) {} //todo sql инъекции не сделал
   select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
 	email."confirmationCode" as emailConfirmationCode,
 	email."expirationDate" as emailExpirationDate,
@@ -47,7 +41,6 @@ export class UsersSqlQueryRepository {
 	ON pass."userId" = users."id"
 	LEFT JOIN "UsersBanInfo" AS ban
 	ON ban."userId" = users."id"`;
-
   sql = `SELECT "id", "login", "email", "passwordHash", "createdAt",
 	email."confirmationCode" as emailConfirmationCode,
 	email."expirationDate" as emailExpirationDate,
@@ -63,6 +56,14 @@ export class UsersSqlQueryRepository {
 	ON pass."userId" = users."id"
 	LEFT JOIN "UsersBanInfo" AS ban
 	ON ban."userId" = users."id"`;
+
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(BloggerUsersBan.name)
+    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
+    @InjectDataSource() protected dataSource: DataSource,
+  ) {} //todo sql инъекции не сделал
+
   async findUsersById(id: string) {
     //todo sql injection
     const lastNameTerm = '';
@@ -84,6 +85,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsersByIdOnMyAccount(id: string) {
     const users = await this.dataSource.query(
       `${this.select}  WHERE "id" = '${id}'`,
@@ -95,6 +97,7 @@ export class UsersSqlQueryRepository {
       email: users[0].email,
     };
   }
+
   async findBanBloggerUsers(banUserId: string, blogId: string) {
     const banUser = await this.dataSource.query(
       `SELECT ban."blogId", ban."userId" as banUserId,
@@ -116,6 +119,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsers({
     searchLoginTerm,
     searchEmailTerm,
@@ -158,6 +162,7 @@ export class UsersSqlQueryRepository {
       })),
     };
   }
+
   async findUsersForDTO(id: string): Promise<User> {
     const users = await this.dataSource.query(
       `${this.select}
@@ -188,6 +193,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User | boolean> {
     const users = await this.dataSource.query(
       `${this.select}
@@ -219,6 +225,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsersOnBlogger(
     bloggerId: string,
     blogId: string,

@@ -19,7 +19,7 @@ export class EmailConfirmation {
   @Column({ default: false })
   isConfirmed: boolean;
 
-  @OneToOne(() => Users)
+  @OneToOne(() => Users, (u) => u.emailConfirmation)
   @JoinColumn()
   user: Users;
 

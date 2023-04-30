@@ -10,14 +10,17 @@ import { SessionQueryRepository } from '../../session/infrastructure/session.que
 import { JwtGenerate } from '../helper/generate.token';
 import { SessionSqlQueryRepository } from '../../session/infrastructure/session.sql.query.repository';
 import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.query.repository';
+import { UsersOrmQueryRepository } from 'src/users/infrastructure/users.orm.query.repository';
+import { SessionOrmQueryRepository } from 'src/session/infrastructure/session.orm.query.repository';
 
 @Injectable()
 export class RefreshTokenGuard implements CanActivate {
   constructor(
-    private usersQueryRepository: UsersSqlQueryRepository,
-    private sessionQueryRepository: SessionSqlQueryRepository,
+    private usersQueryRepository: UsersOrmQueryRepository,
+    private sessionQueryRepository: SessionOrmQueryRepository,
     private jwtGenerate: JwtGenerate,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const refToken = req.cookies.refreshToken;

@@ -101,6 +101,13 @@ import { Posts } from './posts/domain/entities/sql/posts.entity';
 import { LikePosts } from './posts/domain/entities/sql/like.posts.entity';
 import { LikeComments } from './comments/domain/entities/sql/like.comments.entity';
 import { Comments } from './comments/domain/entities/sql/comments.entity';
+import { Users } from 'src/users/domain/entities/sql/user.entity';
+import { CommentsOrmQueryRepository } from 'src/comments/infrastructure/comments.orm.query.repository';
+import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
+import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
+import { PostsOrmQueryRepository } from 'src/posts/infrastructure/posts.orm.query.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -187,25 +194,26 @@ const deleteAll = [
         password: configService.get<string>('PG_PASSWORD'),
         database: configService.get<string>('PG_DATABASE'),
         ssl: true,
-        // autoLoadEntities: true, // автоматически делает изменения
-        // synchronize: true, // true  во время разработки
+        entities: sqlSchemas,
+        autoLoadEntities: true, // автоматически делает изменения
+        synchronize: true, // true  во время разработки
       }),
       inject: [ConfigService],
     }),
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
-    //   host: 'db',
+    //   host: 'localhost',
     //   port: 5432,
     //   username: 'postgres',
-    //   password: 'postgres',
+    //   password: '1234',
     //   database: 'network',
     //   // ssl: true,
     //   autoLoadEntities: true, // автоматически делает изменения
     //   synchronize: true, // true  во время разработки
-    //   // entities: sqlSchemas,
+    //   entities: sqlSchemas,
     // }),
     MongooseModule.forFeature(schemas),
-    // TypeOrmModule.forFeature(sqlSchemas),
+    TypeOrmModule.forFeature(sqlSchemas),
     SessionModule,
     UsersModule,
     AuthModule,
@@ -255,6 +263,12 @@ const deleteAll = [
     PostsSqlRepository,
     CommentsSqlQueryRepository,
     CommentsSqlRepository,
+    CommentsOrmQueryRepository,
+    CommentsOrmRepository,
+    BlogsOrmQueryRepository,
+    BlogsOrmRepository,
+    PostsOrmQueryRepository,
+    PostsOrmRepository,
   ],
 })
 export class AppModule {}

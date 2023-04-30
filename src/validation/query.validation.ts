@@ -17,6 +17,11 @@ export enum SortDirection {
   desc = 'desc',
 }
 
+export enum SortOrmDirection {
+  asc = 'ASC',
+  desc = 'DESC',
+}
+
 export enum banStatusEnum {
   all = 'NOT NULL',
   banned = 'true',

@@ -13,6 +13,11 @@ import { SessionSqlRepository } from '../../../session/infrastructure/session.sq
 import { BlogsSqlRepository } from '../../../blogs/infrastructure/blogs.sql.repository';
 import { PostsSqlRepository } from '../../../posts/infrastructure/posts.sql.repository';
 import { CommentsSqlRepository } from '../../../comments/infrastructure/comments.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
+import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
+import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
+import { SessionOrmRepository } from 'src/session/infrastructure/session.orm.repository';
 
 export class BanAdminUserCommand {
   constructor(public banAdminUserUseCase: BanAdminUserUseCaseDto) {}
@@ -23,11 +28,11 @@ export class BanAdminUserUseCase
   implements ICommandHandler<BanAdminUserCommand>
 {
   constructor(
-    private usersRepository: UsersSqlRepository,
-    private blogsRepository: BlogsSqlRepository,
-    private postsRepository: PostsSqlRepository,
-    private commentsRepository: CommentsSqlRepository,
-    private sessionRepository: SessionSqlRepository,
+    private usersRepository: UsersOrmRepository,
+    private blogsRepository: BlogsOrmRepository,
+    private postsRepository: PostsOrmRepository,
+    private commentsRepository: CommentsOrmRepository,
+    private sessionRepository: SessionOrmRepository,
   ) {}
 
   async execute(command: BanAdminUserCommand) {

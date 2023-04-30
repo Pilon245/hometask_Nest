@@ -20,6 +20,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BanBlogUseCaseDto } from '../domain/dto/update.blogs.dto';
 import { BanBlogCommand } from '../application/use-cases/ban.blogs.use.cases';
 import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
 
 @ApiTags('sa/blogs')
 @Controller({
@@ -28,13 +29,15 @@ import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repos
 })
 export class BlogsSaController {
   constructor(
-    protected blogsQueryRepository: BlogsSqlQueryRepository,
+    protected blogsQueryRepository: BlogsOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @Get()
   getBlogs(@Query() query) {
     return this.blogsQueryRepository.findBlogsOnSuperAdmin(pagination(query));
   }
+
   @UseGuards(BasicAdminGuard)
   @Put(':id/bind-with-user/:userId')
   @HttpCode(204)
@@ -47,6 +50,7 @@ export class BlogsSaController {
     }
     return this.commandBus.execute(new UpdateBlogOnNewUserCommand(model));
   }
+
   @UseGuards(BasicAdminGuard)
   @Put(':id/ban')
   @HttpCode(204)

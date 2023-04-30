@@ -19,7 +19,7 @@ export class PasswordConfirmation {
   @Column({ default: false })
   isConfirmed: boolean;
 
-  @OneToOne(() => Users)
+  @OneToOne(() => Users, (u) => u.passwordConfirmation)
   @JoinColumn()
   user: Users;
 

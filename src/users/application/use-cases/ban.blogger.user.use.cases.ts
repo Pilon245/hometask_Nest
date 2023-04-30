@@ -9,6 +9,7 @@ import { CommentsRepository } from '../../../comments/infrastructure/comments.re
 import { PostsRepository } from '../../../posts/infrastructure/posts.repository';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { UsersSqlRepository } from '../../infrastructure/users.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
 
 export class BanBloggerUserCommand {
   constructor(public banBloggerUserUseCase: BanBloggerUserUseCaseDto) {}
@@ -18,7 +19,7 @@ export class BanBloggerUserCommand {
 export class BanBloggerUserUseCase
   implements ICommandHandler<BanBloggerUserCommand>
 {
-  constructor(private usersRepository: UsersSqlRepository) {}
+  constructor(private usersRepository: UsersOrmRepository) {}
 
   async execute(command: BanBloggerUserCommand) {
     const user = await this.usersRepository.findUsersById(

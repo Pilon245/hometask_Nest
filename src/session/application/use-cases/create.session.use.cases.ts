@@ -7,6 +7,7 @@ import {
 } from '../../domain/dto/create-session.dto';
 import { JwtGenerate } from '../../../auth/helper/generate.token';
 import { SessionSqlRepository } from '../../infrastructure/session.sql.repository';
+import { SessionOrmRepository } from 'src/session/infrastructure/session.orm.repository';
 
 export class CreateSessionCommand {
   constructor(public createUseCaseDto: CreateSessionUseCaseDto) {}
@@ -17,7 +18,7 @@ export class CreateSessionUseCase
   implements ICommandHandler<CreateSessionCommand>
 {
   constructor(
-    private sessionRepository: SessionSqlRepository,
+    private sessionRepository: SessionOrmRepository,
     private jwtGenerate: JwtGenerate,
   ) {}
 
