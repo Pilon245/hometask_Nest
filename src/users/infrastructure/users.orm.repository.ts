@@ -152,7 +152,7 @@ export class UsersOrmRepository {
     });
     result.confirmationCode = code;
     await this.emailConfirmationRepository.save(result);
-    return result[0];
+    return result;
   }
 
   async updatePasswordCode(id: string, code: any) {
