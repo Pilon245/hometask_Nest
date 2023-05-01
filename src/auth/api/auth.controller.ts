@@ -107,8 +107,6 @@ export class AuthController {
     @Res() res: Response,
     @CurrentPayload() currentPayload,
   ) {
-    console.log('req', req);
-    console.log('req.cookies', req.cookies);
     const tokens = await this.commandBus.execute(
       new UpdateSessionCommand(currentPayload),
     );
