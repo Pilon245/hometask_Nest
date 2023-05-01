@@ -24,14 +24,18 @@ export class Comments {
   @Column({ default: false })
   isBanned: boolean;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 
   @Column()
   commentatorUserId: string;
 
-  @ManyToOne(() => Posts)
+  @ManyToOne(() => Posts, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   post: Posts;
 

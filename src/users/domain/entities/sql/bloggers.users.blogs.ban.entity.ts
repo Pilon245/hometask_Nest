@@ -24,14 +24,18 @@ export class BloggersUsersBlogsBan {
   @Column({ nullable: true, default: null })
   banReason: string;
 
-  @ManyToOne(() => Blogs)
+  @ManyToOne(() => Blogs, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   blog: Blogs;
 
   @Column()
   blogId: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 

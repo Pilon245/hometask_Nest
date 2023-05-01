@@ -19,7 +19,9 @@ export class PasswordConfirmation {
   @Column({ default: false })
   isConfirmed: boolean;
 
-  @OneToOne(() => Users, (u) => u.passwordConfirmation)
+  @OneToOne(() => Users, (u) => u.passwordConfirmation, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 

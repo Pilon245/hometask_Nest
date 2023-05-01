@@ -26,7 +26,9 @@ export class Sessions {
   @Column()
   title: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 

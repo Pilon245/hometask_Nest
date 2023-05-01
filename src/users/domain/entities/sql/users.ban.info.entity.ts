@@ -19,7 +19,9 @@ export class UsersBanInfo {
   @Column({ default: false })
   isBanned: boolean;
 
-  @OneToOne(() => Users, (u) => u.banInfo)
+  @OneToOne(() => Users, (u) => u.banInfo, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 

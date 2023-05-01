@@ -27,14 +27,18 @@ export class Posts {
   @Column()
   shortDescription: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 
   @Column()
   userId: string;
 
-  @ManyToOne(() => Blogs)
+  @ManyToOne(() => Blogs, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   blog: Blogs;
 

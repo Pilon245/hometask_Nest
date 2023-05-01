@@ -25,7 +25,9 @@ export class Blogs {
   @Column()
   websiteUrl: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 

@@ -28,14 +28,18 @@ export class LikeComments {
   @Column()
   myStatus: string;
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: Users;
 
   @Column()
   userId: string;
 
-  @ManyToOne(() => Comments)
+  @ManyToOne(() => Comments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   comment: Comments;
 
