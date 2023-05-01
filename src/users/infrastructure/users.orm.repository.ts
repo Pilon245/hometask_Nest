@@ -376,7 +376,7 @@ export class UsersOrmRepository {
     //   `DELETE FROM "Users"
     //           WHERE "id" = '${id}';`,
     // );
-    if (!result) return false;
+    if (!result.affected) return false;
     return true;
   }
 
