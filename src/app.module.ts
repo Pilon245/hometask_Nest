@@ -266,6 +266,7 @@ const deleteAll = [
     CommentsOrmQueryRepository,
     CommentsOrmRepository,
     BlogsOrmQueryRepository,
+
     BlogsOrmRepository,
     PostsOrmQueryRepository,
     PostsOrmRepository,
