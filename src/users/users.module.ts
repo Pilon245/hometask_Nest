@@ -74,21 +74,21 @@ import { UsersBanInfo } from './domain/entities/sql/users.ban.info.entity';
 import { BloggersUsersBlogsBan } from './domain/entities/sql/bloggers.users.blogs.ban.entity';
 import { UsersOrmRepository } from './infrastructure/users.orm.repository';
 import { UsersOrmQueryRepository } from './infrastructure/users.orm.query.repository';
-import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
-import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
-import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
-import { CommentsOrmQueryRepository } from 'src/comments/infrastructure/comments.orm.query.repository';
-import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
-import { PostsOrmQueryRepository } from 'src/posts/infrastructure/posts.orm.query.repository';
-import { SessionOrmQueryRepository } from 'src/session/infrastructure/session.orm.query.repository';
-import { SessionOrmRepository } from 'src/session/infrastructure/session.orm.repository';
-import { Blogs } from 'src/blogs/domain/entities/sql/blog.entity';
-import { BlogsBanInfo } from 'src/blogs/domain/entities/sql/blogs.ban.info.entity';
-import { Posts } from 'src/posts/domain/entities/sql/posts.entity';
-import { LikePosts } from 'src/posts/domain/entities/sql/like.posts.entity';
-import { LikeComments } from 'src/comments/domain/entities/sql/like.comments.entity';
-import { Comments } from 'src/comments/domain/entities/sql/comments.entity';
-import { Sessions } from 'src/session/domain/entities/sql/session.entity';
+import { Blogs } from '../blogs/domain/entities/sql/blog.entity';
+import { BlogsBanInfo } from '../blogs/domain/entities/sql/blogs.ban.info.entity';
+import { Posts } from '../posts/domain/entities/sql/posts.entity';
+import { LikePosts } from '../posts/domain/entities/sql/like.posts.entity';
+import { LikeComments } from '../comments/domain/entities/sql/like.comments.entity';
+import { Comments } from '../comments/domain/entities/sql/comments.entity';
+import { Sessions } from '../session/domain/entities/sql/session.entity';
+import { BlogsOrmRepository } from '../blogs/infrastructure/blogs.orm.repository';
+import { BlogsOrmQueryRepository } from '../blogs/infrastructure/blogs.orm.query.repository';
+import { CommentsOrmRepository } from '../comments/infrastructure/comments.orm.repository';
+import { CommentsOrmQueryRepository } from '../comments/infrastructure/comments.orm.query.repository';
+import { PostsOrmRepository } from '../posts/infrastructure/posts.orm.repository';
+import { PostsOrmQueryRepository } from '../posts/infrastructure/posts.orm.query.repository';
+import { SessionOrmQueryRepository } from '../session/infrastructure/session.orm.query.repository';
+import { SessionOrmRepository } from '../session/infrastructure/session.orm.repository';
 
 const userUseCase = [
   CreateUserUseCase,

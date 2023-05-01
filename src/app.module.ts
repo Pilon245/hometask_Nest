@@ -101,7 +101,6 @@ import { Posts } from './posts/domain/entities/sql/posts.entity';
 import { LikePosts } from './posts/domain/entities/sql/like.posts.entity';
 import { LikeComments } from './comments/domain/entities/sql/like.comments.entity';
 import { Comments } from './comments/domain/entities/sql/comments.entity';
-import { Users } from 'src/users/domain/entities/sql/user.entity';
 import { CommentsOrmQueryRepository } from 'src/comments/infrastructure/comments.orm.query.repository';
 import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
 import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
@@ -266,7 +265,6 @@ const deleteAll = [
     CommentsOrmQueryRepository,
     CommentsOrmRepository,
     BlogsOrmQueryRepository,
-
     BlogsOrmRepository,
     PostsOrmQueryRepository,
     PostsOrmRepository,
