@@ -22,7 +22,7 @@ export class SessionOrmQueryRepository {
       .createQueryBuilder()
       .select('s.*')
       .from('sessions', 's')
-      .where('userId = :userId', { userId })
+      .where('s."userId" = :userId', { userId })
       .getMany();
     // const result = await this.dataSource.query(
     //   `SELECT * FROM "Sessions"  WHERE "userId" = '${userId}'`,
@@ -39,9 +39,9 @@ export class SessionOrmQueryRepository {
   async findDevicesByDeviceId(deviceId: string) {
     const result = await this.dataSource
       .createQueryBuilder()
-      .select('s.*')
+      .select()
       .from('sessions', 's')
-      .where('deviceId = :deviceId', { deviceId })
+      .where('s."deviceId" = :deviceId', { deviceId })
       .getRawOne();
 
     if (!result) return false;
