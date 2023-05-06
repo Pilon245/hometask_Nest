@@ -16,6 +16,9 @@ export class Posts {
   id: string;
 
   @Column()
+  title: string;
+
+  @Column()
   createdAt: string;
 
   @Column()
