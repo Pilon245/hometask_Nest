@@ -60,7 +60,7 @@ const authUseCase = [
       signOptions: { expiresIn: '7m' },
     }),
     ThrottlerModule.forRoot({
-      ttl: 10,
+      ttl: 9,
       limit: 5,
     }),
     CqrsModule,
