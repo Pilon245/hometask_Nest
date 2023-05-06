@@ -30,9 +30,9 @@ export class PostsOrmRepository {
       .createQueryBuilder()
       .select('l.*')
       .from('like_posts', 'l')
-      .where('userId = :id', { id })
-      .andWhere('postId = :postId', { postId })
-      .andWhere('isBanned = false')
+      .where('l."userId" = :id', { id })
+      .andWhere('l."postId" = :postId', { postId })
+      .andWhere('l."isBanned" = false')
       .getRawOne();
 
     if (!like) return false;

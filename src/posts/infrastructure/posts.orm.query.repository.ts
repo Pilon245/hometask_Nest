@@ -32,25 +32,23 @@ export class PostsOrmQueryRepository {
   ) {}
 
   async findPostDB(id: string) {
-    const post = await this.dataSource
-      .createQueryBuilder()
-      .select('p.*, b."name"')
-      .from('posts', 'p')
-      .leftJoin('blogs', 'b')
-      .where('p."id" = :id', { id })
-      .andWhere('isBanned = false')
-      .getRawOne();
-
-    if (!post) return false;
+    const post = await this.dataSource.query(
+      `SELECT posts.*, blogs."name"
+             FROM "posts" as posts
+             INNER JOIN "blogs" as blogs
+             ON posts."blogId" = blogs."id"
+             WHERE posts."id" = '${id}' AND "isBanned" = false`,
+    );
+    if (!post[0]) return false;
     return {
-      id: post.id,
-      title: post.title,
-      shortDescription: post.shortDescription,
-      content: post.content,
-      blogId: post.blogId,
-      blogName: post.name,
-      createdAt: post.createdAt,
-      userId: post.userId,
+      id: post[0].id,
+      title: post[0].title,
+      shortDescription: post[0].shortDescription,
+      content: post[0].content,
+      blogId: post[0].blogId,
+      blogName: post[0].name,
+      createdAt: post[0].createdAt,
+      userId: post[0].userId,
     };
   }
 

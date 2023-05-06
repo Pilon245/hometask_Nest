@@ -108,11 +108,11 @@ export class UsersOrmQueryRepository {
     const banUser = await this.dataSource
       .createQueryBuilder()
       .select('u.*, b.* ')
-      .from('bloggers_users_blogs_ban', 'ban')
+      .from('bloggers_users_blogs_ban', 'b')
       .leftJoin('users', 'u', 'b.userId = u.id')
-      .where('userId = :banUserId', { banUserId })
-      .andWhere('blogId = :blogId', { blogId })
-      .andWhere('isBanned = true')
+      .where('b."userId" = :banUserId', { banUserId })
+      .andWhere('b."blogId" = :blogId', { blogId })
+      .andWhere('b."isBanned" = true')
       .getRawOne();
     // const banUser = await this.dataSource.query(
     //   `SELECT ban."blogId", ban."userId" as banUserId,

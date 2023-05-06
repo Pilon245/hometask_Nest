@@ -13,8 +13,8 @@ import { Posts } from './posts.entity';
 
 @Entity()
 export class LikePosts {
-  @PrimaryColumn()
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   addedAt: string;
