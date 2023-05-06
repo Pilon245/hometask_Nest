@@ -10,6 +10,7 @@ import {
 import { UsersBanInfo } from 'src/users/domain/entities/sql/users.ban.info.entity';
 import { PasswordConfirmation } from 'src/users/domain/entities/sql/password.confirmation.entity';
 import { EmailConfirmation } from 'src/users/domain/entities/sql/email.confirmation.entity';
+import { Blogs } from '../../../../blogs/domain/entities/sql/blog.entity';
 
 @Entity()
 export class Users {

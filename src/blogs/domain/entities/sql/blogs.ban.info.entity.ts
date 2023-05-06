@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Users } from '../../../../users/domain/entities/sql/user.entity';
 import { Blogs } from './blog.entity';
 
@@ -22,6 +16,6 @@ export class BlogsBanInfo {
   @JoinColumn()
   blog: Blogs;
 
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   blogId: string;
 }
