@@ -4,7 +4,7 @@ import { Blogs } from './blog.entity';
 
 @Entity()
 export class BlogsBanInfo {
-  @Column()
+  @Column({ nullable: true })
   banDate: string;
 
   @Column({ default: false })

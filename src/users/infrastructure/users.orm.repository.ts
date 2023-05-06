@@ -39,7 +39,8 @@ export class UsersOrmRepository {
     const users = await this.dataSource
       .createQueryBuilder()
       .select(
-        'u.*, b.*, e."confirmationCode" as emailConfirmationCode, e."expirationDate" as emailExpirationDate,' +
+        'u.id, u."login", u."email", u."passwordHash", u."createdAt",' +
+          ' e."confirmationCode" as emailConfirmationCode, e."expirationDate" as emailExpirationDate,' +
           ' e."isConfirmed" as emailIsConfirmed, p."confirmationCode" as passConfirmationCode,' +
           'p."expirationDate" as passExpirationDate,  p."isConfirmed" as passIsConfirmed,b."isBanned", b."banDate", b."banReason"',
       )
@@ -47,7 +48,7 @@ export class UsersOrmRepository {
       .leftJoin('users_ban_info', 'b', 'b.userId = u.id')
       .leftJoin('email_confirmation', 'e', 'e.userId = u.id')
       .leftJoin('password_confirmation', 'p', 'p.userId = u.id')
-      .where('id = :id', { id })
+      .where('u.id = :id', { id })
       .getRawOne();
     if (!users) return false;
     return {
