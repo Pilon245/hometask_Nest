@@ -53,7 +53,7 @@ import { UsersSqlQueryRepository } from '../../users/infrastructure/users.sql.qu
 import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
 import { UsersOrmQueryRepository } from 'src/users/infrastructure/users.orm.query.repository';
 
-//@UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
+@UseGuards(CustomThrottlerGuard) //todo проверить как сильно нагружает гвард
 @ApiTags('Auth')
 @Controller({
   path: 'auth',
