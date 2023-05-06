@@ -18,16 +18,16 @@ export class SessionOrmQueryRepository {
   ) {}
 
   async findDevices(userId: string) {
-    const result = await this.dataSource
-      .createQueryBuilder()
-      .select('s.*')
-      .from('sessions', 's')
-      .where('s."userId" = :userId', { userId })
-      .getMany();
-    // const result = await this.dataSource.query(
-    //   `SELECT * FROM "Sessions"  WHERE "userId" = '${userId}'`,
-    // );
-    if (!result) return false;
+    // const result = await this.dataSource
+    //   .createQueryBuilder()
+    //   .select()
+    //   .from('sessions', 's')
+    //   .where('s."userId" = :userId', { userId })
+    //   .getMany();
+    const result = await this.dataSource.query(
+      `SELECT * FROM "sessions"  WHERE "userId" = '${userId}'`,
+    );
+    if (!result[0]) return false;
     return result.map((d) => ({
       ip: d.ip,
       title: d.title,
