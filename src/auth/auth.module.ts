@@ -61,7 +61,7 @@ const authUseCase = [
     }),
     ThrottlerModule.forRoot({
       ttl: 10,
-      limit: 4,
+      limit: 5,
     }),
     CqrsModule,
   ],
