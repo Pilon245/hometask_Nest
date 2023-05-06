@@ -33,6 +33,7 @@ import { RegistrationUsersUseCase } from './application/use-cases/registration.u
 import { UpdateEmailCodeUseCase } from './application/use-cases/update.email.code.use.cases';
 import { UpdatePasswordCodeUseCase } from './application/use-cases/update.password.code.use.cases';
 import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
+
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 
 const authUseCase = [
@@ -60,7 +61,7 @@ const authUseCase = [
     }),
     ThrottlerModule.forRoot({
       ttl: 10,
-      limit: 5,
+      limit: 4,
     }),
     CqrsModule,
   ],
