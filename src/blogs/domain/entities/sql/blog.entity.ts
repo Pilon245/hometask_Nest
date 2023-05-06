@@ -4,13 +4,14 @@ import {
   JoinColumn,
   ManyToOne,
   OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Users } from '../../../../users/domain/entities/sql/user.entity';
 
 @Entity()
 export class Blogs {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn()
   id: string;
 
   @Column()
