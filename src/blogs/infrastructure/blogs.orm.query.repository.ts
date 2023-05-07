@@ -18,7 +18,7 @@ export type FindBlogsPayload = {
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsOrmQueryRepository {
   select = `SELECT blogs."id", blogs."name", blogs."description", blogs."websiteUrl",
-    blogs."createdAt",  blogs."userId", users."login", 
+    blogs."createdAt",  blogs."userId", blogs."isMembership", users."login", 
     ban."isBanned",ban."banDate"
     FROM "blogs" as blogs
     LEFT JOIN "users" as users

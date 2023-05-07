@@ -24,7 +24,7 @@ export class Blogs {
   @JoinColumn()
   user: Users;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isMembership: boolean;
 
   @Column()
