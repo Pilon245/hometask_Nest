@@ -58,6 +58,7 @@ export class BlogsOrmQueryRepository {
         description: b.description,
         websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
+        isMembership: b.isMembership,
       })),
     };
   }
@@ -74,6 +75,7 @@ export class BlogsOrmQueryRepository {
       description: blogs[0].description,
       websiteUrl: blogs[0].websiteUrl,
       createdAt: blogs[0].createdAt,
+      isMembership: blogs[0].isMembership,
     };
   }
 
@@ -89,6 +91,7 @@ export class BlogsOrmQueryRepository {
       description: blogs[0].description,
       websiteUrl: blogs[0].websiteUrl,
       createdAt: blogs[0].createdAt,
+      isMembership: blogs[0].isMembership,
       blogOwnerInfo: {
         userId: blogs[0].userId,
         userLogin: blogs[0].login,
@@ -112,6 +115,7 @@ export class BlogsOrmQueryRepository {
       description: blogs[0].description,
       websiteUrl: blogs[0].websiteUrl,
       createdAt: blogs[0].createdAt,
+      isMembership: blogs[0].isMembership,
       blogOwnerInfo: {
         userId: blogs[0].userId,
         userLogin: blogs[0].login,
@@ -150,6 +154,7 @@ export class BlogsOrmQueryRepository {
         description: b.description,
         websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
+        isMembership: b.isMembership,
         blogOwnerInfo: {
           userId: b.userId,
           userLogin: b.login,
@@ -197,6 +202,7 @@ export class BlogsOrmQueryRepository {
         description: b.description,
         websiteUrl: b.websiteUrl,
         createdAt: b.createdAt,
+        isMembership: b.isMembership,
       })),
     };
   }
@@ -212,6 +218,7 @@ export class BlogsOrmQueryRepository {
       description: blog[0].description,
       websiteUrl: blog[0].websiteUrl,
       createdAt: blog[0].createdAt,
+      isMembership: blog[0].isMembership,
     };
   }
 }

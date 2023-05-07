@@ -13,7 +13,7 @@ import { Comments } from './comments.entity';
 
 @Entity()
 export class LikeComments {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()

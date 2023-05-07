@@ -24,6 +24,9 @@ export class Blogs {
   @JoinColumn()
   user: Users;
 
+  @Column({ default: true })
+  isMembership: boolean;
+
   @Column()
   userId: string;
 }

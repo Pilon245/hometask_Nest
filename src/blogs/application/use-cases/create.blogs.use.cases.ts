@@ -29,6 +29,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       command.createUseCaseDto.description,
       command.createUseCaseDto.websiteUrl,
       new Date().toISOString(),
+      false,
       {
         userId: user.id,
         userLogin: user.accountData.login,
