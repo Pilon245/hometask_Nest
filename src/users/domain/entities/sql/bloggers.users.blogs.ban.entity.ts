@@ -12,7 +12,7 @@ import { Blogs } from '../../../../blogs/domain/entities/sql/blog.entity';
 
 @Entity()
 export class BloggersUsersBlogsBan {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column({ default: false })

@@ -301,7 +301,7 @@ export class UsersOrmRepository {
       newBloggersUsersBan.isBanned = user.banInfo.isBanned;
       newBloggersUsersBan.banDate = user.banInfo.banDate;
       newBloggersUsersBan.banReason = user.banInfo.banReason;
-      await this.usersBanInfoRepository.save(newBloggersUsersBan);
+      await this.bloggerUsersBanModel.save(newBloggersUsersBan);
     } else {
       const newBloggersUsersBan = new BloggersUsersBlogsBan();
       newBloggersUsersBan.blogId = user.blogId;
@@ -309,7 +309,7 @@ export class UsersOrmRepository {
       newBloggersUsersBan.isBanned = user.banInfo.isBanned;
       newBloggersUsersBan.banDate = null;
       newBloggersUsersBan.banReason = null;
-      await this.usersBanInfoRepository.save(newBloggersUsersBan);
+      await this.bloggerUsersBanModel.save(newBloggersUsersBan);
     }
     return true;
   }
