@@ -5,6 +5,8 @@ import { UsersRepository } from '../../../users/infrastructure/users.repository'
 import { BlogsFactory } from '../../domain/dto/blogsFactory';
 import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
+import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
 
 export class CreateBlogsCommand {
   constructor(public createUseCaseDto: CreateBlogsUseCaseDto) {}
@@ -13,8 +15,8 @@ export class CreateBlogsCommand {
 @CommandHandler(CreateBlogsCommand)
 export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
   constructor(
-    private blogsRepository: BlogsSqlRepository,
-    private usersRepository: UsersSqlRepository,
+    private blogsRepository: BlogsOrmRepository,
+    private usersRepository: UsersOrmRepository,
   ) {}
 
   async execute(command: CreateBlogsCommand) {
@@ -27,6 +29,7 @@ export class CreateBlogsUseCase implements ICommandHandler<CreateBlogsCommand> {
       command.createUseCaseDto.description,
       command.createUseCaseDto.websiteUrl,
       new Date().toISOString(),
+      false,
       {
         userId: user.id,
         userLogin: user.accountData.login,

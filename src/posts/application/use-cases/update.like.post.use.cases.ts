@@ -5,7 +5,7 @@ import {
   LikesPostFactory,
   PostsFactory,
 } from '../../domain/dto/postsFactory';
-import { LikeValuePost } from '../../domain/entities/likes.posts.entity';
+import { LikeValuePost } from '../../domain/entities/nosql/likes.posts.entity';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import {
@@ -14,6 +14,7 @@ import {
   UpdatePostUseCaseDTO,
 } from '../../domain/dto/update.posts.dto';
 import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 export class UpdateLikePostCommand {
   constructor(public updateUseCaseDto: UpdateLikePostUseCaseDTO) {}
@@ -23,7 +24,7 @@ export class UpdateLikePostCommand {
 export class UpdateLikePostUseCase
   implements ICommandHandler<UpdateLikePostCommand>
 {
-  constructor(private postsRepository: PostsSqlRepository) {}
+  constructor(private postsRepository: PostsOrmRepository) {}
 
   async execute(command: UpdateLikePostCommand) {
     const user = await this.postsRepository.findLikeByIdAndPostId(

@@ -4,7 +4,7 @@ import {
   CreatePostUseCaseDto,
   PostsFactory,
 } from '../../domain/dto/postsFactory';
-import { LikeValuePost } from '../../domain/entities/likes.posts.entity';
+import { LikeValuePost } from '../../domain/entities/nosql/likes.posts.entity';
 import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository';
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import {
@@ -12,6 +12,7 @@ import {
   UpdatePostUseCaseDTO,
 } from '../../domain/dto/update.posts.dto';
 import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 export class UpdatePostCommand {
   constructor(public updateUseCaseDto: UpdatePostUseCaseDTO) {}
@@ -19,7 +20,7 @@ export class UpdatePostCommand {
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
-  constructor(private postsRepository: PostsSqlRepository) {}
+  constructor(private postsRepository: PostsOrmRepository) {}
 
   async execute(command: UpdatePostCommand) {
     const updatePost: UpdatePostDTO = {

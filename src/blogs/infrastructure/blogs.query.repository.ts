@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from '../domain/entities/blog.entity';
+import { Blog, BlogDocument } from '../domain/entities/nosql/blog.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../../helper/helper.function';
@@ -16,6 +16,7 @@ export type FindBlogsPayload = {
 @Injectable({ scope: Scope.DEFAULT })
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<BlogDocument>) {}
+
   async findBlogs({
     searchNameTerm,
     sortDirection,
@@ -56,24 +57,28 @@ export class BlogsQueryRepository {
       })),
     };
   }
+
   async findBlogById(id: string): Promise<Blog> {
     return this.blogModel.findOne(
       { id: id, 'banInfo.isBanned': false },
       { _id: false, __v: 0, blogOwnerInfo: false, 'banInfo.isBanned': 0 },
     );
   }
+
   async findBlogBD(id: string): Promise<Blog> {
     return this.blogModel.findOne(
       { id, 'banInfo.isBanned': false },
       { _id: false, __v: 0 },
     );
   }
+
   async findBlogByUserId(id: string): Promise<Blog> {
     return this.blogModel.findOne(
       { 'blogOwnerInfo.userId': id, 'banInfo.isBanned': false },
       { _id: false, __v: 0, 'banInfo.isBanned': 0 },
     );
   }
+
   async findBlogsOnSuperAdmin({
     searchNameTerm,
     sortDirection,
@@ -115,6 +120,7 @@ export class BlogsQueryRepository {
       })),
     };
   }
+
   async findBlogsOnBlogger(
     userId: string,
     {
@@ -157,6 +163,7 @@ export class BlogsQueryRepository {
       })),
     };
   }
+
   async findBlogByIdOnBlogger(id: string) {
     const blog = await this.blogModel
       .findOne(

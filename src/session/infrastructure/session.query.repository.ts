@@ -1,4 +1,7 @@
-import { Session, SessionDocument } from '../domain/entities/session.entity';
+import {
+  Session,
+  SessionDocument,
+} from '../domain/entities/nosql/session.entity';
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';

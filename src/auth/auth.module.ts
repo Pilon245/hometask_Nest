@@ -7,7 +7,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../users/domain/entities/users.entity';
+import { User, UserSchema } from '../users/domain/entities/nosql/users.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { EmailManager } from '../managers/email.manager';
 import { EmailAdapter } from '../adapters/emailAdapter';
@@ -23,7 +23,7 @@ import { BasicAdminGuard } from './guards/basic-admin.guard';
 import {
   BloggerUsersBan,
   BloggerUsersBanSchema,
-} from '../users/domain/entities/blogger.users.blogs.ban.entity';
+} from '../users/domain/entities/nosql/blogger.users.blogs.ban.entity';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateSessionUseCase } from '../session/application/use-cases/create.session.use.cases';
 import { UpdateSessionUseCase } from '../session/application/use-cases/update.session.use.cases';
@@ -33,6 +33,7 @@ import { RegistrationUsersUseCase } from './application/use-cases/registration.u
 import { UpdateEmailCodeUseCase } from './application/use-cases/update.email.code.use.cases';
 import { UpdatePasswordCodeUseCase } from './application/use-cases/update.password.code.use.cases';
 import { UsersSqlRepository } from '../users/infrastructure/users.sql.repository';
+
 const result = new ConfigService().get<string>('ACCESS_JWT_SECRET');
 
 const authUseCase = [

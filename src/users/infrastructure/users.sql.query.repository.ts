@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../domain/entities/users.entity';
+import { User, UserDocument } from '../domain/entities/nosql/users.entity';
 import { Model } from 'mongoose';
 import { Injectable, Scope } from '@nestjs/common';
 import { getSkipNumber, outputModel } from '../../helper/helper.function';
@@ -10,7 +10,7 @@ import {
 import {
   BloggerUsersBan,
   BloggerUsersBanDocument,
-} from '../domain/entities/blogger.users.blogs.ban.entity';
+} from '../domain/entities/nosql/blogger.users.blogs.ban.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
@@ -26,12 +26,6 @@ export type FindUsersPayload = {
 
 @Injectable({ scope: Scope.DEFAULT })
 export class UsersSqlQueryRepository {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(BloggerUsersBan.name)
-    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
-    @InjectDataSource() protected dataSource: DataSource,
-  ) {}
   select = `SELECT "id", "login", "email", "passwordHash", "createdAt",
 	email."confirmationCode" as emailConfirmationCode,
 	email."expirationDate" as emailExpirationDate,
@@ -47,10 +41,37 @@ export class UsersSqlQueryRepository {
 	ON pass."userId" = users."id"
 	LEFT JOIN "UsersBanInfo" AS ban
 	ON ban."userId" = users."id"`;
+  sql = `SELECT "id", "login", "email", "passwordHash", "createdAt",
+	email."confirmationCode" as emailConfirmationCode,
+	email."expirationDate" as emailExpirationDate,
+	email."isConfirmed" as emailIsConfirmed,
+	pass."confirmationCode" as passConfirmationCode,
+	pass."expirationDate" as passExpirationDate,
+	pass."isConfirmed" as passIsConfirmed,
+	ban."isBanned", ban."banDate", ban."banReason"
+	FROM "Users" AS users
+	LEFT JOIN "EmailConfirmation" AS email
+	ON email."userId" = users."id"
+	LEFT JOIN "PasswordConfirmation" AS pass
+	ON pass."userId" = users."id"
+	LEFT JOIN "UsersBanInfo" AS ban
+	ON ban."userId" = users."id"`;
+
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(BloggerUsersBan.name)
+    private bloggerUsersBanModel: Model<BloggerUsersBanDocument>,
+    @InjectDataSource() protected dataSource: DataSource,
+  ) {} //todo sql инъекции не сделал
 
   async findUsersById(id: string) {
-    const users = await this.dataSource.query(`${this.select}
-    WHERE "id" = '${id}'`);
+    //todo sql injection
+    const lastNameTerm = '';
+    const users = await this.dataSource.query(
+      `${this.sql}
+    WHERE "id" = $1 OR '' = $2`,
+      [id, `%${lastNameTerm}%`],
+    );
     if (!users[0]) return false;
     return {
       id: users[0].id,
@@ -64,6 +85,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsersByIdOnMyAccount(id: string) {
     const users = await this.dataSource.query(
       `${this.select}  WHERE "id" = '${id}'`,
@@ -75,6 +97,7 @@ export class UsersSqlQueryRepository {
       email: users[0].email,
     };
   }
+
   async findBanBloggerUsers(banUserId: string, blogId: string) {
     const banUser = await this.dataSource.query(
       `SELECT ban."blogId", ban."userId" as banUserId,
@@ -96,6 +119,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsers({
     searchLoginTerm,
     searchEmailTerm,
@@ -138,6 +162,7 @@ export class UsersSqlQueryRepository {
       })),
     };
   }
+
   async findUsersForDTO(id: string): Promise<User> {
     const users = await this.dataSource.query(
       `${this.select}
@@ -168,6 +193,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findLoginOrEmail(LoginOrEmailL: string): Promise<User | boolean> {
     const users = await this.dataSource.query(
       `${this.select}
@@ -199,6 +225,7 @@ export class UsersSqlQueryRepository {
       },
     };
   }
+
   async findUsersOnBlogger(
     bloggerId: string,
     blogId: string,

@@ -23,6 +23,7 @@ import {
   DeleteDevicesUseCase,
 } from '../application/use-cases/delete.devices.session.use.cases';
 import { SessionSqlQueryRepository } from '../infrastructure/session.sql.query.repository';
+import { SessionOrmQueryRepository } from 'src/session/infrastructure/session.orm.query.repository';
 
 @ApiTags('security')
 @Controller({
@@ -32,20 +33,23 @@ import { SessionSqlQueryRepository } from '../infrastructure/session.sql.query.r
 export class SessionController {
   constructor(
     private readonly sessionsService: SessionService,
-    private sessionsQueryRepository: SessionSqlQueryRepository,
+    private sessionsQueryRepository: SessionOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @UseGuards(RefreshTokenGuard)
   @Get('devices')
   async getDevices(@CurrentUserId() currentUserId) {
     return this.sessionsQueryRepository.findDevices(currentUserId);
   }
+
   @UseGuards(RefreshTokenGuard)
   @Delete('devices')
   @HttpCode(204)
   async deleteAllSessionsExceptOne(@CurrentPayload() currentPayload) {
     return this.commandBus.execute(new DeleteDevicesCommand(currentPayload));
   }
+
   @UseGuards(RefreshTokenGuard)
   @Delete('devices/:deviceId')
   @HttpCode(204)

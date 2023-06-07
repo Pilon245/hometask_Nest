@@ -8,6 +8,8 @@ import { PostsRepository } from '../../../posts/infrastructure/posts.repository'
 import { CommentsRepository } from '../../infrastructure/comments.repository';
 import { PostsSqlRepository } from '../../../posts/infrastructure/posts.sql.repository';
 import { CommentsSqlRepository } from '../../infrastructure/comments.sql.repository';
+import { CommentsOrmRepository } from 'src/comments/infrastructure/comments.orm.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 export class CreateCommentCommand {
   constructor(public createUseCaseDto: CreateCommentUseCaseDto) {}
@@ -18,8 +20,8 @@ export class CreateCommentUseCase
   implements ICommandHandler<CreateCommentCommand>
 {
   constructor(
-    private postsRepository: PostsSqlRepository,
-    private commentsRepository: CommentsSqlRepository,
+    private postsRepository: PostsOrmRepository,
+    private commentsRepository: CommentsOrmRepository,
   ) {}
 
   async execute(command: CreateCommentCommand) {

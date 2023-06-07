@@ -7,6 +7,8 @@ import {
 } from '../../domain/dto/update.blogs.dto';
 import { UsersSqlRepository } from '../../../users/infrastructure/users.sql.repository';
 import { BlogsSqlRepository } from '../../infrastructure/blogs.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
+import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
 
 export class UpdateBlogOnNewUserCommand {
   constructor(public updateUseCaseDto: UpdateBlogOnNewUserCommandUseCaseDto) {}
@@ -17,8 +19,8 @@ export class UpdateBlogOnNewUserUseCase
   implements ICommandHandler<UpdateBlogOnNewUserCommand>
 {
   constructor(
-    private blogsRepository: BlogsSqlRepository,
-    private usersRepository: UsersSqlRepository,
+    private blogsRepository: BlogsOrmRepository,
+    private usersRepository: UsersOrmRepository,
   ) {}
 
   async execute(command: UpdateBlogOnNewUserCommand) {

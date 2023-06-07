@@ -7,6 +7,8 @@ import { BlogsRepository } from '../../../blogs/infrastructure/blogs.repository'
 import { PostsRepository } from '../../infrastructure/posts.repository';
 import { BlogsSqlRepository } from '../../../blogs/infrastructure/blogs.sql.repository';
 import { PostsSqlRepository } from '../../infrastructure/posts.sql.repository';
+import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
+import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
 
 export class CreatePostCommand {
   constructor(public createUseCaseDto: CreatePostUseCaseDto) {}
@@ -15,8 +17,8 @@ export class CreatePostCommand {
 @CommandHandler(CreatePostCommand)
 export class CreatePostsUseCase implements ICommandHandler<CreatePostCommand> {
   constructor(
-    private blogsRepository: BlogsSqlRepository,
-    private postsRepository: PostsSqlRepository,
+    private blogsRepository: BlogsOrmRepository,
+    private postsRepository: PostsOrmRepository,
   ) {}
 
   async execute(command: CreatePostCommand) {

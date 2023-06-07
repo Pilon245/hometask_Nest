@@ -1,6 +1,9 @@
 import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { BanBlogsInfoType, BlogOwnerInfoType } from '../dto/blogs.entity.dto';
+import {
+  BanBlogsInfoType,
+  BlogOwnerInfoType,
+} from '../../dto/blogs.entity.dto';
 
 export type BlogDocument = HydratedDocument<Blog>;
 

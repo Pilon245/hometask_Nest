@@ -27,6 +27,7 @@ import { CreateUserCommand } from '../application/use-cases/create.user.use.case
 import { BanAdminUserCommand } from '../application/use-cases/ban.admin.user.use.cases';
 import { DeleteUserCommand } from '../application/use-cases/delete.user.use.cases';
 import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repository';
+import { UsersOrmQueryRepository } from '../infrastructure/users.orm.query.repository';
 
 @UseGuards(BasicAdminGuard)
 @ApiTags('sa/users')
@@ -36,13 +37,15 @@ import { UsersSqlQueryRepository } from '../infrastructure/users.sql.query.repos
 })
 export class UsersSaController {
   constructor(
-    protected usersQueryRepository: UsersSqlQueryRepository,
+    protected usersQueryRepository: UsersOrmQueryRepository,
     private commandBus: CommandBus,
   ) {}
+
   @Get()
   async getUsers(@Query() query) {
     return this.usersQueryRepository.findUsers(pagination(query));
   }
+
   @Post()
   async createUsers(@Body() inputModel: CreateUserInputModel) {
     const created = await this.commandBus.execute(
@@ -53,6 +56,7 @@ export class UsersSaController {
     }
     return this.usersQueryRepository.findUsersById(created.id);
   }
+
   @Put(':id/ban')
   @HttpCode(204)
   async updateUsers(
@@ -66,6 +70,7 @@ export class UsersSaController {
     };
     return this.commandBus.execute(new BanAdminUserCommand(banUser));
   }
+
   @Delete(':id')
   @HttpCode(204)
   async deleteUsers(@Param('id') id: string) {

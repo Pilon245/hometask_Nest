@@ -1,4 +1,4 @@
-import { LikeValueComment } from '../entities/likes.comments.entity';
+import { LikeValueComment } from '../entities/nosql/likes.comments.entity';
 
 export class CommentsFactory {
   constructor(

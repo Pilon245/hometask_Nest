@@ -13,10 +13,12 @@ export class BlogsFactory {
     public description: string,
     public websiteUrl: string,
     public createdAt: string,
+    public isMembership: boolean,
     public blogOwnerInfo: BlogOwnerInfoType,
     public banInfo: BanBlogsInfoType,
   ) {}
 }
+
 export class CreateBlogInputDTO {
   // для валидации
   @ApiProperty({
@@ -50,6 +52,7 @@ export class CreateBlogInputDTO {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   websiteUrl: string;
 }
+
 export class CreateBlogDTO {
   id: string;
   name: string;
@@ -59,12 +62,14 @@ export class CreateBlogDTO {
   blogOwnerInfo: BlogOwnerInfoType;
   banInfo: BanBlogsInfoType;
 }
+
 export class IdModelType {
   @Validate(BlogExistsRule)
   id: string;
   @Validate(UserExistsRule)
   userId: string;
 }
+
 export class BanBlogsInputModel {
   @IsBoolean()
   isBanned: boolean;

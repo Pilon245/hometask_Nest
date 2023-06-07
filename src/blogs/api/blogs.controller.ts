@@ -18,6 +18,8 @@ import { BearerAuthGuardOnGet } from '../../auth/guards/bearer-auth-guard-on-get
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { BlogsSqlQueryRepository } from '../infrastructure/blogs.sql.query.repository';
 import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.query.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
+import { PostsOrmQueryRepository } from 'src/posts/infrastructure/posts.orm.query.repository';
 
 @ApiTags('blogs')
 @Controller({
@@ -26,13 +28,15 @@ import { PostsSqlQueryRepository } from '../../posts/infrastructure/posts.sql.qu
 })
 export class BlogsController {
   constructor(
-    protected postsQueryRepository: PostsSqlQueryRepository,
-    protected blogsQueryRepository: BlogsSqlQueryRepository,
+    protected postsQueryRepository: PostsOrmQueryRepository,
+    protected blogsQueryRepository: BlogsOrmQueryRepository,
   ) {}
+
   @Get()
   getBlogs(@Query() query) {
     return this.blogsQueryRepository.findBlogs(pagination(query));
   }
+
   @Get(':id')
   async getBlog(@Param('id') blogId: string) {
     const result = await this.blogsQueryRepository.findBlogById(blogId);
@@ -43,6 +47,7 @@ export class BlogsController {
       );
     return result;
   }
+
   @UseGuards(BearerAuthGuardOnGet)
   @Get(':blogId/posts')
   async getPostsOnBlogId(

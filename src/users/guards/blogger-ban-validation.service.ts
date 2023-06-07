@@ -6,11 +6,13 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { BlogsSqlQueryRepository } from '../../blogs/infrastructure/blogs.sql.query.repository';
+import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.query.repository';
 
 @ValidatorConstraint({ name: 'BloggerExists', async: true })
 @Injectable()
 export class BloggerExistsRule implements ValidatorConstraintInterface {
-  constructor(private blogsQueryRepository: BlogsSqlQueryRepository) {}
+  constructor(private blogsQueryRepository: BlogsOrmQueryRepository) {}
+
   async validate(value: string) {
     try {
       const result = await this.blogsQueryRepository.findBlogById(value);
@@ -20,6 +22,7 @@ export class BloggerExistsRule implements ValidatorConstraintInterface {
       return false;
     }
   }
+
   defaultMessage(args: ValidationArguments) {
     return `Blog doesn't exist`;
   }

@@ -1,7 +1,10 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectModel, Prop } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Comment, CommentDocument } from '../domain/entities/comments.entity';
+import {
+  Comment,
+  CommentDocument,
+} from '../domain/entities/nosql/comments.entity';
 import {
   CommentsFactory,
   CreateLikeInputDTO,
@@ -10,7 +13,7 @@ import {
   LikeComment,
   LikeCommentDocument,
   LikeValueComment,
-} from '../domain/entities/likes.comments.entity';
+} from '../domain/entities/nosql/likes.comments.entity';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import * as fs from 'fs';

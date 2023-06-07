@@ -5,13 +5,14 @@ import { JwtGenerate } from '../helper/generate.token';
 import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { UsersSqlRepository } from '../../users/infrastructure/users.sql.repository';
+import { UsersOrmRepository } from 'src/users/infrastructure/users.orm.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private jwtGenerate: JwtGenerate,
     private configService: ConfigService,
-    private usersRepository: UsersSqlRepository,
+    private usersRepository: UsersOrmRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
