@@ -1,0 +1,35 @@
+Плейлист
+https://www.youtube.com/watch?v=BMo29Gkx8K0&list=PLbLBXDhswD1eq9M-KavTK98Z4OI00VbsW
+
+.gitignore = файлы и папки которые не должны попасть в git
+git init = инициализировать проект
+git add . = добавить все файлы для коммита или пуша
+git commit -m "Name Commit" = сделать коммит
+git branch -M main = выбрать ветку main
+git remote add origin master valueUrl = выбрать репозиторий куда будем пушить
+git push -u origin main = запушить через ветку origin main
+git commit --amend --no-edit = добавить новые файлы в старый коммит, без изменния названия коммита
+git commit --amend -m "New Name Commit" = добавить новые файлы в старый коммит и изменить название коммита
+git log --oneline = посмотреть историю коммитов
+git revert (Номер коммита из истрии) = создает заново предпоследний коммит, сохраняя последний
+git reset --hard = удаляет последний коммит и все измения в коде за последний коммит(работает только на локале)
+git rm nameFile.txt = удалить файл из локального и удаленного репозитория
+git rm -r --cached nameFolder = удалить папку только из удаленного репозитория
+1# git log --oneline = посмотреть историю коммитов
+2# git reset --hard (Номер коммита из истрии) = удаляет выбранный коммит(-ы)
+3# git push -f = синхронизирует коммиты с удаленным репозиторием
+git clone valueUrl = скачать репозиторий
+git pull = смержить/скачать себе изменения из удаленного репозитория
+//8 видео pull request (Работа с чужим репозиторием)
+//9 видео
+git branch nameBranch = создать ветку
+git checkout nameBranch =  переключится на ветку
+git checkout -b nameBranch =  создать и сразу переключиться на ветку
+1# git checkout nameBranch = выбрать ветку в которую хотим замержить
+2# git merge nameBranch2 = с какой ветки хотим мержить
+git branch -D nameBranch = удалить локальную ветку
+git push origin -d nameBranch = удалить удаленную ветку
+//10 видео git stash (Позволяет хранить код в буфере Git)
+//11 видео local history webstorm (Возращает удаленный код)
+//12 видео github gist (Общие часто используемые данные, фунцкции классы. удобнее через плагин Git Snippet)"можно закинуть авторизацию и пагинацию"
+//13 видео Создание нескол. аккаунтов на одном компьютере
