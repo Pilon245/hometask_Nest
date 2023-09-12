@@ -7,6 +7,7 @@ export class UserAccountDBType {
     public banInfo: BanInfoType,
   ) {}
 }
+
 export class UsersAccountDataType {
   constructor(
     public login: string,
@@ -15,6 +16,7 @@ export class UsersAccountDataType {
     public createdAt: string,
   ) {}
 }
+
 export class BanInfoType {
   constructor(
     public isBanned: boolean,
@@ -22,6 +24,7 @@ export class BanInfoType {
     public banReason: string,
   ) {}
 }
+
 export class EmailConfirmationType {
   constructor(
     public confirmationCode: string,
@@ -29,6 +32,7 @@ export class EmailConfirmationType {
     public isConfirmed: boolean,
   ) {}
 }
+
 export class PasswordConfirmationType {
   constructor(
     public confirmationCode: string,

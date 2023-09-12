@@ -7,6 +7,30 @@ import {
 import cookieParser from 'cookie-parser';
 import { useContainer } from 'class-validator';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Pool } from 'pg';
+
+const pgConfig = {
+  user: 'postgres',
+  host: 'localhost',
+  password: '1234',
+  port: 5432,
+};
+
+const createDatabase = async () => {
+  const pool = new Pool(pgConfig);
+  const client = await pool.connect();
+
+  try {
+    // Создание базы данных
+    await client.query('CREATE DATABASE "network"');
+    console.log('База данных создана успешно');
+  } catch (error) {
+    console.error('Ошибка при создании базы данных');
+  } finally {
+    client.release();
+    pool.end();
+  }
+};
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -53,5 +77,8 @@ async function bootstrap() {
   await app.listen(4000, () => {
     console.log(`Server start on port: ${4000}`);
   });
+
+  createDatabase();
 }
+
 bootstrap();

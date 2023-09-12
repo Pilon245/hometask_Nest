@@ -107,6 +107,7 @@ import { BlogsOrmQueryRepository } from 'src/blogs/infrastructure/blogs.orm.quer
 import { BlogsOrmRepository } from 'src/blogs/infrastructure/blogs.orm.repository';
 import { PostsOrmQueryRepository } from 'src/posts/infrastructure/posts.orm.query.repository';
 import { PostsOrmRepository } from 'src/posts/infrastructure/posts.orm.repository';
+import { QuizModule } from './quiz/quiz.module';
 
 const schemas = [
   { name: Blog.name, schema: BlogSchema },
@@ -183,40 +184,41 @@ const deleteAll = [
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('PG_HOST'),
-        port: 5432,
-        username: configService.get<string>('PG_USER'),
-        password: configService.get<string>('PG_PASSWORD'),
-        database: configService.get<string>('PG_DATABASE'),
-        ssl: true,
-        entities: sqlSchemas,
-        autoLoadEntities: true, // автоматически делает изменения
-        synchronize: true, // true  во время разработки
-      }),
-      inject: [ConfigService],
-    }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: '1234',
-    //   database: 'network',
-    //   // ssl: true,
-    //   autoLoadEntities: true, // автоматически делает изменения
-    //   synchronize: true, // true  во время разработки
-    //   entities: sqlSchemas,
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: async (configService: ConfigService) => ({
+    //     type: 'postgres',
+    //     host: configService.get<string>('PG_HOST'),
+    //     port: 5432,
+    //     username: configService.get<string>('PG_USER'),
+    //     password: configService.get<string>('PG_PASSWORD'),
+    //     database: configService.get<string>('PG_DATABASE'),
+    //     ssl: true,
+    //     entities: sqlSchemas,
+    //     autoLoadEntities: true, // автоматически делает изменения
+    //     synchronize: true, // true  во время разработки
+    //   }),
+    //   inject: [ConfigService],
     // }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: '1234',
+      database: 'network',
+      // ssl: true,
+      autoLoadEntities: true, // автоматически делает изменения
+      synchronize: true, // true  во время разработки
+      entities: sqlSchemas,
+    }),
     MongooseModule.forFeature(schemas),
     TypeOrmModule.forFeature(sqlSchemas),
     SessionModule,
     UsersModule,
     AuthModule,
     CqrsModule,
+    QuizModule,
     // AvatarsModule,
   ],
   controllers: [

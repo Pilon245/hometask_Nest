@@ -38,10 +38,7 @@ import {
 import { BlogsQueryRepository } from '../blogs/infrastructure/blogs.query.repository';
 import { BloggerExistsRule } from './guards/blogger-ban-validation.service';
 import { CommandBus, CqrsModule } from '@nestjs/cqrs';
-import {
-  CreateUserCommand,
-  CreateUserUseCase,
-} from './application/use-cases/create.user.use.cases';
+import { CreateUserUseCase } from './application/use-cases/create.user.use.cases';
 import {
   BanAdminUserCommand,
   BanAdminUserUseCase,

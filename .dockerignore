@@ -1,5 +1,5 @@
 .git*
-Dockerfile
+Dockerfile.old
 .docker*
 .vscode*
 git*

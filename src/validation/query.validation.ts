@@ -7,6 +7,8 @@ class QueryValidationResult {
   searchLoginTerm: string;
   searchEmailTerm: string;
   banStatus: banStatusEnum;
+  publishedStatus: publishedStatusEnum;
+  bodySearchTerm: string;
 }
 
 const defaultPageSize = 10;
@@ -26,6 +28,12 @@ export enum banStatusEnum {
   all = 'NOT NULL',
   banned = 'true',
   notBanned = 'false',
+}
+
+export enum publishedStatusEnum {
+  all = 'NOT NULL',
+  published = 'true',
+  notPublished = 'false',
 }
 
 export const pagination = (query: any): QueryValidationResult => {
@@ -64,6 +72,20 @@ export const pagination = (query: any): QueryValidationResult => {
     typeof query.searchEmailTerm === 'string'
       ? query.searchEmailTerm?.toString()
       : '';
+
+  const publishedStatus = query.banStatus;
+  if (banStatus == 'notPublished') {
+    banStatus = publishedStatusEnum.notPublished;
+  } else if (banStatus == 'published') {
+    banStatus = publishedStatusEnum.published;
+  } else {
+    banStatus = publishedStatusEnum.all;
+  }
+  const bodySearchTerm =
+    typeof query.bodySearchTerm === 'string'
+      ? query.bodySearchTerm?.toString()
+      : '';
+
   return {
     pageNumber,
     pageSize,
@@ -73,5 +95,7 @@ export const pagination = (query: any): QueryValidationResult => {
     searchLoginTerm,
     searchEmailTerm,
     banStatus,
+    publishedStatus,
+    bodySearchTerm,
   };
 };

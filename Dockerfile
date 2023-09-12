@@ -1,32 +1,20 @@
-# FROM node:18-alpine
-FROM --platform=linux/amd64 node:lts-alpine as builder
+FROM node:18
 
-ENV APP_PATH /usr/src/app
+ARG APP_DIR=app
+RUN mkdir -p ${APP_DIR}
+WORKDIR ${APP_DIR}
 
-WORKDIR $APP_PATH
+# Установка зависимостей
+COPY package*.json ./
+RUN npm install
+# Для использования в продакшне
+# RUN npm install --production
 
-COPY yarn.lock $APP_PATH
-COPY package.json $APP_PATH
+# Копирование файлов проекта
+COPY . .
 
-RUN yarn install
+# Уведомление о порте, который будет прослушивать работающее приложение
+EXPOSE 3000
 
-COPY . $APP_PATH
-RUN yarn nest build
-
-FROM nginx:stable-alpine
-
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-
-RUN rm -rf /usr/share/nginx/html/*
-
-COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
-
-EXPOSE 55555 80
-
-RUN adduser --disabled-password --no-create-home john-doe
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
-
-RUN chown john-doe:john-doe /var/cache/nginx/ && chown john-doe:john-doe -R /var/run/
-
-USER john-doe
+# Запуск проекта
+CMD ["npm", "start"]
